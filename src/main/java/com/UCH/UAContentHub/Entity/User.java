@@ -50,8 +50,9 @@ public class User {
     private List<Likes> likes;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "default 'ACTIVE'")
     private User_Status Status;
+
 
     public int getId() {
         return id;
@@ -157,23 +158,5 @@ public class User {
         this.likes = likes;
     }
 
-
-    public User(int id, String login, String password, String name, String email,
-                Role role, LocalDateTime registrationDate, User_Status status, Profile profile,
-                List<Complaint> complaints, List<Review> reviews, List<Subscription> subscriptions, List<Likes> likes) {
-        this.id = id;
-        this.login = login;
-        this.Password = password;
-        this.Name = name;
-        this.Email = email;
-        this.role = role;
-        this.RegistrationDate = registrationDate;
-        this.Status = status;
-        this.profile = profile;
-        this.complaints = complaints;
-        this.reviews = reviews;
-        this.subscriptions = subscriptions;
-        this.likes = likes;
-    }
     public User() {}
 }

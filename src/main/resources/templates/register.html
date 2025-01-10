@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+
+<h1>Register</h1>
+
+<form action="/auth/register" method="post">
+    <label for="login">Login:</label>
+    <input type="text" id="login" name="login" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="role">Role:</label>
+    <select id="role" name="role" onchange="toggleProfileFields()">
+        <option value="USER">USER</option>
+        <option value="CREATOR">CREATOR</option>
+    </select><br>
+
+    <div id="profileFields" style="display:none;">
+        <h2>Profile</h2>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <label for="tiktok">TikTok:</label>
+        <input type="text" id="tiktok" name="tiktok"><br>
+
+        <label for="instagram">Instagram:</label>
+        <input type="text" id="instagram" name="instagram"><br>
+
+        <label for="twitch">Twitch:</label>
+        <input type="text" id="twitch" name="twitch"><br>
+
+        <label for="youtube">YouTube:</label>
+        <input type="text" id="youtube" name="youtube"><br>
+    </div>
+
+    <button type="submit">Register</button>
+
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+    </div>
+    <p>Вже маєте обліковий запис? <a href="/auth/login">Увійти</a></p>
+</form>
+
+<script>
+    function toggleProfileFields() {
+        const role = document.getElementById("role").value;
+        const profileFields = document.getElementById("profileFields");
+
+        if (role === "CREATOR") {
+            profileFields.style.display = "block";
+        } else {
+            profileFields.style.display = "none";
+        }
+    }
+
+    // Вызовем функцию сразу при загрузке страницы, чтобы правильно отобразить поля в зависимости от текущей роли
+    window.onload = toggleProfileFields;
+</script>
+
+<p th:if="${error}" style="color: red;" th:text="${error}"></p>
+
+</body>
+</html>

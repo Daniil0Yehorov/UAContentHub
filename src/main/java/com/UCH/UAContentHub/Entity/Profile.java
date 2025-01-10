@@ -1,5 +1,8 @@
 package com.UCH.UAContentHub.Entity;
 
+
+import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
+import com.UCH.UAContentHub.Entity.Enum.User_Status;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,6 +21,10 @@ public class Profile {
 
     @Column(nullable = false,length = 65535)
     private String Description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CreatorProfileStatus Status;
 
     private String AvatarURL;
 
@@ -46,6 +53,14 @@ public class Profile {
     private List<Complaint> complaints;
 
     private int Rating;
+
+    public CreatorProfileStatus getStatus() {
+        return Status;
+    }
+
+    public void setStatus(CreatorProfileStatus status) {
+        Status = status;
+    }
 
     public int getId() {
         return id;
@@ -152,24 +167,5 @@ public class Profile {
     }
 
 
-    public Profile(int id, User user, String description,
-                   String avatarURL, String tiktok, String instagram, String twitch,
-                   String youtube, int subscribersCount, int rating, List<Post> posts, Set<Profile_has_tags> phs, List<Complaint> complaints) {
-        this.id = id;
-        this.user = user;
-        this.Description = description;
-        this.AvatarURL = avatarURL;
-        this.Tiktok = tiktok;
-        this.Instagram = instagram;
-        this.Twitch = twitch;
-        this.Youtube = youtube;
-        this.SubscribersCount = subscribersCount;
-        this.Rating = rating;
-        this.posts = posts;
-        this.phs = phs;
-        this.complaints = complaints;
-    }
-    public Profile(){
-
-    }
+    public Profile(){}
 }
