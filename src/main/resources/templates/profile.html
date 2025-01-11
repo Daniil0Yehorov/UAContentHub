@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профіль</title>
+</head>
+<body>
+
+<h1>Профіль користувача</h1>
+
+<p>Логін: <span th:text="${user.login}"></span></p>
+<p>Ім'я: <span th:text="${user.name}"></span></p>
+<p>Email: <span th:text="${user.email}"></span></p>
+<p>Роль у системі: <span th:text="${user.role}"></span></p>
+
+<div th:if="${user.role.name() == 'CREATOR'}">
+    <h2>Профіль контент-креатора</h2>
+    <p>Опис: <span th:text="${user.profile.description}"></span></p>
+    <p>TikTok: <span th:text="${user.profile.tiktok} ?: 'Не вказано'"></span></p>
+    <p>Instagram: <span th:text="${user.profile.instagram} ?: 'Не вказано'"></span></p>
+    <p>Twitch: <span th:text="${user.profile.twitch} ?: 'Не вказано'"></span></p>
+    <p>YouTube: <span th:text="${user.profile.youtube} ?: 'Не вказано'"></span></p>
+    <p>Кількість підписників: <span th:text="${user.profile.subscribersCount}"></span></p>
+    <p>Рейтинг: <span th:text="${user.profile.rating}"></span></p>
+</div>
+
+<a href="/">Головна сторінка</a>
+<a href="/auth/logout">Вийти</a>
+
+</body>
+</html>

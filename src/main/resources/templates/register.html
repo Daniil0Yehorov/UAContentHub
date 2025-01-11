@@ -31,7 +31,7 @@
         <h2>Profile</h2>
 
         <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea><br>
+        <textarea id="description" name="description"></textarea><br>
 
         <label for="tiktok">TikTok:</label>
         <input type="text" id="tiktok" name="tiktok"><br>
@@ -47,11 +47,6 @@
     </div>
 
     <button type="submit">Register</button>
-
-    <div th:if="${error}" style="color: red;">
-        <p th:text="${error}"></p>
-    </div>
-    <p>Вже маєте обліковий запис? <a href="/auth/login">Увійти</a></p>
 </form>
 
 <script>
@@ -61,16 +56,15 @@
 
         if (role === "CREATOR") {
             profileFields.style.display = "block";
+            document.getElementById("description").required = true;
         } else {
             profileFields.style.display = "none";
+            document.getElementById("description").required = false;
         }
     }
 
-    // Вызовем функцию сразу при загрузке страницы, чтобы правильно отобразить поля в зависимости от текущей роли
     window.onload = toggleProfileFields;
 </script>
-
-<p th:if="${error}" style="color: red;" th:text="${error}"></p>
 
 </body>
 </html>

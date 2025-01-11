@@ -16,6 +16,7 @@ public interface AuthService {
     User update(User user);
     //авторизація
     User login(String login, String password);
+    //валідація юрл посилання
     public boolean isValidUrl(String url);
 
 }

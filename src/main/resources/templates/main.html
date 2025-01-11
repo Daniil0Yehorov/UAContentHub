@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Головна сторінка</title>
+</head>
+<body>
+
+<h1>Ласкаво просимо на головну сторінку!</h1>
+
+<p>Ця сторінка доступна всім користувачам.</p>
+
+<div th:if="${user != null}">
+    <p>Ви увійшли як: <span th:text="${user.name}"></span></p>
+    <a href="/profile">Перейти в профіль</a>
+    <a href="/auth/logout">Вийти</a>
+</div>
+
+<div th:if="${user == null}">
+    <p>Ви не авторизовані.</p>
+    <a href="/auth/login">Увійти</a>
+    <a href="/auth/register">Зареєструватися</a>
+</div>
+
+</body>
+</html>

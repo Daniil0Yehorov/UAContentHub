@@ -6,6 +6,7 @@ import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,18 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
     private AuthService authService;
-    /*@Autowired
-    private  final HttpSession session;
 
-    public AuthController(HttpSession session) {
-        this.session = session;
-    }*/
-    //Login зробити
-    //мейн контролер розробити на головну сторінку без особливих дій зі сторони користувача
+    @Autowired
+    private final HttpSession session;
+
 
 
     @GetMapping("/register")
@@ -55,16 +53,6 @@ public class AuthController {
             user.setName(name);
             user.setEmail(email);
             user.setRole(role);
-                System.out.println(user.getName());
-                System.out.println(user.getPassword());
-                System.out.println(user.getEmail());
-                System.out.println(role);
-                System.out.println(description);
-                System.out.println(tiktok);
-                System.out.println(instagram);
-                System.out.println(twitch);
-                System.out.println(youtube);
-                System.out.println(user.getRole());
 
             if (role == Role.CREATOR) {
                 Profile profile = new Profile();
@@ -98,11 +86,13 @@ public class AuthController {
                 }
 
                 authService.RegisterCreator(user, profile);
+                session.setUser(user);
             } else {
                 authService.Register(user);
+                session.setUser(user);
             }
 
-            return "redirect:/login";
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "register";
@@ -110,5 +100,33 @@ public class AuthController {
             model.addAttribute("error", e.getMessage());
             return "register";
         }
+    }
+    @GetMapping("/login")
+    public String loginPage(Model model) {
+        model.addAttribute("title", "Вхід");
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam("login") String login,
+                        @RequestParam("password") String password,
+                        Model model) {
+        try {
+            User user = authService.login(login, password);
+            if (user == null) {
+                model.addAttribute("error", "Неправильний логін або пароль");
+                return "login";
+            }
+            session.setUser(user);
+            return "redirect:/";
+        } catch (Exception e) {
+            model.addAttribute("error", "Помилка під час входу: " + e.getMessage());
+            return "login";
+        }
+    }
+    @GetMapping("/logout")
+    public String logout() {
+        session.clear();
+        return "redirect:/";
     }
 }

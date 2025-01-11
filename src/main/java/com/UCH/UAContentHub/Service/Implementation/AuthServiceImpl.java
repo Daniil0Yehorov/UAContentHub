@@ -1,7 +1,5 @@
 package com.UCH.UAContentHub.Service.Implementation;
 
-
-import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Repository.ProfileRepository;
