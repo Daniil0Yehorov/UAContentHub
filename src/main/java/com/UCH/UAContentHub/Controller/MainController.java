@@ -29,7 +29,7 @@ public class MainController {
     public String profilePage(Model model) {
 
         User currentUser = session.getUser();
-        if (currentUser == null) {
+        if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
 
