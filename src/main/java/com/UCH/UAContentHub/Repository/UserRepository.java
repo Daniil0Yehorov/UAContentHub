@@ -5,7 +5,7 @@ import com.UCH.UAContentHub.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User,Integer> {
     User findByLogin(String login);
     User findById(int id);
     @Query("SELECT u FROM User u WHERE u.login = :login AND u.Password = :Password")

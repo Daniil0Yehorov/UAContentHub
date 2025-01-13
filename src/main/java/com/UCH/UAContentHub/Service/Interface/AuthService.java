@@ -3,9 +3,8 @@ package com.UCH.UAContentHub.Service.Interface;
 
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.User;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public interface AuthService {
     //реєстрація звичайного користувача у системі
     User Register(User user);

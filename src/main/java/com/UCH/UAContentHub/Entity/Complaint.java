@@ -27,8 +27,8 @@ public class Complaint {
     private String Reason;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ComplaintStatus Status;
+    @Column(name = "Status", nullable = false)
+    private ComplaintStatus status;
 
     public Complaint(int id, User user, Post post,
                      Profile profile, String reason, ComplaintStatus status) {
@@ -37,7 +37,7 @@ public class Complaint {
         this.post = post;
         this.profile = profile;
         this.Reason = reason;
-        this.Status = status;
+        this.status = status;
     }
 
     public int getId() {
@@ -81,11 +81,11 @@ public class Complaint {
     }
 
     public ComplaintStatus getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(ComplaintStatus status) {
-        this.Status = status;
+        this.status = status;
     }
 
     public Complaint(){}

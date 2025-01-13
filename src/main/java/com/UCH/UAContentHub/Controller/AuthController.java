@@ -2,8 +2,14 @@ package com.UCH.UAContentHub.Controller;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Enum.User_Status;
+import com.UCH.UAContentHub.Entity.Profile_has_tags;
+import com.UCH.UAContentHub.Entity.Tags;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
+import com.UCH.UAContentHub.Repository.ProfileRepository;
+import com.UCH.UAContentHub.Repository.Profile_has_tagsRepository;
+import com.UCH.UAContentHub.Repository.TagsRepository;
+import com.UCH.UAContentHub.Repository.UserRepository;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
@@ -11,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -23,10 +33,74 @@ public class AuthController {
     @Autowired
     private final HttpSession session;
 
+    @Autowired
+    UserRepository userRepository;
 
+    @Autowired
+    ProfileRepository profileRepository;
 
+    @Autowired
+    TagsRepository tagsRepository;
+
+    @Autowired
+    Profile_has_tagsRepository profileHasTagsRepository;
+    //додавання даних до бд
+    private void initData() {
+        List<User> users = new ArrayList<>();
+        List<Profile> profiles = new ArrayList<>();
+        List<Tags> tags = new ArrayList<>();
+        List<Profile_has_tags> profileHasTagsList = new ArrayList<>();
+
+        for (int i = 1; i <= 5; i++) {
+            User user = new User();
+            user.setName("User" + i);
+            user.setLogin("User" + i + "Login");
+            user.setPassword("Password" + i);
+            user.setEmail("User" + i + "@example.com");
+            user.setStatus(User_Status.ACTIVE);
+            user.setRole(Role.CREATOR);
+            user.setRegistrationDate(LocalDateTime.now());
+
+            Profile profile = new Profile();
+            profile.setStatus(CreatorProfileStatus.CONFIRMED);
+            profile.setTiktok("https://tiktok.com/user" + i);
+            profile.setInstagram("https://instagram.com/user" + i);
+            profile.setTwitch("https://twitch.tv/user" + i);
+            profile.setYoutube("https://youtube.com/user" + i);
+            profile.setAvatarURL("https://example.com/avatar" + i + ".png");
+            profile.setDescription("Description for User" + i);
+            profile.setRating(5);
+
+            user.setProfile(profile);
+            profile.setUser(user);
+
+            users.add(user);
+            profiles.add(profile);
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            Tags tag = new Tags();
+            tag.setName("Tag" + i);
+            tags.add(tag);
+        }
+
+        for (int i = 0; i < profiles.size(); i++) {
+            Profile profile = profiles.get(i);
+            for (int j = 0; j < 2; j++) {
+                Profile_has_tags profileHasTags = new Profile_has_tags();
+                profileHasTags.setProfile(profile);
+                profileHasTags.setTags(tags.get((i + j) % tags.size()));
+                profileHasTagsList.add(profileHasTags);
+            }
+        }
+
+        userRepository.saveAll(users);
+        tagsRepository.saveAll(tags);
+        profileHasTagsRepository.saveAll(profileHasTagsList);
+    }
     @GetMapping("/register")
     public String registerPage(Model model) {
+        //initData();
         model.addAttribute("title", "Реєстрація");
         return "register";
     }

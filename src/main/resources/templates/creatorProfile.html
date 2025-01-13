@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профіль креатора</title>
+</head>
+<body>
+<h1>Профіль креатора</h1>
+<p>Ім'я: <span th:text="${profile.user.name}"></span></p>
+<p>Опис: <span th:text="${profile.description}"></span></p>
+<p>Рейтинг: <span th:text="${profile.rating}"></span></p>
+<a href="/">Повернутися на головну</a>
+<!--підпискаа відписка від креатора-->
+</body>
+</html>

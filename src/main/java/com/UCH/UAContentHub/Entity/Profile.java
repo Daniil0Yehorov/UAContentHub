@@ -23,8 +23,8 @@ public class Profile {
     private String Description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CreatorProfileStatus Status;
+    @Column( name = "Status",nullable = false)
+    private CreatorProfileStatus status;
 
     private String AvatarURL;
 
@@ -39,7 +39,8 @@ public class Profile {
 
     @Column( length = 65535)
     private String Youtube;
-
+    @Column( name = "Rating")
+    private int rating;
     @Column(name="Subscribers_Count")
     private int SubscribersCount;
 
@@ -52,14 +53,14 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Complaint> complaints;
 
-    private int Rating;
+
 
     public CreatorProfileStatus getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(CreatorProfileStatus status) {
-        Status = status;
+        this.status = status;
     }
 
     public int getId() {
@@ -135,11 +136,11 @@ public class Profile {
     }
 
     public int getRating() {
-        return Rating;
+        return rating;
     }
 
     public void setRating(int rating) {
-        this.Rating = rating;
+        this.rating = rating;
     }
 
     public List<Post> getPosts() {

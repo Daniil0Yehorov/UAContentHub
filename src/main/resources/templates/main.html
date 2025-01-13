@@ -22,5 +22,34 @@
     <a href="/auth/register">Зареєструватися</a>
 </div>
 
+<form action="/filter" method="get">
+    <label for="tags">Теги:</label>
+    <input type="text" id="tags" name="tags" placeholder="Введите теги через запятую">
+
+    <label for="minRating">Мінімальный рейтинг:</label>
+    <input type="number" id="minRating" name="minRating" value="1" min="1" max="5">
+
+    <label for="maxRating">Максимальный рейтинг:</label>
+    <input type="number" id="maxRating" name="maxRating" value="5" min="1" max="5">
+
+    <button type="submit">Фільтрувати</button>
+</form>
+
+<h2>Список підтверджених креаторів:</h2>
+<div th:if="${creators != null}">
+    <ul>
+        <li th:each="creator : ${creators}">
+            <p>
+                <strong th:text="${creator.user.name}"></strong><br/>
+                <span th:text="'Рейтинг: ' + ${creator.rating}"></span><br/>
+                <span th:text="${creator.description}"></span><br/>
+                <a th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль креатора</a>
+            </p>
+        </li>
+    </ul>
+</div>
+<div th:if="${creators == null || creators.isEmpty()}">
+    <p>Немає доступних креаторів.</p>
+</div>
 </body>
 </html>
