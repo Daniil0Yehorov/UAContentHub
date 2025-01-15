@@ -6,10 +6,34 @@
 </head>
 <body>
 <h1>Профіль креатора</h1>
+
+<div th:if="${param.error}" style="color: red;">
+    <p th:text="${param.error}"></p>
+</div>
+
+<div th:if="${param.message}" style="color: green;">
+    <p th:text="${param.message}"></p>
+</div>
+
 <p>Ім'я: <span th:text="${profile.user.name}"></span></p>
 <p>Опис: <span th:text="${profile.description}"></span></p>
 <p>Рейтинг: <span th:text="${profile.rating}"></span></p>
+
+<div th:if="${user.role.name() != 'CREATOR'}">
+    <div th:if="${isSubscribed}">
+        <a th:href="@{/creator/{id}/unsubscribe(id=${profile.id})}">Відписатися</a>
+    </div>
+    <div th:if="${!isSubscribed}">
+        <a th:href="@{/creator/{id}/subscribe(id=${profile.id})}">Підписатися</a>
+    </div>
+</div>
+<div th:if="${user.role.name() != 'CREATOR'}">
+    <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
+        <textarea name="reason" placeholder="Причина скарги" required></textarea>
+        <button type="submit">Поскаржитися</button>
+    </form>
+</div>
+<!--ПОТІМ ДОДАТИ КНОПКУ СТВОРЕННЯ РЕЦЕНЗІЙ;-->
 <a href="/">Повернутися на головну</a>
-<!--підпискаа відписка від креатора, репорт-->
 </body>
 </html>

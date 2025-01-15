@@ -105,7 +105,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void reportProfile(int profileid,int whoComplainedId,String reason) {
-        //перевірки можливі додати
         Profile reportedProfile = profileRepository.findById(profileid).orElse(null);
         if (reportedProfile == null) {
             throw new IllegalArgumentException("Профіль не знайден");
@@ -216,5 +215,12 @@ public class ProfileServiceImpl implements ProfileService {
             return true;
         }
         return url.matches("^(http|https)://.*$");
+    }
+    public boolean isSubscribed(Profile profile, User user) {
+        if (profile == null || user == null) {
+            throw new IllegalArgumentException("Профіль або користувач не можуть бути порожніми");
+        }
+
+        return subcriptionRepository.findByCreator_IdAndUser_Id(profile.getUser().getId(), user.getId()) != null;
     }
 }

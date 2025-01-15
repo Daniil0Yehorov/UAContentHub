@@ -1,6 +1,5 @@
 package com.UCH.UAContentHub.Controller;
 
-import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,7 +20,7 @@ import java.util.Set;
 @RequestMapping("/")
 public class MainController {
     @Autowired
-    private final  HttpSession session;
+    private final HttpSession session;
     @Autowired
     private ContentService contentService;
 
@@ -36,6 +34,7 @@ public class MainController {
 
         return "main";
     }
+
     //мб додати окрему фільтрацію за певними параметрами;
     //ТРАБЛ якщо людину тільки верифікували, то в неї не буде рейтинга
     @GetMapping("/filter")
@@ -51,19 +50,4 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/creator/{id}")
-    public String creatorProfile(@PathVariable int id, Model model) {
-        if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
-
-        Profile creatorProfile = contentService.getProfileById(id);
-        if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("profile", creatorProfile);
-        model.addAttribute("user", session.getUser());
-        return "creatorProfile";
-    }
 }
