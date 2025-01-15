@@ -1,7 +1,6 @@
 package com.UCH.UAContentHub.Controller;
 
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
-import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
@@ -37,8 +36,8 @@ public class MainController {
 
         return "main";
     }
-
-
+    //мб додати окрему фільтрацію за певними параметрами;
+    //ТРАБЛ якщо людину тільки верифікували, то в неї не буде рейтинга
     @GetMapping("/filter")
     public String filterCreators(
             @RequestParam(required = false) Set<String> tags,
@@ -51,21 +50,7 @@ public class MainController {
 
         return "main";
     }
-    @GetMapping("/profile")
-    public String profilePage(Model model) {
 
-        User currentUser = session.getUser();
-        if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
-
-        if (currentUser.getRole() == Role.CREATOR && currentUser.getProfile() == null) {
-            currentUser.setProfile(session.getUser().getProfile());
-        }
-
-        model.addAttribute("user", currentUser);
-        return "profile";
-    }
     @GetMapping("/creator/{id}")
     public String creatorProfile(@PathVariable int id, Model model) {
         if (!session.isPresent()) {

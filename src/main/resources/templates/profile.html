@@ -5,14 +5,20 @@
     <title>Профіль</title>
 </head>
 <body>
-
 <h1>Профіль користувача</h1>
+
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+
+<div th:if="${message}" style="color: green;">
+    <p th:text="${message}"></p>
+</div>
 
 <p>Логін: <span th:text="${user.login}"></span></p>
 <p>Ім'я: <span th:text="${user.name}"></span></p>
 <p>Email: <span th:text="${user.email}"></span></p>
 <p>Роль у системі: <span th:text="${user.role}"></span></p>
-
 <div th:if="${user.role.name() == 'CREATOR'}">
     <h2>Профіль контент-креатора</h2>
     <p>Опис: <span th:text="${user.profile.description}"></span></p>
@@ -20,12 +26,25 @@
     <p>Instagram: <span th:text="${user.profile.instagram} ?: 'Не вказано'"></span></p>
     <p>Twitch: <span th:text="${user.profile.twitch} ?: 'Не вказано'"></span></p>
     <p>YouTube: <span th:text="${user.profile.youtube} ?: 'Не вказано'"></span></p>
-    <p>Кількість підписників: <span th:text="${user.profile.subscribersCount}"></span></p>
-    <p>Рейтинг: <span th:text="${user.profile.rating}"></span></p>
+    <p>Subscribers: <span th:text="${user.profile.subscribersCount} ?: 'Не вказано'"></span></p>
+    <p>Rating: <span th:text="${user.profile.rating} ?: 'Не вказано'"></span></p>
 </div>
+<form action="/profile/update" method="post">
+    <input type="text" name="email" placeholder="Новий Email">
+    <input type="text" name="login" placeholder="Новий логін">
+    <input type="password" name="password" placeholder="Новий пароль">
+    <input type="text" name="name" placeholder="Нове ім'я">
+    <div th:if="${user.role.name() == 'CREATOR'}">
+        <textarea name="description" placeholder="Опис"></textarea>
+        <input type="text" name="tiktok" placeholder="TikTok">
+        <input type="text" name="instagram" placeholder="Instagram">
+        <input type="text" name="twitch" placeholder="Twitch">
+        <input type="text" name="youtube" placeholder="YouTube">
+    </div>
+    <button type="submit">Оновити</button>
+</form>
 
 <a href="/">Головна сторінка</a>
 <a href="/auth/logout">Вийти</a>
-
 </body>
 </html>

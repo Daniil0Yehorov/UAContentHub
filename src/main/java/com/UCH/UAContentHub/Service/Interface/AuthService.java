@@ -11,8 +11,7 @@ public interface AuthService {
     //реєстрація креатора у системі, але зі статусом "не перевірено"(поки адміністратор не перевірить
     // цього креатора, та не поставить інший статус- креатор не зможе робити ніяких дій)
     void RegisterCreator(User user, Profile profile);
-    //оновлення даних користувача
-    User update(User user);
+
     //авторизація
     User login(String login, String password);
     //валідація юрл посилання

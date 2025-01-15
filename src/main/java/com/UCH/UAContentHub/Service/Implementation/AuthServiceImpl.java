@@ -21,11 +21,8 @@ public class AuthServiceImpl implements AuthService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
-    private static final Pattern URL_PATTERN = Pattern.compile(
-            "^(https?://)?(www\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}(/[\\w\\-\\?\\=\\&\\%\\#]+)?$");
 
     public boolean isValidUrl(String url) {
-        // Регулярное выражение для проверки URL
         String regex = "^(https?://)?(www\\.)?([a-zA-Z0-9-]+)\\.[a-zA-Z]{2,6}(/.*)?$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(url);
@@ -96,32 +93,6 @@ public class AuthServiceImpl implements AuthService {
         prRepository.save(profile);
     }
 
-    @Override
-    public User update(User user) {
-
-        if (user.getEmail() != null && !EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            throw new IllegalArgumentException("Некоректна пошта");
-        }
-
-        if (user.getEmail() != null && !userRepository.findByEmail(user.getEmail()).equals(user)) {
-            if (userRepository.findByEmail(user.getEmail()) != null) {
-                throw new IllegalArgumentException("Користувач з даною поштою існує");
-            }
-        }
-
-        if (user.getLogin() != null && !userRepository.findByLogin(user.getLogin()).equals(user)) {
-            if (userRepository.findByLogin(user.getLogin()) != null) {
-                throw new IllegalArgumentException("Користувач з даним логіном існує");
-            }
-        }
-
-        if (user.getPassword() != null && user.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Пароль має бути не менше 8 символів");
-        }
-
-
-        return userRepository.save(user);
-    }
 
     @Override
     public User login(String login, String password) {

@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface TagsRepository extends JpaRepository<Tags,Integer> {
-
+    Tags findByName(String name);
     List<Tags> findByNameIn(Set<String> names);
 }
