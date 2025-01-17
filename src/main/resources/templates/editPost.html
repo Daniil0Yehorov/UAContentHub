@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Редагування посту</title>
+</head>
+<body>
+<h1>Редагування посту</h1>
+<a href="/profile">Перейти в профіль</a>
+<a href="/">Перейти на головну сторінку</a>
+<a href="/auth/logout">Вийти</a>
+<a href="/posts">Перейти до постів</a>
+<a href="/posts/add">Створити пост</a>
+<div th:if="${post != null}">
+    <form th:action="@{/posts/update/{postId}(postId=${post.id})}" method="post">
+        <div>
+            <label for="content">Контент:</label>
+            <textarea id="content" name="content" th:value="${post.content}" rows="5" cols="50" required></textarea>
+        </div>
+
+        <div>
+            <button type="submit">Оновити пост</button>
+        </div>
+    </form>
+
+    <form th:action="@{/posts/delete/{postId}(postId=${post.id})}" method="post"
+          onsubmit="return confirm('Ви впевнені, що хочете видалити цей пост?');">
+        <div>
+            <button type="submit" style="background-color: red; color: white;">Видалити пост</button>
+        </div>
+    </form>
+</div>
+
+<div th:if="${post == null}">
+    <p>Посту немає</p>
+</div>
+
+</body>
+</html>

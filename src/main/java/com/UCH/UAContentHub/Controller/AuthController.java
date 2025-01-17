@@ -1,15 +1,9 @@
 package com.UCH.UAContentHub.Controller;
+import com.UCH.UAContentHub.Entity.*;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Enum.User_Status;
-import com.UCH.UAContentHub.Entity.Profile_has_tags;
-import com.UCH.UAContentHub.Entity.Tags;
-import com.UCH.UAContentHub.Entity.User;
-import com.UCH.UAContentHub.Entity.Profile;
-import com.UCH.UAContentHub.Repository.ProfileRepository;
-import com.UCH.UAContentHub.Repository.Profile_has_tagsRepository;
-import com.UCH.UAContentHub.Repository.TagsRepository;
-import com.UCH.UAContentHub.Repository.UserRepository;
+import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
@@ -44,13 +38,16 @@ public class AuthController {
 
     @Autowired
     Profile_has_tagsRepository profileHasTagsRepository;
+    @Autowired
+    PostRepository postRepository;
+
     //додавання даних до бд
     private void initData() {
         List<User> users = new ArrayList<>();
         List<Profile> profiles = new ArrayList<>();
         List<Tags> tags = new ArrayList<>();
         List<Profile_has_tags> profileHasTagsList = new ArrayList<>();
-
+        List<Post> posts = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             User user = new User();
             user.setName("User" + i);
@@ -71,11 +68,17 @@ public class AuthController {
             profile.setDescription("Description for User" + i);
             profile.setRating(5);
 
+            Post newPost=new Post();
+            newPost.setPublishDate(LocalDateTime.now());
+            newPost.setContent("KFKFKFKFKKFKFKFKFKFKFKK"+i);
+            newPost.setProfile(profile);
+
             user.setProfile(profile);
             profile.setUser(user);
 
             users.add(user);
             profiles.add(profile);
+            posts.add(newPost);
         }
 
         for (int i = 1; i <= 5; i++) {
@@ -97,10 +100,11 @@ public class AuthController {
         userRepository.saveAll(users);
         tagsRepository.saveAll(tags);
         profileHasTagsRepository.saveAll(profileHasTagsList);
+        postRepository.saveAll(posts);
     }
     @GetMapping("/register")
     public String registerPage(Model model) {
-        //initData();
+        initData();
         model.addAttribute("title", "Реєстрація");
         return "register";
     }

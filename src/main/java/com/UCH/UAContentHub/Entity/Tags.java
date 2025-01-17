@@ -11,7 +11,7 @@ public class Tags {
     @Column(unique = true,name = "id")
     private int id;
 
-    @OneToMany(mappedBy = "tags")
+    @OneToMany(mappedBy = "tags", orphanRemoval = true)
     private Set<Profile_has_tags> phs;
 
     @Column(unique = true, nullable = false,name="name")

@@ -2,9 +2,7 @@ package com.UCH.UAContentHub.Entity;
 
 
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
-import com.UCH.UAContentHub.Entity.Enum.User_Status;
 import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.Set;
 
@@ -44,13 +42,13 @@ public class Profile {
     @Column(name="Subscribers_Count")
     private int SubscribersCount;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "profile")
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Profile_has_tags> phs;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Complaint> complaints;
 
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Пости</title>
+</head>
+<body>
+<a href="/profile">Перейти в профіль</a>
+<a href="/">Перейти на головну сторінку</a>
+<div th:if="${user.role != 'USER'}">
+    <a href="/posts/add">Створити пост</a>
+</div>
+<a href="/auth/logout">Вийти</a>
+
+<h1>Пости</h1>
+
+<div th:each="post : ${posts}">
+    <div>
+        <!-- <h3 th:text="${post.title}"></h3> додати ще атрибутів у пост, наприклад тема фотки-->
+        <p th:text="${post.content}"></p>
+        <p th:text="'Лайків: ' + ${post.likeCount}"></p>
+
+        <div>
+            <form th:action="@{/posts/like/{postId}(postId=${post.id})}" method="post"
+                  th:if="${user != null and postService != null and !(postService.isPostLikedByUser(post.id, user.id))}">
+                <button type="submit">Лайк</button>
+            </form>
+
+            <form th:action="@{/posts/unlike/{postId}(postId=${post.id})}" method="post"
+                  th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
+                <button type="submit">Убрать лайк</button>
+            </form>
+
+            <div th:if="${user.role != 'CREATOR'}">
+                <a th:href="@{/posts/edit/{postId}(postId=${post.id})}">Редагувати</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

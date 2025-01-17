@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Додати пост</title>
+</head>
+<body>
+<h1>Додати новий пост</h1>
+<a href="/profile">Перейти в профіль</a>
+<a href="/">Перейти на головну сторінку</a>
+<a href="/auth/logout">Вийти</a>
+<a href="/posts">Перейти до своїх постів</a>
+
+<h2>Створення нового посту</h2>
+<form th:action="@{/posts/add}" method="post">
+    <label for="content">Опис посту:</label>
+    <textarea id="content" name="content" required></textarea>
+    <button type="submit">Додати</button>
+</form>
+</body>
+</html>

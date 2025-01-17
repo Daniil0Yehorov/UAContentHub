@@ -16,5 +16,5 @@ public interface ProfileService {
     User updateU(User user);
     //додатково
     Profile getProfileByID(int id);
-    public boolean isSubscribed(Profile profile, User user);
+    boolean isSubscribed(Profile profile, User user);
 }

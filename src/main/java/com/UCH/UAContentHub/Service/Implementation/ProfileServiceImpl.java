@@ -110,10 +110,8 @@ public class ProfileServiceImpl implements ProfileService {
             throw new IllegalArgumentException("Профіль не знайден");
         }
 
-        User complainingUser = userRepository.findById(whoComplainedId);
-        if (complainingUser == null) {
-            throw new IllegalArgumentException("Користувач не знайден");
-        }
+        User complainingUser = userRepository.findById(whoComplainedId)
+                .orElseThrow(() -> new IllegalArgumentException("Користувач не знайден"));
 
         if (reason == null || reason.trim().isEmpty()) {
             throw new IllegalArgumentException("Причина не може бути порожньою");
@@ -133,15 +131,11 @@ public class ProfileServiceImpl implements ProfileService {
             throw new IllegalArgumentException("Креатор або підписник не можуть бути порожніми");
         }
 
-        User creator = userRepository.findById(profileToSubscribe.getUser().getId());
-        if (creator == null) {
-            throw new IllegalArgumentException("Креатор не знайден");
-        }
+        User creator = userRepository.findById(profileToSubscribe.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Креатор не знайден"));
 
-        User subscribingUser = userRepository.findById(subscriber.getId());
-        if (subscribingUser == null) {
-            throw new IllegalArgumentException("Підписник не знайден");
-        }
+        User subscribingUser = userRepository.findById(subscriber.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Підписник не знайден"));
 
         if (subcriptionRepository.findByCreator_IdAndUser_Id(creator.getId(), subscribingUser.getId()) != null) {
             throw new IllegalArgumentException("Вже підписан на креатора");
@@ -188,15 +182,11 @@ public class ProfileServiceImpl implements ProfileService {
             throw new IllegalArgumentException("Профіль або відписника не можуть бути нульовими");
         }
 
-        User creator = userRepository.findById(profileToUnsubscribe.getUser().getId());
-        if (creator == null) {
-            throw new IllegalArgumentException("Креатор не знайден");
-        }
+        User creator = userRepository.findById(profileToUnsubscribe.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Креатор не знайден"));
 
-        User unsubscribingUser = userRepository.findById(unsubscriber.getId());
-        if (unsubscribingUser == null) {
-            throw new IllegalArgumentException("відписник не знайден");
-        }
+        User unsubscribingUser = userRepository.findById(unsubscriber.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Відписник не знайден"));
 
         Subscription existingSubscription = subcriptionRepository.findByCreator_IdAndUser_Id(creator.getId(),
                 unsubscribingUser.getId());

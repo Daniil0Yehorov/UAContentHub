@@ -25,10 +25,10 @@ public class Post {
 
     private LocalDateTime publishDate;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likes;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Complaint> complaints;
 
     @Column(nullable = false,name = "Like_Count")
@@ -102,4 +102,5 @@ public class Post {
     }
 
     public Post(){}
+
 }
