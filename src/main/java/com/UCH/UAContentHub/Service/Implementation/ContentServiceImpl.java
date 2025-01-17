@@ -6,7 +6,6 @@ import com.UCH.UAContentHub.Repository.ProfileRepository;
 import com.UCH.UAContentHub.Repository.TagsRepository;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.UCH.UAContentHub.Entity.Profile;
 
@@ -19,10 +18,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ContentServiceImpl implements ContentService {
 
-    @Autowired
     private ProfileRepository profileRepository;
 
-    @Autowired
     private TagsRepository tagsRepository;
 
     public List<Profile> getConfirmedCreators() {

@@ -4,8 +4,9 @@ import com.UCH.UAContentHub.Entity.*;
 import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.PostService;
+import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,13 +15,13 @@ import java.util.List;
 @Service("postService")
 @AllArgsConstructor
 public class PostServiceImpl implements PostService {
-    @Autowired
+
     private PostRepository postRepository;
-    @Autowired
+
     private LikesRepository likesRepository;
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
+
     private СomplaintRepository complaintRepository;
 
     @Override
@@ -35,7 +36,7 @@ public class PostServiceImpl implements PostService {
     public Post updatePost(Post post) {
         Post updatedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Пост не знайден."));
-        if (post.getContent()==null){
+        if (StringUtils.isEmpty(post.getContent())) {
             throw new IllegalArgumentException("Опис посту не може бути порожнім");
         }
         updatedPost.setContent(post.getContent());
@@ -47,14 +48,9 @@ public class PostServiceImpl implements PostService {
     @Override
     //не працює
     public void deletePost(int postId) {
-
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Пост з айді не був знайден: " + postId));
-        if (post != null) {
-            postRepository.delete(post);
-        } else {
-            throw new IllegalArgumentException("Пост з айді не був знайден: " + postId);
-        }
+        postRepository.delete(post);
     }
 
     @Override
@@ -99,7 +95,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new IllegalArgumentException("Лайк з айді поста або  не знайден,: " + postId + " або юзера: " + userId));
 
         likesRepository.delete(like);
-        Post post = postRepository.findById(postId).orElseThrow();
+
     }
 
     @Override
@@ -111,9 +107,9 @@ public class PostServiceImpl implements PostService {
             User complainingUser = userRepository.findById(whoComplainedId)
                     .orElseThrow(() -> new IllegalArgumentException("Користувач не знайден"));
 
-            if (reason == null || reason.trim().isEmpty()) {
-                throw new IllegalArgumentException("Причина не може бути порожньою");
-            }
+        if (StringUtils.isEmpty(reason)) {
+            throw new IllegalArgumentException("Причина не може бути порожньою");
+        }
 
             Complaint newComplaint = new Complaint();
             newComplaint.setPost(reportedPost);

@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Некоректне посилання на YouTube");
         }
         profile.setUser(user);
-        user.setProfile(profile);
+       user.setProfile(profile);//мб убрать
 
         userRepository.save(user);
         prRepository.save(profile);

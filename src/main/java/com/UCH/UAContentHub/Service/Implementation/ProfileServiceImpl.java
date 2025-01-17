@@ -6,7 +6,6 @@ import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
@@ -14,21 +13,23 @@ import java.util.regex.Pattern;
 @Service
 @AllArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
+
+    private ProfileRepository profileRepository;
+
+    private UserRepository userRepository;
+
+    private Profile_has_tagsRepository PHSserviceRepository;
+
+    private TagsRepository tagsRepository;
+
+    private СomplaintRepository complaintRepository;
+
+    private SubscriptionRepository subcriptionRepository;
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
-    @Autowired
-    private ProfileRepository profileRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private Profile_has_tagsRepository PHSserviceRepository;
-    @Autowired
-    private TagsRepository tagsRepository;
-    @Autowired
-    private СomplaintRepository complaintRepository;
-    @Autowired
-    private SubscriptionRepository subcriptionRepository;
+
     //в теорії спрацює, але перевірити треба коли буде розроблен функціонал адміна
     @Override
     public void placeTagsForProfile(int profileId, String[] tags) {
