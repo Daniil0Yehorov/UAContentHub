@@ -9,7 +9,6 @@ import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +20,10 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
-    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);//логування задля пошуку коренів проблем
 
-    @Autowired
     private final HttpSession session;
-    @Autowired
-    private PostService postService;
-    @Autowired
-    private ProfileService profileService;
+    private  final PostService postService;
 
     @GetMapping
     public String postsPage(@RequestParam(required = false) String filter, Model model) {
@@ -51,6 +46,7 @@ public class PostController {
 
         model.addAttribute("posts", posts);
         model.addAttribute("user", currentUser);
+        model.addAttribute("postService", postService);
         return "posts";
     }
 
@@ -71,6 +67,7 @@ public class PostController {
         }
         return "redirect:/posts";
     }
+
     //не реалізовано поки
     @PostMapping("/report/{postId}")
     public String reportPost(@PathVariable int postId, @RequestParam String reason) {
@@ -105,6 +102,7 @@ public class PostController {
        model.addAttribute("post", post);
        return "editPost";
    }
+
     @PostMapping("/add")
     public String addPost(@RequestParam String content) {
         User currentUser = session.getUser();
@@ -120,6 +118,7 @@ public class PostController {
 
         return "redirect:/posts";
     }
+
     @PostMapping("/update/{postId}")
     public String updatePost(@PathVariable int postId, @RequestParam String content) {
         User currentUser = session.getUser();
@@ -135,7 +134,7 @@ public class PostController {
 
         return "redirect:/posts";
     }
-    //не працює
+
     @PostMapping("/delete/{postId}")
     public String deletePost(@PathVariable int postId) {
         User currentUser = session.getUser();

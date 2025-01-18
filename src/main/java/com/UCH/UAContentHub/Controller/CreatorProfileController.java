@@ -7,7 +7,6 @@ import com.UCH.UAContentHub.Service.Interface.ContentService;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @AllArgsConstructor
 @RequestMapping("/creator")
 public class CreatorProfileController {
-    @Autowired
+
     private final HttpSession session;
-    @Autowired
-    private ProfileService profileService;
-    @Autowired
-    private ContentService contentService;
+
+    private final ProfileService profileService;
+    private final ContentService contentService;
 
     @GetMapping("/{id}")
     public String creatorProfile(@PathVariable int id, Model model) {

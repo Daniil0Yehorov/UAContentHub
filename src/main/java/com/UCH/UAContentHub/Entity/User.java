@@ -9,22 +9,26 @@ import java.util.List;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 
 @Entity
+@Table(name = "User", uniqueConstraints = {
+        @UniqueConstraint(name = "Email", columnNames = "Email"),
+        @UniqueConstraint(name = "login_UNIQUE", columnNames = "login")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true,name = "id")
     private int id;
 
-    @Column(unique = true, nullable = false,name = "login")
+    @Column(unique = true, nullable = false,name = "login", length = 255)
     private String login;
 
-    @Column(nullable = false,name = "Password")
+    @Column(nullable = false,name = "Password", length = 255)
     private String Password;
 
-    @Column(unique = true, nullable = false,name = "Name")
+    @Column(unique = true, nullable = false,name = "Name", length = 255)
     private String Name;
 
-    @Column(unique = true, nullable = false,name = "Email")
+    @Column(unique = true, nullable = false,name = "Email", length = 255)
     private String Email;
 
     @Enumerated(EnumType.STRING)
@@ -50,8 +54,7 @@ public class User {
     private List<Likes> likes;
 
     @Enumerated(EnumType.STRING)
-    //@Column(nullable = false,columnDefinition = "default 'ACTIVE'")
-    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'ACTIVE'")
+    @Column(name = "Status", nullable = false, columnDefinition = "ENUM('ACTIVE', 'BANNED') DEFAULT 'ACTIVE'")
     private User_Status Status;
 
 

@@ -7,11 +7,9 @@ import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +19,15 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    private AuthService authService;
 
-    @Autowired
+    private final AuthService authService;
+
     private final HttpSession session;
 
-    @Autowired
     UserRepository userRepository;
-
-    @Autowired
     ProfileRepository profileRepository;
-
-    @Autowired
     TagsRepository tagsRepository;
-
-    @Autowired
     Profile_has_tagsRepository profileHasTagsRepository;
-    @Autowired
     PostRepository postRepository;
 
     //додавання даних до бд

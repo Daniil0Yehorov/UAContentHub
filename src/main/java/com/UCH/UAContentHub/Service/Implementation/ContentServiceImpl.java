@@ -8,8 +8,6 @@ import com.UCH.UAContentHub.Service.Interface.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.UCH.UAContentHub.Entity.Profile;
-
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

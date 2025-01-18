@@ -5,7 +5,6 @@ import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +18,9 @@ import java.util.Set;
 @AllArgsConstructor
 @RequestMapping("/")
 public class MainController {
-    @Autowired
+
     private final HttpSession session;
-    @Autowired
+
     private ContentService contentService;
 
     @GetMapping("")

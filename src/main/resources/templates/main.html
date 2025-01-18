@@ -16,7 +16,7 @@
     <div th:if="${user.role.name() == 'CREATOR'}">
         <a href="/posts">Перейти до своїх постів</a>
     </div>
-    <div th:if="${user.role.name() == 'User'}">
+    <div th:if="${user.role.name() == 'USER'}">
         <a href="/posts">Перейти до лєнти постів</a>
     </div>
     <div th:if="${user.role.name() == 'CREATOR'}">

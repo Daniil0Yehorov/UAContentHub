@@ -3,11 +3,9 @@ package com.UCH.UAContentHub.Controller;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.User;
-import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AllArgsConstructor
 @RequestMapping("/profile")
 public class ProfileController {
-    @Autowired
+
     private final HttpSession session;
-    @Autowired
+
     private ProfileService profileService;
 
     @GetMapping("")

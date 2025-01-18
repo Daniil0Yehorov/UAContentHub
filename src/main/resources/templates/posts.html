@@ -6,11 +6,20 @@
 <body>
 <a href="/profile">Перейти в профіль</a>
 <a href="/">Перейти на головну сторінку</a>
-<div th:if="${user.role != 'USER'}">
+<div th:if="${user.role.name() != 'USER'}">
     <a href="/posts/add">Створити пост</a>
 </div>
 <a href="/auth/logout">Вийти</a>
-
+<div th:if="${user.role.name() != 'CREATOR'}">
+<form method="get" th:action="@{/posts}">
+    <label for="filter">Фільтр:</label>
+    <select id="filter" name="filter">
+        <option value="" th:selected="${filter == null}">Усі пости різних креаторів</option>
+        <option value="subscribed" th:selected="${filter == 'subscribed'}">Пости креаторів на які ви підписані</option>
+    </select>
+    <button type="submit">Фільтрувати</button>
+</form>
+</div>
 <h1>Пости</h1>
 
 <div th:each="post : ${posts}">
@@ -18,19 +27,20 @@
         <!-- <h3 th:text="${post.title}"></h3> додати ще атрибутів у пост, наприклад тема фотки-->
         <p th:text="${post.content}"></p>
         <p th:text="'Лайків: ' + ${post.likeCount}"></p>
-
         <div>
-            <form th:action="@{/posts/like/{postId}(postId=${post.id})}" method="post"
-                  th:if="${user != null and postService != null and !(postService.isPostLikedByUser(post.id, user.id))}">
-                <button type="submit">Лайк</button>
-            </form>
+            <p>Автор: <a th:href="@{/creator/{id}(id=${post.profile.user.id})}" th:text="${post.profile.user.name}"></a></p>
+            <div th:if="${user.role.name() != 'CREATOR'}">
+                <form th:action="@{/posts/like/{postId}(postId=${post.id})}" method="post"
+                    th:if="${user != null and postService != null and !(postService.isPostLikedByUser(post.id, user.id))}">
+                    <button type="submit">Лайк</button>
+             </form>
 
-            <form th:action="@{/posts/unlike/{postId}(postId=${post.id})}" method="post"
-                  th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
-                <button type="submit">Убрать лайк</button>
-            </form>
-
-            <div th:if="${user.role != 'CREATOR'}">
+                <form th:action="@{/posts/unlike/{postId}(postId=${post.id})}" method="post"
+                      th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
+                 <button type="submit">Прибрати лайк</button>
+                </form>
+            </div>
+            <div th:if="${user.role.name() != 'USER'}">
                 <a th:href="@{/posts/edit/{postId}(postId=${post.id})}">Редагувати</a>
             </div>
         </div>
