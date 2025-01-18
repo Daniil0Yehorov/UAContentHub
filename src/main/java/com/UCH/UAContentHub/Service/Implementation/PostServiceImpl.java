@@ -5,6 +5,7 @@ import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.PostService;
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -48,9 +49,9 @@ public class PostServiceImpl implements PostService {
     @Override
     //не працює
     public void deletePost(int postId) {
-        Post post = postRepository.findById(postId)
+        postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Пост з айді не був знайден: " + postId));
-        postRepository.delete(post);
+        postRepository.deletePostById(postId);
     }
 
     @Override

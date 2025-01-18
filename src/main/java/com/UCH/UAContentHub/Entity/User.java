@@ -50,7 +50,8 @@ public class User {
     private List<Likes> likes;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false,columnDefinition = "default 'ACTIVE'")
+    //@Column(nullable = false,columnDefinition = "default 'ACTIVE'")
+    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'ACTIVE'")
     private User_Status Status;
 
 
