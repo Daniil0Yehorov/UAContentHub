@@ -10,8 +10,8 @@ import org.springframework.web.context.annotation.SessionScope;
 @Component
 @SessionScope
 public class HttpSession {
-    @Getter
-    @Setter
+    @Getter//повторка
+    @Setter//повторка
     private User user;
    // private Profile profile; може додати потім
     public boolean isPresent() {

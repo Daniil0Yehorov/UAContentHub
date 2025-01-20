@@ -68,7 +68,6 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    //не реалізовано поки
     @PostMapping("/report/{postId}")
     public String reportPost(@PathVariable int postId, @RequestParam String reason) {
         User currentUser = session.getUser();

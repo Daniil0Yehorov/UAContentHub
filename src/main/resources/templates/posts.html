@@ -39,6 +39,14 @@
                       th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
                  <button type="submit">Прибрати лайк</button>
                 </form>
+                <details>
+                    <summary>Поскаржитися</summary>
+                    <form th:action="@{/posts/report/{postId}(postId=${post.id})}" method="post">
+                        <label for="reason">Причина:</label>
+                        <textarea id="reason" name="reason" rows="3" required></textarea>
+                        <button type="submit">Відправити скаргу</button>
+                    </form>
+                </details>
             </div>
             <div th:if="${user.role.name() != 'USER'}">
                 <a th:href="@{/posts/edit/{postId}(postId=${post.id})}">Редагувати</a>
