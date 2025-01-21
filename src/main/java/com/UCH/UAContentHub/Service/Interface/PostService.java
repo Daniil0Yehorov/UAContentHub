@@ -24,5 +24,6 @@ public interface PostService {
     void reportPost(int postid,int whoComplainedId,String reason);
     Post getPostById(int postid);
     //получення постів креатора
-    List<Post> getPostsByUser(int userId);
+    //List<Post> getPostsByUser(int userId);
+    List<Post> getPostsByUserSortedByDate(int userId);
 }

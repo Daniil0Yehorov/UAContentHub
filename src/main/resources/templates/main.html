@@ -31,13 +31,17 @@
 </div>
 
 <form action="/filter" method="get">
-    <label for="tags">Теги:</label>
-    <input type="text" id="tags" name="tags" placeholder="Введите теги через запятую">
+    <label>Теги:</label>
+    <div th:each="tag : ${tags}">
+        <input type="checkbox" th:id="'tag-' + ${tag.name}" th:name="tags" th:value="${tag.name}"
+               th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">
+        <label th:for="'tag-' + ${tag.name}" th:text="${tag.name}"></label>
+    </div>
 
-    <label for="minRating">Мінімальный рейтинг:</label>
+    <label for="minRating">Мінімальний рейтинг:</label>
     <input type="number" id="minRating" name="minRating" value="1" min="1" max="5">
 
-    <label for="maxRating">Максимальный рейтинг:</label>
+    <label for="maxRating">Максимальний рейтинг:</label>
     <input type="number" id="maxRating" name="maxRating" value="5" min="1" max="5">
 
     <button type="submit">Фільтрувати</button>

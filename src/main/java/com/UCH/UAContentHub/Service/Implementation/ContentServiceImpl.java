@@ -19,11 +19,11 @@ public class ContentServiceImpl implements ContentService {
     private ProfileRepository profileRepository;
 
     private TagsRepository tagsRepository;
-
+    @Override
     public List<Profile> getConfirmedCreators() {
         return profileRepository.findByStatus(CreatorProfileStatus.CONFIRMED);
     }
-
+    @Override
     public List<Profile> filterByTagsAndRating(Set<String> tagNames, int minRating, int maxRating) {
         List<Tags> tags = tagsRepository.findByNameIn(tagNames);
 
@@ -36,8 +36,14 @@ public class ContentServiceImpl implements ContentService {
                 })
                 .collect(Collectors.toList());
     }
-
+    @Override
     public Profile getProfileById(int id) {
         return profileRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Tags> getAllTags() {
+        return tagsRepository.findAll();
+    }
+
 }

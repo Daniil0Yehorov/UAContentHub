@@ -13,8 +13,10 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post,Integer> {
     @Query("SELECT p FROM Post p WHERE p.profile.user.id IN (SELECT s.creator.id FROM Subscription s WHERE s.user.id = :userId) ORDER BY p.publishDate DESC")
-    List<Post> findBySubscribedCreatorsOrderByPublishDateDesc(@Param("userId") int userId);;
-    List<Post> findByProfileUserId(int userId);
+    List<Post> findBySubscribedCreatorsOrderByPublishDateDesc(@Param("userId") int userId);
+    @Query("SELECT p FROM Post p WHERE p.profile.user.id = :userId ORDER BY p.publishDate DESC")
+    List<Post> findPostsByUserOrderByPublishDateDesc(@Param("userId") int userId);
+   // List<Post> findByProfileUserId(int userId);
     @Transactional
     @Modifying
     @Query("DELETE FROM Post p WHERE p.id = :id")

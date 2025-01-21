@@ -118,11 +118,17 @@ public class PostServiceImpl implements PostService {
     public boolean isPostLikedByUser(int postId, int userId) {
         return likesRepository.existsByPostIdAndUserId(postId, userId);
     }
+    @Override
     public   Post getPostById(int postid){
         return postRepository.findById(postid).orElseThrow(()
                 -> new IllegalArgumentException("Пост не знайден з айді: " + postid));
     }
+    /*@Override
     public List<Post> getPostsByUser(int userId) {
         return postRepository.findByProfileUserId(userId);
+    }*/
+    @Override
+    public List<Post> getPostsByUserSortedByDate(int userId) {
+        return postRepository.findPostsByUserOrderByPublishDateDesc(userId);
     }
 }

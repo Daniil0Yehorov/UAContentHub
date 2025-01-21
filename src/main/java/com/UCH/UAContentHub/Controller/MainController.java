@@ -1,5 +1,6 @@
 package com.UCH.UAContentHub.Controller;
 
+import com.UCH.UAContentHub.Entity.Tags;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
@@ -28,9 +29,10 @@ public class MainController {
         User user = session.getUser();
 
         List<Profile> confirmedCreators = contentService.getConfirmedCreators();
+        List <Tags> tags = contentService.getAllTags();
         model.addAttribute("user", user);
         model.addAttribute("creators", confirmedCreators);
-
+        model.addAttribute("tags", tags);
         return "main";
     }
 
@@ -42,10 +44,13 @@ public class MainController {
             @RequestParam(defaultValue = "1") int minRating,
             @RequestParam(defaultValue = "5") int maxRating,
             Model model) {
-
+        if (tags == null) {
+            tags = Set.of();
+        }
         List<Profile> filteredCreators = contentService.filterByTagsAndRating(tags, minRating, maxRating);
         model.addAttribute("creators", filteredCreators);
-
+        model.addAttribute("tags", contentService.getAllTags());
+        model.addAttribute("selectedTags", tags);
         return "main";
     }
 
