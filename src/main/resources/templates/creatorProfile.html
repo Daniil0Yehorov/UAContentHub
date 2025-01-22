@@ -14,7 +14,7 @@
 <div th:if="${param.message}" style="color: green;">
     <p th:text="${param.message}"></p>
 </div>
-
+<img th:src="${profile.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}" alt="Avatar" style="max-width: 200px; max-height: 200px;">
 <p>Ім'я: <span th:text="${profile.user.name}"></span></p>
 <p>Опис: <span th:text="${profile.description}"></span></p>
 <p>Рейтинг: <span th:text="${profile.rating}"></span></p>

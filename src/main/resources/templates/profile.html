@@ -21,6 +21,7 @@
 <p>Роль у системі: <span th:text="${user.role}"></span></p>
 <div th:if="${user.role.name() == 'CREATOR'}">
     <h2>Профіль контент-креатора</h2>
+    <img th:src="${user.profile.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}" alt="Avatar" style="max-width: 200px; max-height: 200px;">
     <p>Опис: <span th:text="${user.profile.description}"></span></p>
     <p>TikTok: <span th:text="${user.profile.tiktok} ?: 'Не вказано'"></span></p>
     <p>Instagram: <span th:text="${user.profile.instagram} ?: 'Не вказано'"></span></p>
@@ -29,7 +30,7 @@
     <p>Subscribers: <span th:text="${user.profile.subscribersCount} ?: 'Не вказано'"></span></p>
     <p>Rating: <span th:text="${user.profile.rating} ?: 'Не вказано'"></span></p>
 </div>
-<form action="/profile/update" method="post">
+<form action="/profile/update" method="post" enctype="multipart/form-data">
     <input type="text" name="email" placeholder="Новий Email">
     <input type="text" name="login" placeholder="Новий логін">
     <input type="password" name="password" placeholder="Новий пароль">
@@ -40,6 +41,8 @@
         <input type="text" name="instagram" placeholder="Instagram">
         <input type="text" name="twitch" placeholder="Twitch">
         <input type="text" name="youtube" placeholder="YouTube">
+        <label>Аватар:</label>
+        <input type="file" id="avatar" name="avatar" accept="image/*">
     </div>
     <button type="submit">Оновити</button>
 </form>

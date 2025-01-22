@@ -8,7 +8,7 @@
 
 <h1>Register</h1>
 
-<form action="/auth/register" method="post">
+<form action="/auth/register" method="post" enctype="multipart/form-data">
     <label for="login">Login:</label>
     <input type="text" id="login" name="login" required><br>
 
@@ -44,6 +44,8 @@
 
         <label for="youtube">YouTube:</label>
         <input type="text" id="youtube" name="youtube"><br>
+        <label for="avatar">Avatar:</label>
+        <input type="file" id="avatar" name="avatar" accept="image/*"><br>
     </div>
 
     <button type="submit">Register</button>

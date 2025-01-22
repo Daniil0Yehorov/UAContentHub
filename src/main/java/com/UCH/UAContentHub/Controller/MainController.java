@@ -36,7 +36,6 @@ public class MainController {
         return "main";
     }
 
-    //мб додати окрему фільтрацію за певними параметрами;
     //ТРАБЛ якщо людину тільки верифікували, то в неї не буде рейтинга
     @GetMapping("/filter")
     public String filterCreators(

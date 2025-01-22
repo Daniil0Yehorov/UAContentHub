@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "Profile", uniqueConstraints = {
+        @UniqueConstraint(name = "AvatarURL_UNIQUE", columnNames = "AvatarURL")
+})
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +27,7 @@ public class Profile {
     @Column( name = "Status",nullable = false)
     private CreatorProfileStatus status;
 
+    @Column(nullable = false)
     private String AvatarURL;
 
     @Column( length = 65535)
@@ -50,9 +54,7 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Complaint> complaints;
-
-
-
+    
     public CreatorProfileStatus getStatus() {
         return status;
     }

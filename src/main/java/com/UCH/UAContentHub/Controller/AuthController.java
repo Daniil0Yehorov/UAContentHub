@@ -10,9 +10,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 @Controller
@@ -29,6 +34,8 @@ public class AuthController {
     TagsRepository tagsRepository;
     Profile_has_tagsRepository profileHasTagsRepository;
     PostRepository postRepository;
+
+    private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
 
     //додавання даних до бд
     private void initData() {
@@ -53,9 +60,11 @@ public class AuthController {
             profile.setInstagram("https://instagram.com/user" + i);
             profile.setTwitch("https://twitch.tv/user" + i);
             profile.setYoutube("https://youtube.com/user" + i);
-            profile.setAvatarURL("https://example.com/avatar" + i + ".png");
+            profile.setAvatarURL("/avatars/"+"User" + i + "Login"+".jpg");
             profile.setDescription("Description for User" + i);
-            profile.setRating(5);
+
+            int randomRating = ThreadLocalRandom.current().nextInt(1, 6);
+            profile.setRating(randomRating);
 
             Post newPost=new Post();
             newPost.setPublishDate(LocalDateTime.now());
@@ -109,6 +118,7 @@ public class AuthController {
                            @RequestParam(value = "instagram", required = false) String instagram,
                            @RequestParam(value = "twitch", required = false) String twitch,
                            @RequestParam(value = "youtube", required = false) String youtube,
+                           @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                            Model model) {
         try {
             Role role = Role.valueOf(roleStr);
@@ -129,7 +139,32 @@ public class AuthController {
                 if (instagram != null) { profile.setInstagram(instagram); }
                 if (twitch != null) { profile.setTwitch(twitch); }
                 if (youtube != null) { profile.setYoutube(youtube); }
+                if (avatar != null && !avatar.isEmpty()) {
+                    try {
+                        String originalFilename = avatar.getOriginalFilename();
+                        String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
 
+                        if (extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg") || extension.equalsIgnoreCase(".png")) {
+                            Path uploadPath = Paths.get(UPLOADED_FOLDER);
+
+                            if (!Files.exists(uploadPath)) {
+                                Files.createDirectories(uploadPath);
+                            }
+
+                            String avatarFileName = user.getLogin() + extension;
+                            Path filePath = uploadPath.resolve(avatarFileName);
+                            Files.write(filePath, avatar.getBytes());
+
+                            profile.setAvatarURL("/avatars/" + avatarFileName);
+                        } else {
+                            model.addAttribute("error", "Невірний формат файлу. Підтримуються лише .jpg, .jpeg, .png");
+                            return "register";
+                        }
+                    } catch (Exception e) {
+                        model.addAttribute("error", "Помилка при завантаженні аватара: " + e.getMessage());
+                        return "register";
+                    }
+                }
                 if (description == null || description.isEmpty()) {
                     model.addAttribute("error", "Опис не може бути порожнім");
                     return "register";

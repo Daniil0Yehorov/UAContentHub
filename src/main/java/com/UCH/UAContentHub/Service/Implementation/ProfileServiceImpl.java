@@ -61,9 +61,6 @@ public class ProfileServiceImpl implements ProfileService {
             throw new IllegalArgumentException("Опис не може бути порожнім");
         }
 
-        if (!isValidUrl(updatedProfile.getAvatarURL())) {
-            throw new IllegalArgumentException("Avatar URL не валідний");
-        }
         if (!isValidUrl(updatedProfile.getTiktok())) {
             throw new IllegalArgumentException("не валідний TikTok URL");
         }
