@@ -1,6 +1,7 @@
 package com.UCH.UAContentHub.Controller;
 import com.UCH.UAContentHub.Entity.*;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
+import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Enum.User_Status;
 import com.UCH.UAContentHub.Repository.*;
@@ -34,16 +35,21 @@ public class AuthController {
     TagsRepository tagsRepository;
     Profile_has_tagsRepository profileHasTagsRepository;
     PostRepository postRepository;
-
+    ReviewRepository reviewRepository;
+    SubscriptionRepository subscriptionRepository;
     private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
 
     //додавання даних до бд
     private void initData() {
-        List<User> users = new ArrayList<>();
+        List<User> creators = new ArrayList<>();
+        List <User> usersWithReviews=new ArrayList<>();
         List<Profile> profiles = new ArrayList<>();
         List<Tags> tags = new ArrayList<>();
         List<Profile_has_tags> profileHasTagsList = new ArrayList<>();
         List<Post> posts = new ArrayList<>();
+        List<Review> reviews = new ArrayList<>();
+        List<Subscription> subscriptions = new ArrayList<>();
+
         for (int i = 1; i <= 5; i++) {
             User user = new User();
             user.setName("User" + i);
@@ -63,9 +69,6 @@ public class AuthController {
             profile.setAvatarURL("/avatars/"+"User" + i + "Login"+".jpg");
             profile.setDescription("Description for User" + i);
 
-            int randomRating = ThreadLocalRandom.current().nextInt(1, 6);
-            profile.setRating(randomRating);
-
             Post newPost=new Post();
             newPost.setPublishDate(LocalDateTime.now());
             newPost.setContent("KFKFKFKFKKFKFKFKFKFKFKK"+i);
@@ -74,11 +77,22 @@ public class AuthController {
             user.setProfile(profile);
             profile.setUser(user);
 
-            users.add(user);
+            creators.add(user);
             profiles.add(profile);
             posts.add(newPost);
         }
+        for (int i = 1; i <= 7; i++) {
+            User user = new User();
+            user.setName("User" + i +"USER"+ i);
+            user.setLogin("User"  + "Login"+ i);
+            user.setPassword("UserPassword" + i);
+            user.setEmail(i+"User" + i + "@example.com");
+            user.setStatus(User_Status.ACTIVE);
+            user.setRole(Role.USER);
+            user.setRegistrationDate(LocalDateTime.now());
 
+            usersWithReviews.add(user);
+        }
         for (int i = 1; i <= 5; i++) {
             Tags tag = new Tags();
             tag.setName("Tag" + i);
@@ -94,11 +108,34 @@ public class AuthController {
                 profileHasTagsList.add(profileHasTags);
             }
         }
+        for (User user : usersWithReviews) {
+            for (User creator : creators) {
+                Review review = new Review();
+                review.setUser(user);
+                review.setCreator(creator);
+                review.setText("Review from " + user.getName() + " to " + creator.getName());
+                review.setRating(ThreadLocalRandom.current().nextInt(1, 6));
+                review.setReviewDate(LocalDateTime.now());
+                review.setStatus(ReviewStatus.PENDING);
 
-        userRepository.saveAll(users);
+                reviews.add(review);
+
+                Subscription subscription = new Subscription();
+                subscription.setUser(user);
+                subscription.setCreator(creator);
+                subscription.setSubscriptionDate(LocalDateTime.now());
+                subscriptions.add(subscription);
+            }
+        }
+
+        userRepository.saveAll(creators);
+        userRepository.saveAll(usersWithReviews);
         tagsRepository.saveAll(tags);
         profileHasTagsRepository.saveAll(profileHasTagsList);
         postRepository.saveAll(posts);
+        reviewRepository.saveAll(reviews);
+        subscriptionRepository.saveAll(subscriptions);
+        //зміна статусу ревью у бд скриптах
     }
     @GetMapping("/register")
     public String registerPage(Model model) {

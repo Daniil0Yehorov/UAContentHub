@@ -35,7 +35,6 @@ public class PostController {
 
         List<Post> posts;
         if (currentUser.getRole() == Role.CREATOR) {
-           // posts = postService.getPostsByUser(currentUser.getId());
             posts = postService.getPostsByUserSortedByDate(currentUser.getId());
         } else {
             if ("subscribed".equals(filter)) {

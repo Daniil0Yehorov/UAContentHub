@@ -20,7 +20,7 @@ public class Review {
     @JoinColumn(name = "CreatorID", nullable = false)
     private User creator;
 
-    @Column(unique = true, length = 65535)
+    @Column(length = 65535)
     private String Text;
 
     @Column(nullable = false)

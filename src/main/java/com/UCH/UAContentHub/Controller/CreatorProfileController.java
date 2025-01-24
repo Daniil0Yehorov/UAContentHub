@@ -1,10 +1,13 @@
 package com.UCH.UAContentHub.Controller;
 
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
+import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
 import com.UCH.UAContentHub.Entity.Profile;
+import com.UCH.UAContentHub.Entity.Review;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Service.Interface.ContentService;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
+import com.UCH.UAContentHub.Service.Interface.ReviewService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,7 @@ public class CreatorProfileController {
 
     private final ProfileService profileService;
     private final ContentService contentService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{id}")
     public String creatorProfile(@PathVariable int id, Model model) {
@@ -38,10 +42,12 @@ public class CreatorProfileController {
 
         User currentUser = session.getUser();
         boolean isSubscribed = profileService.isSubscribed(creatorProfile, currentUser);
+        Review userReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
 
         model.addAttribute("profile", creatorProfile);
         model.addAttribute("user", currentUser);
         model.addAttribute("isSubscribed", isSubscribed);
+        model.addAttribute("userReview", userReview);
         return "creatorProfile";
     }
     @GetMapping("/{id}/subscribe")
@@ -103,5 +109,55 @@ public class CreatorProfileController {
         model.addAttribute("profile", creatorProfile);
         model.addAttribute("user", currentUser);
         return "redirect:/creator/" + userId;
+    }
+    @PostMapping("/{creatorId}/review")
+    public String addReview(@PathVariable int creatorId,
+                            @RequestParam String text,
+                            @RequestParam int rating,
+                            Model model) {
+
+        if (!session.isPresent()) {
+            return "redirect:/auth/login";
+        }
+
+        User currentUser = session.getUser();
+        Profile creatorProfile = profileService.getProfileByID(creatorId);
+
+        if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
+            return "redirect:/";
+        }
+        Review existingReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
+        if (existingReview != null && existingReview.getStatus() != ReviewStatus.NOT_APPROVED) {
+            model.addAttribute("error", "Ви вже залишили відгук цьому креатору, але він не має статусу 'NOT_APPROVED'.");
+            return "redirect:/creator/" + creatorId;
+        }
+        try {
+            Review review = new Review();
+            review.setText(text);
+            review.setRating(rating);
+            review.setUser(currentUser);
+            review.setCreator(creatorProfile.getUser());
+            reviewService.createReview(review);
+            model.addAttribute("message", "Відгук успішно додано!");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/creator/" + creatorId;
+    }
+    @PostMapping("/{creatorId}/review/delete")
+    public String deleteReview(@PathVariable int creatorId, @RequestParam int reviewId, Model model) {
+        if (!session.isPresent()) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            reviewService.deleteReview(reviewId);
+            model.addAttribute("message", "Відгук успішно видалено.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/creator/" + creatorId;
     }
 }

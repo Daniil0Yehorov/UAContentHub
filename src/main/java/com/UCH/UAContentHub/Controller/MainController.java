@@ -43,6 +43,7 @@ public class MainController {
             @RequestParam(defaultValue = "1") int minRating,
             @RequestParam(defaultValue = "5") int maxRating,
             Model model) {
+        User user = session.getUser();
         if (tags == null) {
             tags = Set.of();
         }
@@ -50,6 +51,7 @@ public class MainController {
         model.addAttribute("creators", filteredCreators);
         model.addAttribute("tags", contentService.getAllTags());
         model.addAttribute("selectedTags", tags);
+        model.addAttribute("user", user);
         return "main";
     }
 

@@ -41,8 +41,9 @@ public class Profile {
 
     @Column( length = 65535)
     private String Youtube;
-    @Column( name = "Rating")
-    private int rating;
+    @Column(name = "Rating")
+    private float rating;
+
     @Column(name="Subscribers_Count")
     private int SubscribersCount;
 
@@ -135,11 +136,9 @@ public class Profile {
         this.SubscribersCount = subscribersCount;
     }
 
-    public int getRating() {
-        return rating;
-    }
+    public float getRating() {return rating;}
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {  // Изменено на float
         this.rating = rating;
     }
 
@@ -166,7 +165,6 @@ public class Profile {
     public void setComplaints(List<Complaint> complaints) {
         this.complaints = complaints;
     }
-
 
     public Profile(){}
 }
