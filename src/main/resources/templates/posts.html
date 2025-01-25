@@ -2,6 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Пости</title>
+    <style>
+        .post-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .images-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .images-grid img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
 <a href="/profile">Перейти в профіль</a>
@@ -27,6 +48,12 @@
         <!-- <h3 th:text="${post.title}"></h3> додати ще атрибутів у пост, наприклад тема фотки-->
         <p th:text="${post.content}"></p>
         <p th:text="'Лайків: ' + ${post.likeCount}"></p>
+        <div th:if="${post.phi != null}">
+            <h4>Фотографії:</h4>
+            <div class="images-grid">
+                <img th:each="phi : ${post.phi}" th:src="${phi.image.src}" alt="Image for post">
+            </div>
+        </div>
         <div>
             <p>Автор: <a th:href="@{/creator/{id}(id=${post.profile.user.id})}" th:text="${post.profile.user.name}"></a></p>
             <div th:if="${user.role.name() != 'CREATOR'}">

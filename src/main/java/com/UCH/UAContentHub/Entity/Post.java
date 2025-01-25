@@ -3,9 +3,9 @@ package com.UCH.UAContentHub.Entity;
 
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Post {
@@ -37,6 +37,9 @@ public class Post {
     public int getId() {
         return id;
     }
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Post_has_Image> phi;
 
     public void setId(int id) {
         this.id = id;
@@ -99,6 +102,14 @@ public class Post {
         this.likeCount = likeCount;
         this.likes = likes;
         this.complaints = complaints;
+    }
+
+    public Set<Post_has_Image> getPhi() {
+        return phi;
+    }
+
+    public void setPhi(Set<Post_has_Image> phi) {
+        this.phi = phi;
     }
 
     public Post(){}

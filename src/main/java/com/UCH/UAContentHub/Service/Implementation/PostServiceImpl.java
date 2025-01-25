@@ -7,6 +7,12 @@ import com.UCH.UAContentHub.Service.Interface.PostService;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,19 +21,20 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
-
     private LikesRepository likesRepository;
-
     private UserRepository userRepository;
-
     private СomplaintRepository complaintRepository;
+    private ImageRepository imageRepository;
+    private Post_has_ImageRepository post_has_ImageRepository;
+
+    private static String srcPhotos = "src/main/resources/static/postPhotos/";
 
     @Override
-    public Post CreatePost(Post post) {
-        if (post.getContent()==null){
+    public void CreatePost(Post post) {
+        if (post.getContent() == null) {
             throw new IllegalArgumentException("Опис посту не може бути порожнім");
         }
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     @Override
@@ -47,6 +54,20 @@ public class PostServiceImpl implements PostService {
     public void deletePost(int postId) {
         postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Пост з айді не був знайден: " + postId));
+        List<Post_has_Image> postImages = post_has_ImageRepository.findByPostId(postId);
+        if (postImages != null && !postImages.isEmpty()) {
+        for (Post_has_Image postImage : postImages) {
+            String imagePath = srcPhotos + postImage.getImage().getSrc().replace("/postPhotos/",
+                    "");
+            try {
+                Files.deleteIfExists(Paths.get(imagePath));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Не вдалося видалити файл: " + imagePath, e);
+            }
+            imageRepository.delete(postImage.getImage());
+        }
+        post_has_ImageRepository.deleteAll(postImages);
+        }
         postRepository.deletePostById(postId);
     }
 
@@ -98,37 +119,92 @@ public class PostServiceImpl implements PostService {
     @Override
     public void reportPost(int postid, int whoComplainedId, String reason) {
 
-            Post reportedPost = postRepository.findById(postid).orElseThrow(()
-        -> new IllegalArgumentException("пост  не знайден,: " + postid));
+        Post reportedPost = postRepository.findById(postid).orElseThrow(()
+                -> new IllegalArgumentException("пост  не знайден,: " + postid));
 
-            User complainingUser = userRepository.findById(whoComplainedId)
-                    .orElseThrow(() -> new IllegalArgumentException("Користувач не знайден"));
+        User complainingUser = userRepository.findById(whoComplainedId)
+                .orElseThrow(() -> new IllegalArgumentException("Користувач не знайден"));
 
         if (StringUtils.isEmpty(reason)) {
             throw new IllegalArgumentException("Причина не може бути порожньою");
         }
 
-            Complaint newComplaint = new Complaint();
-            newComplaint.setPost(reportedPost);
-            newComplaint.setUser(complainingUser);
-            newComplaint.setReason(reason);
-            newComplaint.setStatus(ComplaintStatus.PENDING);
-            complaintRepository.save(newComplaint);
+        Complaint newComplaint = new Complaint();
+        newComplaint.setPost(reportedPost);
+        newComplaint.setUser(complainingUser);
+        newComplaint.setReason(reason);
+        newComplaint.setStatus(ComplaintStatus.PENDING);
+        complaintRepository.save(newComplaint);
     }
+
     public boolean isPostLikedByUser(int postId, int userId) {
         return likesRepository.existsByPostIdAndUserId(postId, userId);
     }
+
     @Override
-    public   Post getPostById(int postid){
+    public Post getPostById(int postid) {
         return postRepository.findById(postid).orElseThrow(()
                 -> new IllegalArgumentException("Пост не знайден з айді: " + postid));
     }
-    /*@Override
-    public List<Post> getPostsByUser(int userId) {
-        return postRepository.findByProfileUserId(userId);
-    }*/
+
     @Override
     public List<Post> getPostsByUserSortedByDate(int userId) {
         return postRepository.findPostsByUserOrderByPublishDateDesc(userId);
     }
+
+    @Override
+    public void CreatePostwithImages(Post post, MultipartFile[] images) {
+        if (images.length > 3) {
+            throw new IllegalArgumentException("Максимальна кількість зображень для посту - 3.");
+        }
+        CreatePost(post);
+
+        String userLogin = post.getProfile().getUser().getLogin();
+        int sequence = 1;
+
+        for (MultipartFile imageFile : images) {
+            try {
+                String originalFilename = imageFile.getOriginalFilename();
+
+                if (originalFilename == null || originalFilename.isEmpty()) {
+                    throw new IllegalArgumentException("Ім'я файлу не може бути порожнім.");
+                }
+
+                int lastDotIndex = originalFilename.lastIndexOf('.');
+                if (lastDotIndex == -1 || lastDotIndex == originalFilename.length() - 1) {
+                    throw new IllegalArgumentException("Файл не має розширення: " + originalFilename);
+                }
+
+                String extension = originalFilename.substring(lastDotIndex);
+
+                if (!extension.equalsIgnoreCase(".jpg") &&
+                        !extension.equalsIgnoreCase(".jpeg") &&
+                        !extension.equalsIgnoreCase(".png")) {
+                    throw new IllegalArgumentException("Непідтримуваний формат файлу: " + extension);
+                }
+
+                String fileName = userLogin + "_" + post.getId() + "_" + sequence + extension;
+
+                Path path = Paths.get(srcPhotos + fileName);
+
+                Files.write(path, imageFile.getBytes());
+
+                Image image = new Image();
+                image.setSrc("/postPhotos/" + fileName);
+                imageRepository.save(image);
+
+                Post_has_Image postImage = new Post_has_Image();
+                postImage.setPost(post);
+                postImage.setImage(image);
+                postImage.setSequence(sequence);
+                post_has_ImageRepository.save(postImage);
+
+                sequence++;
+
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Не вдалося завантажити фотографії", e);
+            }
+        }
+    }
+
 }

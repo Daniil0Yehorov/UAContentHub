@@ -11,9 +11,13 @@
 <a href="/posts">Перейти до своїх постів</a>
 
 <h2>Створення нового посту</h2>
-<form th:action="@{/posts/add}" method="post">
+<form th:action="@{/posts/add}" method="post" enctype="multipart/form-data">
     <label for="content">Опис посту:</label>
     <textarea id="content" name="content" required></textarea>
+    <input type="file" name="images" multiple>
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <button type="submit">Додати</button>
 </form>
 </body>

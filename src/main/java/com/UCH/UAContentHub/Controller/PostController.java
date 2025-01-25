@@ -4,7 +4,6 @@ import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Post;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Service.Interface.PostService;
-import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -12,8 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -85,7 +85,7 @@ public class PostController {
         }
         return "addPost";
     }
-
+    //оновлення фотографій не буде розроблено
    @GetMapping("/edit/{postId}")
    public String editPostPage(@PathVariable int postId, Model model) {
        User currentUser = session.getUser();
@@ -103,7 +103,8 @@ public class PostController {
    }
 
     @PostMapping("/add")
-    public String addPost(@RequestParam String content) {
+    public String addPost(@RequestParam String content,
+                          @RequestParam(required = false) MultipartFile[] images,Model model) {
         User currentUser = session.getUser();
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";
@@ -113,8 +114,24 @@ public class PostController {
         post.setContent(content);
         post.setProfile(currentUser.getProfile());
         post.setPublishDate(LocalDateTime.now());
-        postService.CreatePost(post);
+        post.setPhi(new HashSet<>());
 
+        if (images != null && images.length > 0&& !images[0].isEmpty()) {
+            try {
+                postService.CreatePostwithImages(post, images);
+                return "redirect:/posts";
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+                return "addPost";
+            }
+        }
+
+        try {
+            postService.CreatePost(post);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "addPost";
+        }
         return "redirect:/posts";
     }
 

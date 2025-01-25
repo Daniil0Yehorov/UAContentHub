@@ -1,13 +1,13 @@
 package com.UCH.UAContentHub.Service.Interface;
 
-
 import com.UCH.UAContentHub.Entity.Post;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
     //створення посту
-    Post CreatePost(Post post);
+    void CreatePost(Post post);
     //оновлення посту
     Post updatePost(Post post);
     //видалення посту
@@ -24,6 +24,6 @@ public interface PostService {
     void reportPost(int postid,int whoComplainedId,String reason);
     Post getPostById(int postid);
     //получення постів креатора
-    //List<Post> getPostsByUser(int userId);
     List<Post> getPostsByUserSortedByDate(int userId);
+    void CreatePostwithImages(Post post, MultipartFile[] images);
 }
