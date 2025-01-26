@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -114,7 +113,6 @@ public class PostController {
         post.setContent(content);
         post.setProfile(currentUser.getProfile());
         post.setPublishDate(LocalDateTime.now());
-        post.setPhi(new HashSet<>());
 
         if (images != null && images.length > 0&& !images[0].isEmpty()) {
             try {

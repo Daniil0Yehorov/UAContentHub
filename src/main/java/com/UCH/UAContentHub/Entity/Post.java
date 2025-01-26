@@ -5,10 +5,10 @@ package com.UCH.UAContentHub.Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, name = "id")
@@ -22,7 +22,6 @@ public class Post {
     private String content;
 
     @Column(nullable = false,name = "Publish_Date")
-
     private LocalDateTime publishDate;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,7 +38,8 @@ public class Post {
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Post_has_Image> phi;
+    @OrderBy("sequence ASC")
+    private List<Post_has_Image> phi;
 
     public void setId(int id) {
         this.id = id;
@@ -104,11 +104,11 @@ public class Post {
         this.complaints = complaints;
     }
 
-    public Set<Post_has_Image> getPhi() {
+    public List<Post_has_Image> getPhi() {
         return phi;
     }
 
-    public void setPhi(Set<Post_has_Image> phi) {
+    public void setPhi(List<Post_has_Image> phi) {
         this.phi = phi;
     }
 

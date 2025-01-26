@@ -19,6 +19,7 @@ public class Post_has_Image {
 
     @Column(name = "sequence",nullable = false)
     private int sequence;
+
     @ManyToOne
     @JoinColumn(name = "Post_id", nullable = false)
     private Post post;

@@ -3,11 +3,15 @@ package com.UCH.UAContentHub.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity
 @Getter
 @Setter//ПРАЦЮЄ МБ ДЛЯ ІНШИХ СУТНОСТЕЙ ТАКОЖ ЗРОБИТИ
+@Table(name = "Image", uniqueConstraints = {
+        @UniqueConstraint(name = "Src_UNIQUE", columnNames = "Src")
+})
 public class Image {
 
     @Id
@@ -19,7 +23,7 @@ public class Image {
     private String Src;
 
     @OneToMany(mappedBy = "image", orphanRemoval = true)
-    private Set<Post_has_Image> phi;
+    private List<Post_has_Image> phi;
 
     public Image(){}
 }
