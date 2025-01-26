@@ -1,6 +1,7 @@
 package com.UCH.UAContentHub.Service.Interface;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProfileService {
     //мб убрать  і додати у майбутній сервіс АдмінСервіс
@@ -17,4 +18,6 @@ public interface ProfileService {
     //додатково
     Profile getProfileByID(int id);
     boolean isSubscribed(Profile profile, User user);
+    //встановлення нового аватару для юзера
+    String uploadAvatar(User user, MultipartFile avatar);
 }

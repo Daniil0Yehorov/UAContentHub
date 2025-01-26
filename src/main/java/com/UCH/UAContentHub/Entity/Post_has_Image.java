@@ -21,11 +21,11 @@ public class Post_has_Image {
     private int sequence;
 
     @ManyToOne
-    @JoinColumn(name = "Post_id", nullable = false)
+    @JoinColumn(name = "Post_id", referencedColumnName = "id", nullable = false)
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "Image_id", nullable = false)
+    @JoinColumn(name = "Image_id", referencedColumnName = "id", nullable = false)
     private Image image;
 
     public Post_has_Image (){}

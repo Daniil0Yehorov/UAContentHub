@@ -14,11 +14,11 @@ public class Likes {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", nullable = false)
+    @JoinColumn(name = "UserID", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "PostID", nullable = false)
+    @JoinColumn(name = "PostID", referencedColumnName = "id", nullable = false)
     private Post post;
 
     @Column(nullable = false,name = "Like_Date")

@@ -12,15 +12,15 @@ public class Complaint {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "UserID", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "PostID")
+    @JoinColumn(name = "PostID", referencedColumnName = "id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "profile_UserID")
+    @JoinColumn(name = "profile_UserID", referencedColumnName = "UserID")
     private Profile profile;
 
     @Column(length = 65535, nullable = false)

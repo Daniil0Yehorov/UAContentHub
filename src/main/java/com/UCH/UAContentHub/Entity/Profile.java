@@ -17,7 +17,7 @@ public class Profile {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "UserID", referencedColumnName = "id")
     private User user;
 
     @Column(nullable = false,length = 65535)

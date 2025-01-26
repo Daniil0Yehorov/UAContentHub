@@ -5,18 +5,28 @@ import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Repository.ProfileRepository;
 import com.UCH.UAContentHub.Repository.UserRepository;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
+
     private ProfileRepository prRepository;
+
+    private static final String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
@@ -86,7 +96,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Некоректне посилання на YouTube");
         }
         profile.setUser(user);
-       user.setProfile(profile);//мб убрать
+        user.setProfile(profile);
 
         userRepository.save(user);
         prRepository.save(profile);
@@ -102,5 +112,35 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return user;
+    }
+    @Override
+    public String saveAvatar(MultipartFile avatar, String login) {
+
+        if (avatar == null || avatar.isEmpty()) {
+            return null;
+        }
+
+        try {
+            String originalFilename = avatar.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+
+            if (!extension.equalsIgnoreCase(".jpg") && !extension.equalsIgnoreCase(".jpeg") && !extension.equalsIgnoreCase(".png")) {
+                throw new IllegalArgumentException("Невірний формат файлу. Підтримуються лише .jpg, .jpeg, .png");
+            }
+
+            Path uploadPath = Paths.get(UPLOADED_FOLDER);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String avatarFileName = login + extension;
+            Path filePath = uploadPath.resolve(avatarFileName);
+
+            Files.write(filePath, avatar.getBytes());
+
+            return "/avatars/" + avatarFileName;
+        } catch (Exception e) {
+            throw new RuntimeException("Помилка при завантаженні аватара: " + e.getMessage());
+        }
     }
 }

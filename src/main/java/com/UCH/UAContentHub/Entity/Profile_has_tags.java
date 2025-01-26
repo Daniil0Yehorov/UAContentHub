@@ -12,11 +12,11 @@ public class Profile_has_tags {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "profile_UserID")
+    @JoinColumn(name = "profile_UserID", referencedColumnName = "UserID")
     private Profile profile;
 
     @ManyToOne
-    @JoinColumn(name = "tags_id")
+    @JoinColumn(name = "tags_id", referencedColumnName = "id")
     private Tags tags;
 
     public Profile getProfile() {

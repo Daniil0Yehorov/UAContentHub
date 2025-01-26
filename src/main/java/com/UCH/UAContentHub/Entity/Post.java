@@ -15,7 +15,7 @@ public class Post {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "profile_UserID", nullable = false)
+    @JoinColumn(name = "profile_UserID", referencedColumnName = "UserID", nullable = false)
     private Profile profile;
 
     @Column(nullable = false, length =65535)

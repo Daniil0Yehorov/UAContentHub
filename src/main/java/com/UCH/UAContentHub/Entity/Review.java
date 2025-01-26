@@ -13,11 +13,11 @@ public class Review {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", nullable = false)
+    @JoinColumn(name = "UserID", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "CreatorID", nullable = false)
+    @JoinColumn(name = "CreatorID", referencedColumnName = "id", nullable = false)
     private User creator;
 
     @Column(length = 65535)

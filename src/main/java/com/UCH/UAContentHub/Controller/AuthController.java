@@ -37,7 +37,6 @@ public class AuthController {
     PostRepository postRepository;
     ReviewRepository reviewRepository;
     SubscriptionRepository subscriptionRepository;
-    private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
 
     //додавання даних до бд
     private void initData() {
@@ -176,32 +175,13 @@ public class AuthController {
                 if (instagram != null) { profile.setInstagram(instagram); }
                 if (twitch != null) { profile.setTwitch(twitch); }
                 if (youtube != null) { profile.setYoutube(youtube); }
-                if (avatar != null && !avatar.isEmpty()) {
-                    try {
-                        String originalFilename = avatar.getOriginalFilename();
-                        String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
 
-                        if (extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg") || extension.equalsIgnoreCase(".png")) {
-                            Path uploadPath = Paths.get(UPLOADED_FOLDER);
-
-                            if (!Files.exists(uploadPath)) {
-                                Files.createDirectories(uploadPath);
-                            }
-
-                            String avatarFileName = user.getLogin() + extension;
-                            Path filePath = uploadPath.resolve(avatarFileName);
-                            Files.write(filePath, avatar.getBytes());
-
-                            profile.setAvatarURL("/avatars/" + avatarFileName);
-                        } else {
-                            model.addAttribute("error", "Невірний формат файлу. Підтримуються лише .jpg, .jpeg, .png");
-                            return "register";
-                        }
-                    } catch (Exception e) {
-                        model.addAttribute("error", "Помилка при завантаженні аватара: " + e.getMessage());
-                        return "register";
-                    }
+                String avatarUrl = authService.saveAvatar(avatar, login);
+                if (avatarUrl == null) {
+                    model.addAttribute("error", "Аватар є обов'язковим");
+                    return "register";
                 }
+                profile.setAvatarURL(avatarUrl);
                 if (description == null || description.isEmpty()) {
                     model.addAttribute("error", "Опис не може бути порожнім");
                     return "register";

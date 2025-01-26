@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("/profile")
@@ -27,7 +23,6 @@ public class ProfileController {
 
     private ProfileService profileService;
 
-    private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
     @GetMapping("")
     public String profilePage(Model model) {
 
@@ -77,36 +72,10 @@ public class ProfileController {
             if (youtube != null && !youtube.trim().isEmpty()) {currentProfile.setYoutube(youtube);}
             if (avatar != null && !avatar.isEmpty()) {
                 try {
-                    String originalFilename = avatar.getOriginalFilename();
-                    String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-
-                    if (extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg") || extension.equalsIgnoreCase(".png")) {
-                        Path uploadPath = Paths.get(UPLOADED_FOLDER);
-
-                        if (!Files.exists(uploadPath)) {
-                            Files.createDirectories(uploadPath);
-                        }
-
-                        String oldAvatarPath = currentProfile.getAvatarURL();
-                        if (oldAvatarPath != null) {
-                            Path oldFilePath = Paths.get("src/main/resources/static" + oldAvatarPath);
-                            if (Files.exists(oldFilePath)) {
-                                Files.delete(oldFilePath);
-                            }
-                        }
-
-                        String avatarFileName = currentUser.getLogin() + extension;
-                        Path filePath = uploadPath.resolve(avatarFileName);
-
-                        Files.write(filePath, avatar.getBytes());
-                        currentProfile.setAvatarURL("/avatars/" + avatarFileName);
-                    } else {
-                        model.addAttribute("error", "Невірний формат файлу. Підтримуються лише .jpg, .jpeg, .png");
-                        model.addAttribute("user", currentUser);
-                        return "profile";
-                    }
-                } catch (Exception e) {
-                    model.addAttribute("error", "Помилка при завантаженні аватара: " + e.getMessage());
+                    String avatarUrl = profileService.uploadAvatar(currentUser, avatar);
+                    currentProfile.setAvatarURL(avatarUrl);
+                } catch (RuntimeException e) {
+                    model.addAttribute("error", e.getMessage());
                     model.addAttribute("user", currentUser);
                     return "profile";
                 }

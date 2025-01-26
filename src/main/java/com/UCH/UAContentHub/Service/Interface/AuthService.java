@@ -3,6 +3,7 @@ package com.UCH.UAContentHub.Service.Interface;
 
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface AuthService {
@@ -16,5 +17,6 @@ public interface AuthService {
     User login(String login, String password);
     //валідація юрл посилання
     public boolean isValidUrl(String url);
-
+    //додавання аватару користувача
+    String saveAvatar(MultipartFile avatar, String login);
 }

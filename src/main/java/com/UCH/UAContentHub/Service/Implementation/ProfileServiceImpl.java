@@ -7,6 +7,11 @@ import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
@@ -29,6 +34,7 @@ public class ProfileServiceImpl implements ProfileService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
+    private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
 
     //в теорії спрацює, але перевірити треба коли буде розроблен функціонал адміна
     @Override
@@ -210,5 +216,41 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         return subcriptionRepository.findByCreator_IdAndUser_Id(profile.getUser().getId(), user.getId()) != null;
+    }
+    public String uploadAvatar(User user, MultipartFile avatar) {
+
+        if (avatar == null || avatar.isEmpty()) {
+            return null;
+        }
+
+        try {
+            String originalFilename = avatar.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+
+            if (!extension.equalsIgnoreCase(".jpg") && !extension.equalsIgnoreCase(".jpeg") && !extension.equalsIgnoreCase(".png")) {
+                throw new IllegalArgumentException("Невірний формат файлу. Підтримуються лише .jpg, .jpeg, .png");
+            }
+
+            Path uploadPath = Paths.get(UPLOADED_FOLDER);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Profile currentProfile = user.getProfile();
+            if (currentProfile != null && currentProfile.getAvatarURL() != null) {
+                Path oldFilePath = Paths.get("src/main/resources/static" + currentProfile.getAvatarURL());
+                if (Files.exists(oldFilePath)) {
+                    Files.delete(oldFilePath);
+                }
+            }
+
+            String avatarFileName = user.getLogin() + extension;
+            Path filePath = uploadPath.resolve(avatarFileName);
+
+            Files.write(filePath, avatar.getBytes());
+            return "/avatars/" + avatarFileName;
+        } catch (Exception e) {
+            throw new RuntimeException("Помилка при завантаженні аватара: " + e.getMessage());
+        }
     }
 }
