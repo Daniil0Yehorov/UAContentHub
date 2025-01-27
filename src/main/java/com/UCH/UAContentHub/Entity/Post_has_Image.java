@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter//ПРАЦЮЄ МБ ДЛЯ ІНШИХ СУТНОСТЕЙ ТАКОЖ ЗРОБИТИ
+@Setter
 @Table(name = "Post_has_Image", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"Image_id"})
 })

@@ -3,8 +3,12 @@ package com.UCH.UAContentHub.Entity;
 
 import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,54 +41,6 @@ public class Complaint {
         this.post = post;
         this.profile = profile;
         this.Reason = reason;
-        this.status = status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public String getReason() {
-        return Reason;
-    }
-
-    public void setReason(String reason) {
-        this.Reason = reason;
-    }
-
-    public ComplaintStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ComplaintStatus status) {
         this.status = status;
     }
 

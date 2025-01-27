@@ -43,11 +43,13 @@ public class CreatorProfileController {
         User currentUser = session.getUser();
         boolean isSubscribed = profileService.isSubscribed(creatorProfile, currentUser);
         Review userReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
+        boolean hasReported = profileService.hasUserReportedProfile(currentUser.getId(), creatorProfile.getUser().getId());
 
         model.addAttribute("profile", creatorProfile);
         model.addAttribute("user", currentUser);
         model.addAttribute("isSubscribed", isSubscribed);
         model.addAttribute("userReview", userReview);
+        model.addAttribute("hasReported", hasReported);
         return "creatorProfile";
     }
     @GetMapping("/{id}/subscribe")

@@ -253,4 +253,7 @@ public class ProfileServiceImpl implements ProfileService {
             throw new RuntimeException("Помилка при завантаженні аватара: " + e.getMessage());
         }
     }
+    public boolean hasUserReportedProfile(int userId, int creatorUserId) {
+        return complaintRepository.existsComplaintByUserAndProfile(userId, creatorUserId);
+    }
 }

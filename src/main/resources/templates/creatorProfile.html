@@ -29,10 +29,15 @@
     </div>
 </div>
 <div th:if="${user.role.name() != 'CREATOR'}">
-    <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
-        <textarea name="reason" placeholder="Причина скарги" required></textarea>
-        <button type="submit">Поскаржитися</button>
-    </form>
+    <div th:if="${!hasReported}">
+        <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
+            <textarea name="reason" placeholder="Причина скарги" required></textarea>
+            <button type="submit">Поскаржитися</button>
+        </form>
+    </div>
+    <div th:if="${hasReported}">
+        <p>Ви вже подали скаргу на цього креатора.</p>
+    </div>
 </div>
 <div th:if="${userReview != null}">
     <form th:action="@{/creator/{creatorId}/review/delete(creatorId=${profile.id})}" method="post">

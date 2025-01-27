@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter//ПРАЦЮЄ МБ ДЛЯ ІНШИХ СУТНОСТЕЙ ТАКОЖ ЗРОБИТИ
+@Setter
 @Table(name = "Image", uniqueConstraints = {
         @UniqueConstraint(name = "Src_UNIQUE", columnNames = "Src")
 })

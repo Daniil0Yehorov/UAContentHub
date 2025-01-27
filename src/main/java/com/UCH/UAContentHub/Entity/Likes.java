@@ -3,10 +3,14 @@ package com.UCH.UAContentHub.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,38 +27,6 @@ public class Likes {
 
     @Column(nullable = false,name = "Like_Date")
     private LocalDateTime LikeDate;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public LocalDateTime getLikeDate() {
-        return LikeDate;
-    }
-
-    public void setLikeDate(LocalDateTime likeDate) {
-        this.LikeDate = likeDate;
-    }
 
     public Likes(int id, User user, Post post, LocalDateTime likeDate) {
         this.id = id;

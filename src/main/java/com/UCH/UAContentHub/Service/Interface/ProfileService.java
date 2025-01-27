@@ -20,4 +20,5 @@ public interface ProfileService {
     boolean isSubscribed(Profile profile, User user);
     //встановлення нового аватару для юзера
     String uploadAvatar(User user, MultipartFile avatar);
+    boolean hasUserReportedProfile(int userId,int creatorUserId);
 }

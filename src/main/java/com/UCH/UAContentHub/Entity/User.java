@@ -7,12 +7,16 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.UCH.UAContentHub.Entity.Enum.Role;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "User", uniqueConstraints = {
         @UniqueConstraint(name = "Email", columnNames = "Email"),
         @UniqueConstraint(name = "login_UNIQUE", columnNames = "login")
 })
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,111 +60,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "Status", nullable = false, columnDefinition = "ENUM('ACTIVE', 'BANNED') DEFAULT 'ACTIVE'")
     private User_Status Status;
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        this.Password = password;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        this.Name = name;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        this.Email = email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getRegistrationDate() {
-        return RegistrationDate;
-    }
-
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.RegistrationDate = registrationDate;
-    }
-
-    public User_Status getStatus() {
-        return Status;
-    }
-
-    public void setStatus(User_Status status) {
-        Status = status;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public List<Complaint> getComplaints() {
-        return complaints;
-    }
-
-    public void setComplaints(List<Complaint> complaints) {
-        this.complaints = complaints;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
-    public List<Likes> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(List<Likes> likes) {
-        this.likes = likes;
-    }
 
     public User() {}
 }

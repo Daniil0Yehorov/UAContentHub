@@ -3,10 +3,15 @@ package com.UCH.UAContentHub.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Post {
 
     @Id
@@ -33,65 +38,9 @@ public class Post {
     @Column(nullable = false,name = "Like_Count")
     private int likeCount;
 
-    public int getId() {
-        return id;
-    }
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequence ASC")
     private List<Post_has_Image> phi;
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(LocalDateTime publishDate) {
-        this.publishDate = publishDate;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public List<Likes> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(List<Likes> likes) {
-        this.likes = likes;
-    }
-
-    public List<Complaint> getComplaints() {
-        return complaints;
-    }
-
-    public void setComplaints(List<Complaint> complaints) {
-        this.complaints = complaints;
-    }
 
     public Post(int id, Profile profile, String content, LocalDateTime publishDate,
                 int likeCount, List<Likes> likes, List<Complaint> complaints) {
@@ -102,14 +51,6 @@ public class Post {
         this.likeCount = likeCount;
         this.likes = likes;
         this.complaints = complaints;
-    }
-
-    public List<Post_has_Image> getPhi() {
-        return phi;
-    }
-
-    public void setPhi(List<Post_has_Image> phi) {
-        this.phi = phi;
     }
 
     public Post(){}

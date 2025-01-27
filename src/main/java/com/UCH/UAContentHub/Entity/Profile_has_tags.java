@@ -2,8 +2,12 @@ package com.UCH.UAContentHub.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Profile_has_tags {
 
     @Id
@@ -18,31 +22,6 @@ public class Profile_has_tags {
     @ManyToOne
     @JoinColumn(name = "tags_id", referencedColumnName = "id")
     private Tags tags;
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public Tags getTags() {
-        return tags;
-    }
-
-    public void setTags(Tags tags) {
-        this.tags = tags;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
 
     public Profile_has_tags(int id, Profile profile, Tags tags) {
         this.id = id;
