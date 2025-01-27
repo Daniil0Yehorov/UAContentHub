@@ -1,5 +1,6 @@
 package com.UCH.UAContentHub.Controller;
 
+import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Post;
 import com.UCH.UAContentHub.Entity.User;
@@ -84,6 +85,7 @@ public class PostController {
         }
         return "addPost";
     }
+
     //оновлення фотографій не буде розроблено
    @GetMapping("/edit/{postId}")
    public String editPostPage(@PathVariable int postId, Model model) {
@@ -97,6 +99,7 @@ public class PostController {
            return "redirect:/posts";
        }
 
+       model.addAttribute("user",currentUser);
        model.addAttribute("post", post);
        return "editPost";
    }
@@ -108,7 +111,11 @@ public class PostController {
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";
         }
-
+        if (currentUser.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+            model.addAttribute("errorMessage",
+                    "Ваш профіль не підтверджено. Ви не можете створювати пости.");
+            return "addPost";
+        }
         Post post = new Post();
         post.setContent(content);
         post.setProfile(currentUser.getProfile());
@@ -134,13 +141,23 @@ public class PostController {
     }
 
     @PostMapping("/update/{postId}")
-    public String updatePost(@PathVariable int postId, @RequestParam String content) {
+    public String updatePost(@PathVariable int postId, @RequestParam String content,Model model) {
+
         User currentUser = session.getUser();
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";
         }
 
         Post post = postService.getPostById(postId);
+
+        if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+            model.addAttribute("user",currentUser);
+            model.addAttribute("post", post);
+            model.addAttribute("errorMessage",
+                    "Ваш профіль не підтверджено. Ви не можете оновлювати раніше створені пости.");
+            return "editPost";
+        }
+
         if (post != null && post.getProfile().getUser().getId() == currentUser.getId()) {
             post.setContent(content);
             postService.updatePost(post);
@@ -150,13 +167,22 @@ public class PostController {
     }
 
     @PostMapping("/delete/{postId}")
-    public String deletePost(@PathVariable int postId) {
+    public String deletePost(@PathVariable int postId,Model model) {
         User currentUser = session.getUser();
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";
         }
 
         Post post = postService.getPostById(postId);
+
+        if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+            model.addAttribute("errorMessage",
+                    "Ваш профіль не підтверджено. " +
+                            "Ви не можете оновлювати раніше створені пости.");
+            model.addAttribute("user",currentUser);
+            model.addAttribute("post", post);
+            return "editPost";
+        }
         if (post != null && post.getProfile().getUser().getId() == currentUser.getId()) {
             postService.deletePost(postId);
         }

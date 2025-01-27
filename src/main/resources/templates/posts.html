@@ -27,7 +27,7 @@
 <body>
 <a href="/profile">Перейти в профіль</a>
 <a href="/">Перейти на головну сторінку</a>
-<div th:if="${user.role.name() != 'USER'}">
+<div th:if="${user.role.name() != 'USER' and user.profile.status.name() == 'CONFIRMED'}">
     <a href="/posts/add">Створити пост</a>
 </div>
 <a href="/auth/logout">Вийти</a>

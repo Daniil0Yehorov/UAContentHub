@@ -9,7 +9,9 @@
 <a href="/">Перейти на головну сторінку</a>
 <a href="/auth/logout">Вийти</a>
 <a href="/posts">Перейти до постів</a>
+<div th:if="${user.profile.status.name() == 'CONFIRMED'}">
 <a href="/posts/add">Створити пост</a>
+</div>
 <div th:if="${post != null}">
     <form th:action="@{/posts/update/{postId}(postId=${post.id})}" method="post">
         <div>
@@ -34,5 +36,8 @@
     <p>Посту немає</p>
 </div>
 
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
 </body>
 </html>
