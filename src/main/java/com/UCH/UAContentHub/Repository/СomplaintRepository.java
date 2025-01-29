@@ -12,4 +12,9 @@ public interface СomplaintRepository extends JpaRepository<Complaint,Integer> {
             "WHERE c.user.id = :userId AND c.profile.user.id = :creatorId")
     boolean existsComplaintByUserAndProfile(@Param("userId") int userId,
                                             @Param("creatorId") int creatorId);
+    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END " +
+            "FROM Complaint c " +
+            "WHERE c.user.id = :userId AND c.post.id = :postId")
+    boolean existsByUserIdAndPostId(@Param("userId") int userId,
+                                    @Param("postId") int postId);
 }

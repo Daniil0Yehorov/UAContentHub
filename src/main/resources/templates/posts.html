@@ -66,7 +66,7 @@
                       th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
                  <button type="submit">Прибрати лайк</button>
                 </form>
-                <details>
+                <details th:if="${user != null and postService != null and !postService.hasUserReportedPost(user.id, post.id)}">
                     <summary>Поскаржитися</summary>
                     <form th:action="@{/posts/report/{postId}(postId=${post.id})}" method="post">
                         <label for="reason">Причина:</label>
@@ -74,12 +74,18 @@
                         <button type="submit">Відправити скаргу</button>
                     </form>
                 </details>
+                <p th:if="${user != null and postService != null and postService.hasUserReportedPost(user.id, post.id)}">
+                    Ви вже поскаржилися на цей пост
+                </p>
             </div>
             <div th:if="${user.role.name() != 'USER'}">
                 <a th:href="@{/posts/edit/{postId}(postId=${post.id})}">Редагувати</a>
             </div>
         </div>
     </div>
+</div>
+<div th:if="${error}">
+    <p th:text="${error}"></p>
 </div>
 </body>
 </html>

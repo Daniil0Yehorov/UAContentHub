@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -69,11 +71,19 @@ public class PostController {
     }
 
     @PostMapping("/report/{postId}")
-    public String reportPost(@PathVariable int postId, @RequestParam String reason) {
+    public String reportPost(@PathVariable int postId, @RequestParam String reason,
+                             RedirectAttributes redirectAttributes) {
         User currentUser = session.getUser();
-        if (session.isPresent()) {
-            postService.reportPost(postId, currentUser.getId(), reason);
+        if (!session.isPresent()) {
+            return "redirect:/auth/login";
         }
+
+        try {
+            postService.reportPost(postId, currentUser.getId(), reason);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
         return "redirect:/posts";
     }
 

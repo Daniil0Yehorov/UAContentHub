@@ -48,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(int reviewID) {
         Review review = reviewRepository.findById(reviewID)
-                .orElseThrow(() -> new IllegalArgumentException("Відгук з ID " + reviewID + " не знайдено."));
+                .orElseThrow(() -> new IllegalArgumentException("Відгук не знайдено або він скоріш вже видален."));
         if (review.getStatus() == ReviewStatus.NOT_APPROVED) {
             reviewRepository.deleteById(reviewID);
         } else {
@@ -61,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewRepository.existsById(review.getId())) {
             reviewRepository.save(review);
         } else {
-            throw new IllegalArgumentException("Відгук з ID " + review.getId() + " не знайден.");
+            throw new IllegalArgumentException("Відгук не знайден.");
         }
     }
     public Review getReviewByUserAndCreator(int userId, int creatorId) {

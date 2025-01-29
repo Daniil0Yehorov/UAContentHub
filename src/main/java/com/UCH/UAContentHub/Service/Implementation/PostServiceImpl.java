@@ -128,7 +128,9 @@ public class PostServiceImpl implements PostService {
         if (StringUtils.isEmpty(reason)) {
             throw new IllegalArgumentException("Причина не може бути порожньою");
         }
-
+        if (complaintRepository.existsByUserIdAndPostId(whoComplainedId, postid)) {
+            throw new IllegalArgumentException("Ви вже відправили скаргу на цей пост.");
+        }
         Complaint newComplaint = new Complaint();
         newComplaint.setPost(reportedPost);
         newComplaint.setUser(complainingUser);
@@ -205,6 +207,9 @@ public class PostServiceImpl implements PostService {
                 throw new IllegalArgumentException("Не вдалося завантажити фотографії", e);
             }
         }
+    }
+    public boolean hasUserReportedPost(int userId, int postId) {
+        return complaintRepository.existsByUserIdAndPostId(userId, postId);
     }
 
 }

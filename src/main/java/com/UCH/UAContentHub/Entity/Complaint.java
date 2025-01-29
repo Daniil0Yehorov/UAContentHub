@@ -9,6 +9,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UserPost", columnNames = {"UserID", "PostID"}),
+                @UniqueConstraint(name = "UserProfile", columnNames = {"UserID", "profile_UserID"})
+        }
+)
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

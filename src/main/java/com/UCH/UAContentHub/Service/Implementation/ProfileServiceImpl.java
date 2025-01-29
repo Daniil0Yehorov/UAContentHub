@@ -121,6 +121,10 @@ public class ProfileServiceImpl implements ProfileService {
             throw new IllegalArgumentException("Причина не може бути порожньою");
         }
 
+        if (complaintRepository.existsComplaintByUserAndProfile(whoComplainedId,profileid)) {
+            throw new IllegalArgumentException("Ви вже відправили скаргу на цього креатора.");
+        }
+
         Complaint newComplaint = new Complaint();
         newComplaint.setProfile(reportedProfile);
         newComplaint.setUser(complainingUser);

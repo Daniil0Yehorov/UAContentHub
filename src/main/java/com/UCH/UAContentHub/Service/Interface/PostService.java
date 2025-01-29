@@ -25,5 +25,8 @@ public interface PostService {
     Post getPostById(int postid);
     //получення постів креатора
     List<Post> getPostsByUserSortedByDate(int userId);
+    //створення поста з фото(3максимум)
     void CreatePostwithImages(Post post, MultipartFile[] images);
+    //переверіка наявності репорту на пост від користувача
+    boolean hasUserReportedPost(int userId, int postId);
 }

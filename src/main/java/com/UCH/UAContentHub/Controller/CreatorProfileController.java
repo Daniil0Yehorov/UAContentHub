@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -94,7 +95,8 @@ public class CreatorProfileController {
         return "redirect:/creator/" + id;
     }
     @PostMapping("/{userId}/report")
-    public String reportProfile(@PathVariable int userId, @RequestParam String reason, Model model) {
+    public String reportProfile(@PathVariable int userId, @RequestParam String reason,
+                                RedirectAttributes redirectAttributes) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
@@ -102,21 +104,18 @@ public class CreatorProfileController {
         User currentUser = session.getUser();
         try {
             profileService.reportProfile(userId, currentUser.getId(), reason);
-            model.addAttribute("message", "Скаргу успішно подано!");
+            redirectAttributes.addAttribute("message", "Скаргу успішно подано!");
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addAttribute("error", e.getMessage());
         }
 
-        Profile creatorProfile = contentService.getProfileById(userId);
-        model.addAttribute("profile", creatorProfile);
-        model.addAttribute("user", currentUser);
         return "redirect:/creator/" + userId;
     }
     @PostMapping("/{creatorId}/review")
     public String addReview(@PathVariable int creatorId,
                             @RequestParam String text,
                             @RequestParam int rating,
-                            Model model) {
+                            RedirectAttributes redirectAttributes) {
 
         if (!session.isPresent()) {
             return "redirect:/auth/login";
@@ -130,7 +129,7 @@ public class CreatorProfileController {
         }
         Review existingReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
         if (existingReview != null && existingReview.getStatus() != ReviewStatus.NOT_APPROVED) {
-            model.addAttribute("error", "Ви вже залишили відгук цьому креатору, але він не має статусу 'NOT_APPROVED'.");
+            redirectAttributes.addAttribute("error", "Ви вже залишили відгук цьому креатору, але він не має статусу 'NOT_APPROVED'.");
             return "redirect:/creator/" + creatorId;
         }
         try {
@@ -140,24 +139,24 @@ public class CreatorProfileController {
             review.setUser(currentUser);
             review.setCreator(creatorProfile.getUser());
             reviewService.createReview(review);
-            model.addAttribute("message", "Відгук успішно додано!");
+            redirectAttributes.addAttribute("message", "Відгук успішно додано!");
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addAttribute("error", e.getMessage());
         }
 
         return "redirect:/creator/" + creatorId;
     }
     @PostMapping("/{creatorId}/review/delete")
-    public String deleteReview(@PathVariable int creatorId, @RequestParam int reviewId, Model model) {
+    public String deleteReview(@PathVariable int creatorId, @RequestParam int reviewId,  RedirectAttributes redirectAttributes) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
 
         try {
             reviewService.deleteReview(reviewId);
-            model.addAttribute("message", "Відгук успішно видалено.");
+            redirectAttributes.addAttribute("message", "Відгук успішно видалено.");
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addAttribute("error", e.getMessage());
         }
 
         return "redirect:/creator/" + creatorId;
