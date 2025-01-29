@@ -104,9 +104,9 @@ public class CreatorProfileController {
         User currentUser = session.getUser();
         try {
             profileService.reportProfile(userId, currentUser.getId(), reason);
-            redirectAttributes.addAttribute("message", "Скаргу успішно подано!");
+            redirectAttributes.addFlashAttribute("message", "Скаргу успішно подано!");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/creator/" + userId;
@@ -129,7 +129,7 @@ public class CreatorProfileController {
         }
         Review existingReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
         if (existingReview != null && existingReview.getStatus() != ReviewStatus.NOT_APPROVED) {
-            redirectAttributes.addAttribute("error", "Ви вже залишили відгук цьому креатору, але він не має статусу 'NOT_APPROVED'.");
+            redirectAttributes.addFlashAttribute("error", "Ви вже залишили відгук цьому креатору, але він не має статусу 'NOT_APPROVED'.");
             return "redirect:/creator/" + creatorId;
         }
         try {
@@ -139,24 +139,25 @@ public class CreatorProfileController {
             review.setUser(currentUser);
             review.setCreator(creatorProfile.getUser());
             reviewService.createReview(review);
-            redirectAttributes.addAttribute("message", "Відгук успішно додано!");
+            redirectAttributes.addFlashAttribute("message", "Відгук успішно додано!");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/creator/" + creatorId;
     }
     @PostMapping("/{creatorId}/review/delete")
-    public String deleteReview(@PathVariable int creatorId, @RequestParam int reviewId,  RedirectAttributes redirectAttributes) {
+    public String deleteReview(@PathVariable int creatorId, @RequestParam int reviewId,
+                               RedirectAttributes redirectAttributes) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
 
         try {
             reviewService.deleteReview(reviewId);
-            redirectAttributes.addAttribute("message", "Відгук успішно видалено.");
+            redirectAttributes.addFlashAttribute("message", "Відгук успішно видалено.");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/creator/" + creatorId;

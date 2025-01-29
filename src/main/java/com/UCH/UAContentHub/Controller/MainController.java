@@ -36,7 +36,8 @@ public class MainController {
         return "main";
     }
 
-    //ТРАБЛ якщо людину тільки верифікували, то в неї не буде рейтинга
+    //ТРАБЛ якщо креатора тільки верифікували, то в неї не буде рейтинга. тобто відображатися буде тільки в загальному.
+    //тому треба зробити більш детальну фільтрацію
     @GetMapping("/filter")
     public String filterCreators(
             @RequestParam(required = false) Set<String> tags,

@@ -46,17 +46,16 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (userRepository.findByEmail(user.getEmail())!=null) {
-            throw new IllegalArgumentException("Користувач з даною поштою існує");
-        }
+            throw new IllegalArgumentException("Користувач з даною поштою існує");}
+
         if (userRepository.findByLogin(user.getLogin())!=null) {
-            throw new IllegalArgumentException("Користувач з даним логіном існує");
-        }
+            throw new IllegalArgumentException("Користувач з даним логіном існує");}
+
         if (user.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");
-        }
+            throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
+
         if (user.getRegistrationDate() == null) {
-            user.setRegistrationDate(LocalDateTime.now());
-        }
+            user.setRegistrationDate(LocalDateTime.now());}
 
         return userRepository.save(user);
     }
@@ -65,36 +64,62 @@ public class AuthServiceImpl implements AuthService {
     public void RegisterCreator(User user, Profile profile) {
 
         if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            throw new IllegalArgumentException("Некоректна пошта");
-        }
+            throw new IllegalArgumentException("Некоректна пошта");}
 
         if (userRepository.findByEmail(user.getEmail())!=null) {
-            throw new IllegalArgumentException("Користувач з даною поштою існує");
-        }
+            throw new IllegalArgumentException("Користувач з даною поштою існує");}
+
         if (userRepository.findByLogin(user.getLogin())!=null) {
-            throw new IllegalArgumentException("Користувач з даним логіном існує");
-        }
+            throw new IllegalArgumentException("Користувач з даним логіном існує");}
+
         if (user.getRegistrationDate() == null) {
-            user.setRegistrationDate(LocalDateTime.now());
-        }
+            user.setRegistrationDate(LocalDateTime.now());}
+
         if (user.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");
-        }
+            throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
+
         if (profile.getDescription() == null || profile.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("Опис профілю не має бути порожнім");
+            throw new IllegalArgumentException("Опис профілю не має бути порожнім");}
+
+        if (profile.getTiktok() == null && profile.getInstagram() == null && profile.getTwitch() == null && profile.getYoutube() == null) {
+            throw new IllegalArgumentException("Творець повинен мати принаймні одну пов’язану соціальну мережу.");}
+
+        if (profile.getTiktok() != null && !profile.getTiktok().isEmpty()) {
+
+            if (prRepository.existsByTiktok(profile.getTiktok())) {
+                throw new IllegalArgumentException("Це посилання на TikTok вже використовується");}
+
+            if (!isValidUrl(profile.getTiktok())) {
+                throw new IllegalArgumentException("Некоректне посилання на TikTok");}
         }
-        if (profile.getTiktok() != null && !profile.getTiktok().isEmpty() && !isValidUrl(profile.getTiktok())) {
-            throw new IllegalArgumentException("Некоректне посилання на TikTok");
+
+        if (profile.getInstagram() != null && !profile.getInstagram().isEmpty()) {
+
+            if (prRepository.existsByInstagram(profile.getInstagram())) {
+                throw new IllegalArgumentException("Це посилання на Instagram вже використовується");}
+
+            if (!isValidUrl(profile.getInstagram())) {
+                throw new IllegalArgumentException("Некоректне посилання на Instagram");}
         }
-        if (profile.getInstagram() != null && !profile.getInstagram().isEmpty() && !isValidUrl(profile.getInstagram())) {
-            throw new IllegalArgumentException("Некоректне посилання на Instagram");
+
+        if (profile.getTwitch() != null && !profile.getTwitch().isEmpty()) {
+
+            if (prRepository.existsByTwitch(profile.getTwitch())) {
+                throw new IllegalArgumentException("Це посилання на Twitch вже використовується");}
+
+            if (!isValidUrl(profile.getTwitch())) {
+                throw new IllegalArgumentException("Некоректне посилання на Twitch");}
         }
-        if (profile.getTwitch() != null && !profile.getTwitch().isEmpty() && !isValidUrl(profile.getTwitch())) {
-            throw new IllegalArgumentException("Некоректне посилання на Twitch");
+
+        if (profile.getYoutube() != null && !profile.getYoutube().isEmpty()) {
+
+            if (prRepository.existsByYoutube(profile.getYoutube())) {
+                throw new IllegalArgumentException("Це посилання на YouTube вже використовується");}
+
+            if (!isValidUrl(profile.getYoutube())) {
+                throw new IllegalArgumentException("Некоректне посилання на YouTube");}
         }
-        if (profile.getYoutube() != null && !profile.getYoutube().isEmpty() && !isValidUrl(profile.getYoutube())) {
-            throw new IllegalArgumentException("Некоректне посилання на YouTube");
-        }
+
         profile.setUser(user);
         user.setProfile(profile);
 

@@ -5,13 +5,16 @@ import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "Profile", uniqueConstraints = {
-        @UniqueConstraint(name = "AvatarURL_UNIQUE", columnNames = "AvatarURL")
+        @UniqueConstraint(name = "AvatarURL_UNIQUE", columnNames = "AvatarURL"),
+        @UniqueConstraint(name = "TikTok_UNIQUE", columnNames = "TikTok"),
+        @UniqueConstraint(name = "Instagram_UNIQUE", columnNames = "Instagram"),
+        @UniqueConstraint(name = "Twitch_UNIQUE", columnNames = "Twitch"),
+        @UniqueConstraint(name = "Youtube_UNIQUE", columnNames = "Youtube")
 })
 @Getter
 @Setter
@@ -35,17 +38,18 @@ public class Profile {
     @Column(nullable = false)
     private String AvatarURL;
 
-    @Column( length = 65535)
+    @Column(name = "Tiktok")
     private String Tiktok;
 
-    @Column( length = 65535)
+    @Column(name = "Instagram")
     private String Instagram;
 
-    @Column(length = 65535)
+    @Column(name = "Twitch")
     private String Twitch;
 
-    @Column( length = 65535)
+    @Column(name = "Youtube")
     private String Youtube;
+
     @Column(name = "Rating")
     private float rating;
 

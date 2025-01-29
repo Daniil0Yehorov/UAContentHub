@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,8 +137,7 @@ public class AuthController {
     }
     @GetMapping("/register")
     public String registerPage(Model model) {
-        initData();
-        model.addAttribute("title", "Реєстрація");
+        //initData();
         return "register";
     }
 
@@ -152,7 +153,7 @@ public class AuthController {
                            @RequestParam(value = "twitch", required = false) String twitch,
                            @RequestParam(value = "youtube", required = false) String youtube,
                            @RequestParam(value = "avatar", required = false) MultipartFile avatar,
-                           Model model) {
+                           RedirectAttributes redirectAttributes) {
         try {
             Role role = Role.valueOf(roleStr);
 
@@ -165,40 +166,32 @@ public class AuthController {
             user.setRole(role);
 
             if (role == Role.CREATOR) {
+
                 Profile profile = new Profile();
                 profile.setDescription(description);
                 profile.setStatus(CreatorProfileStatus.UNCONFIRMED);
-                if (tiktok != null) { profile.setTiktok(tiktok); }
-                if (instagram != null) { profile.setInstagram(instagram); }
-                if (twitch != null) { profile.setTwitch(twitch); }
-                if (youtube != null) { profile.setYoutube(youtube); }
+                if (tiktok == null || tiktok.trim().isEmpty()) {
+                    profile.setTiktok(null);}
+
+                if (instagram == null || instagram.trim().isEmpty()) {
+                    profile.setInstagram(null);}
+
+                if (twitch == null || twitch.trim().isEmpty()) {
+                    profile.setTwitch(null);}
+
+                if (youtube == null || youtube.trim().isEmpty()) {
+                    profile.setYoutube(null);}
 
                 String avatarUrl = authService.saveAvatar(avatar, login);
                 if (avatarUrl == null) {
-                    model.addAttribute("error", "Аватар є обов'язковим");
-                    return "register";
+                    redirectAttributes.addFlashAttribute("error", "Аватар є обов'язковим");
+                    return "redirect:/auth/register";
                 }
                 profile.setAvatarURL(avatarUrl);
-                if (description == null || description.isEmpty()) {
-                    model.addAttribute("error", "Опис не може бути порожнім");
-                    return "register";
-                }
 
-                if (tiktok != null && !tiktok.isEmpty() && !authService.isValidUrl(tiktok)) {
-                    model.addAttribute("error", "Невірна URL-адреса TikTok");
-                    return "register";
-                }
-                if (instagram != null && !instagram.isEmpty() && !authService.isValidUrl(instagram)) {
-                    model.addAttribute("error", "Невірна URL-адреса Instagram");
-                    return "register";
-                }
-                if (twitch != null && !twitch.isEmpty() && !authService.isValidUrl(twitch)) {
-                    model.addAttribute("error", "Невірна URL-адреса Twitch");
-                    return "register";
-                }
-                if (youtube != null && !youtube.isEmpty() && !authService.isValidUrl(youtube)) {
-                    model.addAttribute("error", "Невірна URL-адреса YouTube");
-                    return "register";
+                if (description == null || description.isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Опис не може бути порожнім");
+                    return "redirect:/auth/register";
                 }
 
                 authService.RegisterCreator(user, profile);
@@ -210,34 +203,33 @@ public class AuthController {
 
             return "redirect:/";
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "register";
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/auth/register";
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "register";
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/auth/register";
         }
     }
     @GetMapping("/login")
     public String loginPage(Model model) {
-        model.addAttribute("title", "Вхід");
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam("login") String login,
                         @RequestParam("password") String password,
-                        Model model) {
+                        RedirectAttributes redirectAttributes) {
         try {
             User user = authService.login(login, password);
             if (user == null) {
-                model.addAttribute("error", "Неправильний логін або пароль");
-                return "login";
+                redirectAttributes.addFlashAttribute("error", "Неправильний логін або пароль");
+                return "redirect:/auth/login";
             }
             session.setUser(user);
             return "redirect:/";
         } catch (Exception e) {
-            model.addAttribute("error", "Помилка під час входу: " + e.getMessage());
-            return "login";
+            redirectAttributes.addFlashAttribute("error", "Помилка під час входу: " + e.getMessage());
+            return "redirect:/auth/login";
         }
     }
     @GetMapping("/logout")
