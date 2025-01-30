@@ -81,7 +81,8 @@ public class AuthServiceImpl implements AuthService {
         if (profile.getDescription() == null || profile.getDescription().isEmpty()) {
             throw new IllegalArgumentException("Опис профілю не має бути порожнім");}
 
-        if (profile.getTiktok() == null && profile.getInstagram() == null && profile.getTwitch() == null && profile.getYoutube() == null) {
+        if (profile.getTiktok() == null && profile.getInstagram() == null
+                && profile.getTwitch() == null && profile.getYoutube() == null) {
             throw new IllegalArgumentException("Творець повинен мати принаймні одну пов’язану соціальну мережу.");}
 
         if (profile.getTiktok() != null && !profile.getTiktok().isEmpty()) {

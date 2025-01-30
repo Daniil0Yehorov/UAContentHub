@@ -171,16 +171,16 @@ public class AuthController {
                 profile.setDescription(description);
                 profile.setStatus(CreatorProfileStatus.UNCONFIRMED);
                 if (tiktok == null || tiktok.trim().isEmpty()) {
-                    profile.setTiktok(null);}
+                    profile.setTiktok(null);} else {profile.setTiktok(tiktok);}
 
                 if (instagram == null || instagram.trim().isEmpty()) {
-                    profile.setInstagram(null);}
+                    profile.setInstagram(null);} else {profile.setInstagram(instagram);}
 
                 if (twitch == null || twitch.trim().isEmpty()) {
-                    profile.setTwitch(null);}
+                    profile.setTwitch(null);} else {profile.setTwitch(twitch);}
 
                 if (youtube == null || youtube.trim().isEmpty()) {
-                    profile.setYoutube(null);}
+                    profile.setYoutube(null);} else {profile.setYoutube(youtube);}
 
                 String avatarUrl = authService.saveAvatar(avatar, login);
                 if (avatarUrl == null) {
