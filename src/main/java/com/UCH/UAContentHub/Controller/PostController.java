@@ -55,18 +55,20 @@ public class PostController {
     @PostMapping("/like/{postId}")
     public String likePost(@PathVariable int postId) {
         User currentUser = session.getUser();
+
         if (session.isPresent()) {
-            postService.likeThePost(postId, currentUser.getId());
-        }
+            postService.likeThePost(postId, currentUser.getId());}
+
         return "redirect:/posts";
     }
 
     @PostMapping("/unlike/{postId}")
     public String unlikePost(@PathVariable int postId) {
         User currentUser = session.getUser();
+
         if (session.isPresent()) {
-            postService.CancelTheLikeForThePost(postId, currentUser.getId());
-        }
+            postService.CancelTheLikeForThePost(postId, currentUser.getId());}
+
         return "redirect:/posts";
     }
 
@@ -74,9 +76,9 @@ public class PostController {
     public String reportPost(@PathVariable int postId, @RequestParam String reason,
                              RedirectAttributes redirectAttributes) {
         User currentUser = session.getUser();
+
         if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
 
         try {
             postService.reportPost(postId, currentUser.getId(), reason);
@@ -90,24 +92,24 @@ public class PostController {
     @GetMapping("/add")
     public String addPostPage() {
         User currentUser = session.getUser();
+
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
+
         return "addPost";
     }
 
     //оновлення фотографій не буде розроблено
-   @GetMapping("/edit/{postId}")
-   public String editPostPage(@PathVariable int postId, Model model) {
+    @GetMapping("/edit/{postId}")
+    public String editPostPage(@PathVariable int postId, Model model) {
        User currentUser = session.getUser();
+
        if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
-           return "redirect:/auth/login";
-       }
+           return "redirect:/auth/login";}
 
        Post post = postService.getPostById(postId);
        if (post.getProfile().getUser().getId() != currentUser.getId()) {
-           return "redirect:/posts";
-       }
+           return "redirect:/posts";}
 
        model.addAttribute("user",currentUser);
        model.addAttribute("post", post);
@@ -116,86 +118,85 @@ public class PostController {
 
     @PostMapping("/add")
     public String addPost(@RequestParam String content,
-                          @RequestParam(required = false) MultipartFile[] images,Model model) {
+                          @RequestParam(required = false) MultipartFile[] images,
+                          RedirectAttributes redirectAttributes) {
         User currentUser = session.getUser();
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
+
         if (currentUser.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
-            model.addAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("error",
                     "Ваш профіль не підтверджено. Ви не можете створювати пости.");
-            return "addPost";
-        }
+            return "redirect:/posts/add";}
+
         Post post = new Post();
         post.setContent(content);
         post.setProfile(currentUser.getProfile());
         post.setPublishDate(LocalDateTime.now());
 
         if (images != null && images.length > 0&& !images[0].isEmpty()) {
+
             try {
                 postService.CreatePostwithImages(post, images);
                 return "redirect:/posts";
             } catch (IllegalArgumentException e) {
-                model.addAttribute("errorMessage", e.getMessage());
-                return "addPost";
+                redirectAttributes.addFlashAttribute("error", e.getMessage());
+                return "redirect:/posts/add";
             }
         }
 
         try {
             postService.CreatePost(post);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "addPost";
         }
         return "redirect:/posts";
     }
 
     @PostMapping("/update/{postId}")
-    public String updatePost(@PathVariable int postId, @RequestParam String content,Model model) {
+    public String updatePost(@PathVariable int postId, @RequestParam String content,
+                             RedirectAttributes redirectAttributes) {
 
         User currentUser = session.getUser();
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
 
         Post post = postService.getPostById(postId);
 
         if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
-            model.addAttribute("user",currentUser);
-            model.addAttribute("post", post);
-            model.addAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("user",currentUser);
+            redirectAttributes.addFlashAttribute("post", post);
+            redirectAttributes.addFlashAttribute("error",
                     "Ваш профіль не підтверджено. Ви не можете оновлювати раніше створені пости.");
-            return "editPost";
-        }
+            return "redirect:/posts/edit/" +postId;}
 
-        if (post != null && post.getProfile().getUser().getId() == currentUser.getId()) {
+        if (post.getProfile().getUser().getId() == currentUser.getId()) {
             post.setContent(content);
-            postService.updatePost(post);
-        }
+            postService.updatePost(post);}
 
         return "redirect:/posts";
     }
 
     @PostMapping("/delete/{postId}")
-    public String deletePost(@PathVariable int postId,Model model) {
+    public String deletePost(@PathVariable int postId,RedirectAttributes  redirectAttributes) {
         User currentUser = session.getUser();
+
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
 
         Post post = postService.getPostById(postId);
 
         if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
-            model.addAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("error",
                     "Ваш профіль не підтверджено. " +
-                            "Ви не можете оновлювати раніше створені пости.");
-            model.addAttribute("user",currentUser);
-            model.addAttribute("post", post);
-            return "editPost";
-        }
-        if (post != null && post.getProfile().getUser().getId() == currentUser.getId()) {
-            postService.deletePost(postId);
-        }
+                            "Ви не можете видаляти раніше створені пости.");
+            redirectAttributes.addFlashAttribute("user",currentUser);
+            redirectAttributes.addFlashAttribute("post", post);
+            return "redirect:/posts/edit/" +postId;}
+
+        if (post.getProfile().getUser().getId() == currentUser.getId()) {
+            postService.deletePost(postId);}
 
         return "redirect:/posts";
     }

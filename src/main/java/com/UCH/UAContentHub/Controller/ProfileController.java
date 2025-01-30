@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -28,34 +29,31 @@ public class ProfileController {
 
         User currentUser = session.getUser();
         if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
 
         if (currentUser.getRole() == Role.CREATOR && currentUser.getProfile() == null) {
-            currentUser.setProfile(session.getUser().getProfile());
-        }
+            currentUser.setProfile(session.getUser().getProfile());}
 
         model.addAttribute("user", currentUser);
         return "profile";
     }
 
     @PostMapping("/update")
-    public String Update( @RequestParam(required = false) String email,
-                          @RequestParam(required = false) String login,
-                          @RequestParam(required = false) String password,
-                          @RequestParam(required = false) String name,
-                          @RequestParam(required = false) String description,
-                          @RequestParam(required = false) String tiktok,
-                          @RequestParam(required = false) String instagram,
-                          @RequestParam(required = false) String twitch,
-                          @RequestParam(required = false) String youtube,
-                          @RequestParam(required = false) MultipartFile avatar,
-                          Model model){
+    public String Update(@RequestParam(required = false) String email,
+                         @RequestParam(required = false) String login,
+                         @RequestParam(required = false) String password,
+                         @RequestParam(required = false) String name,
+                         @RequestParam(required = false) String description,
+                         @RequestParam(required = false) String tiktok,
+                         @RequestParam(required = false) String instagram,
+                         @RequestParam(required = false) String twitch,
+                         @RequestParam(required = false) String youtube,
+                         @RequestParam(required = false) MultipartFile avatar,
+                         RedirectAttributes redirectAttributes){
 
         User currentUser = session.getUser();
         if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
+            return "redirect:/auth/login";}
 
         if (email != null && !email.trim().isEmpty()) currentUser.setEmail(email);
         if (login != null && !login.trim().isEmpty()) currentUser.setLogin(login);
@@ -75,9 +73,9 @@ public class ProfileController {
                     String avatarUrl = profileService.uploadAvatar(currentUser, avatar);
                     currentProfile.setAvatarURL(avatarUrl);
                 } catch (RuntimeException e) {
-                    model.addAttribute("error", e.getMessage());
-                    model.addAttribute("user", currentUser);
-                    return "profile";
+                    redirectAttributes.addFlashAttribute("error", e.getMessage());
+                    redirectAttributes.addFlashAttribute("user", currentUser);
+                    return "redirect:/profile";
                 }
             }
         }
@@ -86,16 +84,15 @@ public class ProfileController {
             profileService.updateU(currentUser);
 
             if (currentUser.getRole() == Role.CREATOR && currentUser.getProfile() != null) {
-                profileService.updateP(currentUser.getProfile());
-            }
+                profileService.updateP(currentUser.getProfile());}
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("user", currentUser);
-            return "profile";
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("user", currentUser);
+            return "redirect:/profile";
         }
 
-        model.addAttribute("user", currentUser);
-        model.addAttribute("message", "Дані успішно оновлено!");
-        return "profile";
+        redirectAttributes.addFlashAttribute("user", currentUser);
+        redirectAttributes.addFlashAttribute("message", "Дані успішно оновлено!");
+        return "redirect:/profile";
     }
 }

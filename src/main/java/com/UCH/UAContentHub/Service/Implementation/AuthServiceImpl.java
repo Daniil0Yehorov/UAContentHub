@@ -42,14 +42,16 @@ public class AuthServiceImpl implements AuthService {
     public User Register(User user) {
 
         if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            throw new IllegalArgumentException("Некоректна пошта");
-        }
+            throw new IllegalArgumentException("Некоректна пошта");}
 
         if (userRepository.findByEmail(user.getEmail())!=null) {
             throw new IllegalArgumentException("Користувач з даною поштою існує");}
 
         if (userRepository.findByLogin(user.getLogin())!=null) {
             throw new IllegalArgumentException("Користувач з даним логіном існує");}
+
+        if (user.getLogin().length() < 8) {
+            throw new IllegalArgumentException("Логін має мати мінімум 8 символів");}
 
         if (user.getPassword().length() < 8) {
             throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
@@ -74,6 +76,9 @@ public class AuthServiceImpl implements AuthService {
 
         if (user.getRegistrationDate() == null) {
             user.setRegistrationDate(LocalDateTime.now());}
+
+        if (user.getLogin().length() < 8) {
+            throw new IllegalArgumentException("Логін має мати мінімум 8 символів");}
 
         if (user.getPassword().length() < 8) {
             throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
