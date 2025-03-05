@@ -12,11 +12,10 @@ public interface AuthService {
     //реєстрація креатора у системі, але зі статусом "не перевірено"(поки адміністратор не перевірить
     // цього креатора, та не поставить інший статус- креатор не зможе робити ніяких дій)
     void RegisterCreator(User user, Profile profile);
-
     //авторизація
     User login(String login, String password);
     //валідація юрл посилання
-    public boolean isValidUrl(String url);
+    boolean isValidUrl(String url);
     //додавання аватару користувача
     String saveAvatar(MultipartFile avatar, String login);
 }

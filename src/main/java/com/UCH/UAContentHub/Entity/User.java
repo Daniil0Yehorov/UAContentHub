@@ -1,9 +1,6 @@
 package com.UCH.UAContentHub.Entity;
 
-
-import com.UCH.UAContentHub.Entity.Enum.User_Status;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import com.UCH.UAContentHub.Entity.Enum.Role;
@@ -23,16 +20,16 @@ public class User {
     @Column(unique = true,name = "id")
     private int id;
 
-    @Column(unique = true, nullable = false,name = "login", length = 255)
+    @Column(unique = true, nullable = false,name = "login", length = 64)
     private String login;
 
-    @Column(nullable = false,name = "Password", length = 255)
+    @Column(nullable = false,name = "Password", length = 64)
     private String Password;
 
-    @Column(unique = true, nullable = false,name = "Name", length = 255)
+    @Column(unique = true, nullable = false,name = "Name", length = 64)
     private String Name;
 
-    @Column(unique = true, nullable = false,name = "Email", length = 255)
+    @Column(unique = true, nullable = false,name = "Email")
     private String Email;
 
     @Enumerated(EnumType.STRING)
@@ -56,10 +53,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likes;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Status", nullable = false, columnDefinition = "ENUM('ACTIVE', 'BANNED') DEFAULT 'ACTIVE'")
-    private User_Status Status;
 
     public User() {}
 }

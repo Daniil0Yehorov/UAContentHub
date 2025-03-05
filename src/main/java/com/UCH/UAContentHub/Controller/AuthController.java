@@ -3,7 +3,6 @@ import com.UCH.UAContentHub.Entity.*;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
 import com.UCH.UAContentHub.Entity.Enum.Role;
-import com.UCH.UAContentHub.Entity.Enum.User_Status;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
@@ -54,7 +53,6 @@ public class AuthController {
             user.setLogin("User" + i + "Login");
             user.setPassword("Password" + i);
             user.setEmail("User" + i + "@example.com");
-            user.setStatus(User_Status.ACTIVE);
             user.setRole(Role.CREATOR);
             user.setRegistrationDate(LocalDateTime.now());
 
@@ -85,7 +83,6 @@ public class AuthController {
             user.setLogin("User"  + "Login"+ i);
             user.setPassword("UserPassword" + i);
             user.setEmail(i+"User" + i + "@example.com");
-            user.setStatus(User_Status.ACTIVE);
             user.setRole(Role.USER);
             user.setRegistrationDate(LocalDateTime.now());
 
@@ -137,7 +134,7 @@ public class AuthController {
     }
     @GetMapping("/register")
     public String registerPage(Model model) {
-        //initData();
+        initData();
         return "register";
     }
 
@@ -158,7 +155,6 @@ public class AuthController {
             Role role = Role.valueOf(roleStr);
 
             User user = new User();
-            user.setStatus(User_Status.ACTIVE);
             user.setLogin(login);
             user.setPassword(password);
             user.setName(name);
