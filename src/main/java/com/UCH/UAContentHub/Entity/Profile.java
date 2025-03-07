@@ -19,12 +19,17 @@ import java.util.Set;
 @Getter
 @Setter
 public class Profile {
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true,name = "id")
-    private int id;
+    private int id;*///old pkfk
+
+    @Id//new  npkfk
+    @Column(name = "UserID")//new  npkfk
+    private int id;//new pkfk
 
     @OneToOne
+    @MapsId//new  pkfk
     @JoinColumn(name = "UserID", referencedColumnName = "id")
     private User user;
 
@@ -35,7 +40,7 @@ public class Profile {
     @Column( name = "Status",nullable = false)
     private CreatorProfileStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "AvatarURL")//
     private String AvatarURL;
 
     @Column(name = "Tiktok")
@@ -53,7 +58,7 @@ public class Profile {
     @Column(name = "Rating")
     private float rating;
 
-    @Column(name="Subscribers_Count")
+    @Column(name="Subscribers_Count",nullable = false)//--
     private int SubscribersCount;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
