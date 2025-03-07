@@ -121,6 +121,7 @@ public class PostServiceImpl implements PostService {
 
         Post reportedPost = postRepository.findById(postid).orElseThrow(()
                 -> new IllegalArgumentException("пост  не знайден,: " + postid));
+        Profile profile = reportedPost.getProfile();
 
         User complainingUser = userRepository.findById(whoComplainedId)
                 .orElseThrow(() -> new IllegalArgumentException("Користувач не знайден"));
@@ -133,9 +134,11 @@ public class PostServiceImpl implements PostService {
         }
         Complaint newComplaint = new Complaint();
         newComplaint.setPost(reportedPost);
+        newComplaint.setProfile(profile);
         newComplaint.setUser(complainingUser);
         newComplaint.setReason(reason);
         newComplaint.setStatus(ComplaintStatus.PENDING);
+        newComplaint.setComplaintDate(LocalDateTime.now());
         complaintRepository.save(newComplaint);
     }
 

@@ -165,7 +165,7 @@ public class AuthController {
 
                 Profile profile = new Profile();
                 profile.setDescription(description);
-                profile.setStatus(CreatorProfileStatus.UNCONFIRMED);
+                profile.setStatus(CreatorProfileStatus.PENDING);
                 if (tiktok == null || tiktok.trim().isEmpty()) {
                     profile.setTiktok(null);} else {profile.setTiktok(tiktok);}
 

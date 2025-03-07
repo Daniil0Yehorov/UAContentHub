@@ -18,7 +18,7 @@ public class Review {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "UserID", referencedColumnName = "id",nullable = false)
     private User user;
 
     @ManyToOne

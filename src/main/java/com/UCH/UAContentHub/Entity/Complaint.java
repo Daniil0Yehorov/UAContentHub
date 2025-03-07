@@ -5,6 +5,7 @@ import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,7 +23,7 @@ public class Complaint {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", referencedColumnName = "id")
+    @JoinColumn(name = "UserID", referencedColumnName = "id",nullable = false)
     private User user;
 
     @ManyToOne
@@ -30,7 +31,7 @@ public class Complaint {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "profile_UserID", referencedColumnName = "UserID")
+    @JoinColumn(name = "profile_UserID", referencedColumnName = "UserID",nullable = false)
     private Profile profile;
 
     @Column(length = 65535, nullable = false)
@@ -40,14 +41,18 @@ public class Complaint {
     @Column(name = "Status", nullable = false)
     private ComplaintStatus status;
 
+    @Column(nullable = false,name = "Complaint_Date")
+    private LocalDateTime ComplaintDate;
+
     public Complaint(int id, User user, Post post,
-                     Profile profile, String reason, ComplaintStatus status) {
+                     Profile profile, String reason, ComplaintStatus status,LocalDateTime ComplaintDate) {
         this.id = id;
         this.user = user;
         this.post = post;
         this.profile = profile;
         this.Reason = reason;
         this.status = status;
+        this.ComplaintDate=ComplaintDate;
     }
 
     public Complaint(){}

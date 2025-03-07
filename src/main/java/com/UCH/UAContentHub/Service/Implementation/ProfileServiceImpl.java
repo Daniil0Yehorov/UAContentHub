@@ -101,7 +101,7 @@ public class ProfileServiceImpl implements ProfileService {
             existingProfile.setYoutube(updatedProfile.getYoutube());
         }
 
-        existingProfile.setStatus(CreatorProfileStatus.UNCONFIRMED);
+        existingProfile.setStatus(CreatorProfileStatus.PENDING);
         //рейтинг буде додаватись при 5-10 ревью на креатора, а  поки його не буде
         //кількість підписників збільшується за допомогою трігера у бд
         return profileRepository.save(existingProfile);
@@ -130,6 +130,7 @@ public class ProfileServiceImpl implements ProfileService {
         newComplaint.setUser(complainingUser);
         newComplaint.setReason(reason);
         newComplaint.setStatus(ComplaintStatus.PENDING);
+        newComplaint.setComplaintDate(LocalDateTime.now());
         complaintRepository.save(newComplaint);
     }
 

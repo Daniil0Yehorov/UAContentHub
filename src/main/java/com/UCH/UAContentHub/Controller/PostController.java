@@ -124,10 +124,19 @@ public class PostController {
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";}
 
-        if (currentUser.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+        if (currentUser.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED ||
+                currentUser.getProfile().getStatus() == CreatorProfileStatus.PENDING) {
             redirectAttributes.addFlashAttribute("error",
-                    "Ваш профіль не підтверджено. Ви не можете створювати пости.");
+                    "Ваші дані не підтверджено. Будь-ласка оновіть правильні дані про себе." +
+                            "Ви не можете створювати пости.");
             return "redirect:/posts/add";}
+        else if( currentUser.getProfile().getStatus() == CreatorProfileStatus.PENDING){
+            redirectAttributes.addFlashAttribute("error",
+                    "Ваші дані на розгляді. Зайдіть пізніше" +
+                            "Ви не можете створювати пости.");
+            return "redirect:/posts/add";
+        }
+
 
         Post post = new Post();
         post.setContent(content);
