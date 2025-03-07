@@ -66,21 +66,41 @@ public class ProfileServiceImpl implements ProfileService {
         if (updatedProfile.getDescription() == null || updatedProfile.getDescription().trim().isEmpty()) {
             throw new IllegalArgumentException("Опис не може бути порожнім");
         }
-
-        if (!isValidUrl(updatedProfile.getTiktok())) {
-            throw new IllegalArgumentException("не валідний TikTok URL");
+        
+        if (updatedProfile.getTiktok() != null && !updatedProfile.getTiktok().isEmpty()) {
+            if (profileRepository.existsByTiktok(updatedProfile.getTiktok())) {
+                throw new IllegalArgumentException("Це посилання на TikTok вже використовується");
+            }
+            if (!isValidUrl(updatedProfile.getTiktok())) {
+                throw new IllegalArgumentException("Некоректне посилання на TikTok");
+            }
         }
 
-        if (!isValidUrl(updatedProfile.getInstagram())) {
-            throw new IllegalArgumentException("не валідний Instagram URL");
+        if (updatedProfile.getInstagram() != null && !updatedProfile.getInstagram().isEmpty()) {
+            if (profileRepository.existsByInstagram(updatedProfile.getInstagram())) {
+                throw new IllegalArgumentException("Це посилання на Instagram вже використовується");
+            }
+            if (!isValidUrl(updatedProfile.getInstagram())) {
+                throw new IllegalArgumentException("Некоректне посилання на Instagram");
+            }
         }
 
-        if (!isValidUrl(updatedProfile.getTwitch())) {
-            throw new IllegalArgumentException("не валідний Twitch URL");
+        if (updatedProfile.getTwitch() != null && !updatedProfile.getTwitch().isEmpty()) {
+            if (profileRepository.existsByTwitch(updatedProfile.getTwitch())) {
+                throw new IllegalArgumentException("Це посилання на Twitch вже використовується");
+            }
+            if (!isValidUrl(updatedProfile.getTwitch())) {
+                throw new IllegalArgumentException("Некоректне посилання на Twitch");
+            }
         }
 
-        if (!isValidUrl(updatedProfile.getYoutube())) {
-            throw new IllegalArgumentException("не валідний YouTube URL");
+        if (updatedProfile.getYoutube() != null && !updatedProfile.getYoutube().isEmpty()) {
+            if (profileRepository.existsByYoutube(updatedProfile.getYoutube())) {
+                throw new IllegalArgumentException("Це посилання на YouTube вже використовується");
+            }
+            if (!isValidUrl(updatedProfile.getYoutube())) {
+                throw new IllegalArgumentException("Некоректне посилання на YouTube");
+            }
         }
         if (updatedProfile.getDescription() != null) {
             existingProfile.setDescription(updatedProfile.getDescription());

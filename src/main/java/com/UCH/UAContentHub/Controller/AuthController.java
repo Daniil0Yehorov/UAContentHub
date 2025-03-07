@@ -82,7 +82,7 @@ public class AuthController {
             user.setName("User" + i +"USER"+ i);
             user.setLogin("User"  + "Login"+ i);
             user.setPassword("UserPassword" + i);
-            user.setEmail(i+"User" + i + "@example.com");
+            user.setEmail(i+"User" + i + "@gmail.com");
             user.setRole(Role.USER);
             user.setRegistrationDate(LocalDateTime.now());
 
@@ -134,7 +134,7 @@ public class AuthController {
     }
     @GetMapping("/register")
     public String registerPage(Model model) {
-        initData();
+        //initData();
         return "register";
     }
 
