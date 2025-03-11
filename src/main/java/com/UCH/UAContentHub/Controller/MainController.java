@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
@@ -31,8 +32,16 @@ public class MainController {
         List<Profile> confirmedCreators = contentService.getConfirmedCreators();
         List <Tags> tags = contentService.getAllTags();
         model.addAttribute("user", user);
-        model.addAttribute("creators", confirmedCreators);
+
         model.addAttribute("tags", tags);
+        if (user != null) {
+            List<Profile> recommendedCreators = contentService.getRecommendedCreators(user.getId());
+            confirmedCreators = confirmedCreators.stream()
+                    .filter(c -> !recommendedCreators.contains(c))
+                    .collect(Collectors.toList());
+            model.addAttribute("recommendedCreators", recommendedCreators);
+        }
+        model.addAttribute("creators", confirmedCreators);
         return "main";
     }
 
@@ -53,6 +62,11 @@ public class MainController {
         model.addAttribute("tags", contentService.getAllTags());
         model.addAttribute("selectedTags", tags);
         model.addAttribute("user", user);
+        if (user != null) {
+            List<Profile> recommendedCreators = contentService.getRecommendedCreators(user.getId());
+
+            model.addAttribute("recommendedCreators", recommendedCreators);
+        }
         return "main";
     }
 

@@ -46,7 +46,28 @@
 
     <button type="submit">Фільтрувати</button>
 </form>
-
+<div th:if="${user != null and user.role.name() == 'USER' and recommendedCreators != null and not recommendedCreators.isEmpty()}">
+    <h2>Рекомендовані креатори на основі ваших підписок:</h2>
+    <ul>
+        <li th:each="creator : ${recommendedCreators}">
+            <p>
+                <img th:src="${creator.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}"
+                     alt="Аватар креатора" style="width: 50px; height: 50px; border-radius: 50%;">
+                <strong th:text="${creator.user.name}"></strong><br/>
+                <span th:text="'Рейтинг: ' + ${creator.rating}"></span><br/>
+                <span th:text="${creator.description}"></span><br/>
+            <p>Підписників: <span th:text="${creator.subscribersCount}"></span></p>
+            <a th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль креатора</a>
+            <br/>
+            <span>Теги:
+                    <span th:each="phs : ${creator.phs}">
+                        <span th:text="${phs.tags.name} + ' '"></span>
+                    </span>
+                </span><br/>
+            </p>
+        </li>
+    </ul>
+</div>
 <h2>Список підтверджених креаторів:</h2>
 <div th:if="${creators != null}">
     <ul>

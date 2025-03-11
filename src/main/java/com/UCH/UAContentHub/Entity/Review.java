@@ -38,16 +38,5 @@ public class Review {
     @Column(nullable = false)
     private ReviewStatus Status;
 
-    public Review(int id, User user, User creator, String text,
-                  int rating, LocalDateTime reviewDate, ReviewStatus status) {
-        this.id = id;
-        this.user = user;
-        this.creator = creator;
-        this.Text = text;
-        this.Rating = rating;
-        this.ReviewDate = reviewDate;
-        this.Status = status;
-    }
-
     public Review() {}
 }

@@ -44,16 +44,5 @@ public class Complaint {
     @Column(nullable = false,name = "Complaint_Date")
     private LocalDateTime ComplaintDate;
 
-    public Complaint(int id, User user, Post post,
-                     Profile profile, String reason, ComplaintStatus status,LocalDateTime ComplaintDate) {
-        this.id = id;
-        this.user = user;
-        this.post = post;
-        this.profile = profile;
-        this.Reason = reason;
-        this.status = status;
-        this.ComplaintDate=ComplaintDate;
-    }
-
     public Complaint(){}
 }

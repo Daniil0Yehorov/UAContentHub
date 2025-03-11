@@ -11,4 +11,5 @@ public interface ContentService {
     List<Profile> getConfirmedCreators();
     Profile getProfileById(int id);
     List<Tags> getAllTags();
+    List<Profile> getRecommendedCreators(int userId);
 }

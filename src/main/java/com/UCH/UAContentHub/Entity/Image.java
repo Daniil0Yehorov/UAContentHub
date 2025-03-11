@@ -22,7 +22,7 @@ public class Image {
     @Column(name = "Src",nullable = false)
     private String Src;
 
-    @OneToMany(mappedBy = "image", orphanRemoval = true)
+    @OneToMany(mappedBy = "image", orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Post_has_Image> phi;
 
     public Image(){}

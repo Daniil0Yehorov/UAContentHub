@@ -32,7 +32,7 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likes;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post",orphanRemoval = true)
     private List<Complaint> complaints;
 
     @Column(nullable = false,name = "Like_Count")
@@ -41,17 +41,6 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequence ASC")
     private List<Post_has_Image> phi;
-
-    public Post(int id, Profile profile, String content, LocalDateTime publishDate,
-                int likeCount, List<Likes> likes, List<Complaint> complaints) {
-        this.id = id;
-        this.profile = profile;
-        this.content = content;
-        this.publishDate = publishDate;
-        this.likeCount = likeCount;
-        this.likes = likes;
-        this.complaints = complaints;
-    }
 
     public Post(){}
 

@@ -27,12 +27,5 @@ public class Subscription {
     @Column(nullable = false,name="Subscription_Date")
     private LocalDateTime SubscriptionDate;
 
-    public Subscription(int id, User user, User creator, LocalDateTime subscriptionDate) {
-        this.id = id;
-        this.user = user;
-        this.creator = creator;
-        this.SubscriptionDate = subscriptionDate;
-    }
-
     public Subscription(){}
 }

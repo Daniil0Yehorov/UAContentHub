@@ -28,12 +28,5 @@ public class Likes {
     @Column(nullable = false,name = "Like_Date")
     private LocalDateTime LikeDate;
 
-    public Likes(int id, User user, Post post, LocalDateTime likeDate) {
-        this.id = id;
-        this.user = user;
-        this.post = post;
-        this.LikeDate = likeDate;
-    }
-
     public Likes(){}
 }
