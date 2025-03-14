@@ -78,9 +78,7 @@
                 <span th:text="'Рейтинг: ' + ${creator.rating}"></span><br/>
                 <span th:text="${creator.description}"></span><br/>
                <p>Підписників: <span th:text="${creator.subscribersCount}"></span></p>
-            <div th:if="${user != null}">
                 <a th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль креатора</a>
-            </div>
                 <br/>
                 <span>Теги:
                     <span th:each="phs : ${creator.phs}">

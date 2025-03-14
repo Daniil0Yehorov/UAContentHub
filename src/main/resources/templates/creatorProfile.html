@@ -19,7 +19,9 @@
 <p>Опис: <span th:text="${profile.description}"/></p>
 <p>Рейтинг: <span th:text="${profile.rating}"/></p>
 <p>Підписників: <span th:text="${profile.subscribersCount}"></span></p>
+<a th:href="@{/creator/{id}/reviews(id=${profile.id})}">Переглянути всі рецензії на автора</a>
 
+<div th:if="${user != null}">
 <div th:if="${user.role.name() != 'CREATOR'}">
     <div th:if="${isSubscribed}">
         <a th:href="@{/creator/{id}/unsubscribe(id=${profile.id})}">Відписатися</a>
@@ -59,6 +61,7 @@
             <button type="submit">Додати відгук</button>
         </form>
     </div>
+</div>
 </div>
 <a href="/">Повернутися на головну</a>
 </body>

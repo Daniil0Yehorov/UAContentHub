@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -66,5 +67,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
     public Review getReviewByUserAndCreator(int userId, int creatorId) {
         return reviewRepository.findByUserIdAndCreatorId(userId, creatorId);
+    }
+    @Override
+    public List<Review> getReviewsByCreator(int creatorId) {
+        return reviewRepository.findAllByCreatorId(creatorId);
     }
 }

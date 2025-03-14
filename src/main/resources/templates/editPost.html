@@ -6,8 +6,6 @@
 <body>
 <h1>Редагування посту</h1>
 <a href="/profile">Перейти в профіль</a>
-<a href="/">Перейти на головну сторінку</a>
-<a href="/auth/logout">Вийти</a>
 <a href="/posts">Перейти до постів</a>
 <div th:if="${user.profile.status.name() == 'CONFIRMED'}">
 <a href="/posts/add">Створити пост</a>

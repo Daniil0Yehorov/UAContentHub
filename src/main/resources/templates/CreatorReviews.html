@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Рецензії на автора</title>
+</head>
+<body>
+
+<h1>Рецензії на креатора</h1>
+
+<a th:href="@{/creator/{id}(id=${creatorId})}">Повернутися до профілю автора</a>
+
+<div th:if="${reviews.isEmpty()}">
+    <p>Рецензії відсутні.</p>
+</div>
+
+<ul>
+    <li th:each="review : ${reviews}">
+        <p><strong>Автор:</strong> <span th:text="${review.user.name}"></span></p>
+        <p><strong>Оцінка:</strong> <span th:text="${review.rating}"></span></p>
+        <p><strong>Текст:</strong> <span th:text="${review.text}"></span></p>
+        <p><strong>Дата:</strong> <span th:text="${#temporals.format(review.reviewDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+        <hr>
+    </li>
+</ul>
+
+</body>
+</html>

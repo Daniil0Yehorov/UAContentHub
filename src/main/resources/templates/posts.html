@@ -30,7 +30,6 @@
 <div th:if="${user.role.name() != 'USER' and user.profile.status.name() == 'CONFIRMED'}">
     <a href="/posts/add">Створити пост</a>
 </div>
-<a href="/auth/logout">Вийти</a>
 <div th:if="${user.role.name() != 'CREATOR'}">
 <form method="get" th:action="@{/posts}">
     <label for="filter">Фільтр:</label>

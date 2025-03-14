@@ -32,19 +32,16 @@ public class CreatorProfileController {
 
     @GetMapping("/{id}")
     public String creatorProfile(@PathVariable int id, Model model) {
-        if (!session.isPresent()) {
-            return "redirect:/auth/login";
-        }
 
         Profile creatorProfile = contentService.getProfileById(id);
         if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
             return "redirect:/";
         }
 
-        User currentUser = session.getUser();
-        boolean isSubscribed = profileService.isSubscribed(creatorProfile, currentUser);
-        Review userReview = reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId());
-        boolean hasReported = profileService.hasUserReportedProfile(currentUser.getId(), creatorProfile.getUser().getId());
+        User currentUser = session.isPresent() ? session.getUser() : null;
+        boolean isSubscribed = currentUser != null && profileService.isSubscribed(creatorProfile, currentUser);
+        Review userReview = (currentUser != null) ? reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId()) : null;
+        boolean hasReported = currentUser != null && profileService.hasUserReportedProfile(currentUser.getId(), creatorProfile.getUser().getId());
 
         model.addAttribute("profile", creatorProfile);
         model.addAttribute("user", currentUser);
@@ -161,5 +158,16 @@ public class CreatorProfileController {
         }
 
         return "redirect:/creator/" + creatorId;
+    }
+    @GetMapping("/{id}/reviews")
+    public String viewReviews(@PathVariable int id, Model model) {
+        Profile creatorProfile = contentService.getProfileById(id);
+        if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("reviews", reviewService.getReviewsByCreator(creatorProfile.getUser().getId()));
+        model.addAttribute("creatorId", id);
+        return "creatorReviews";
     }
 }
