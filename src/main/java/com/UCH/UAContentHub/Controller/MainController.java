@@ -26,7 +26,7 @@ public class MainController {
     private ContentService contentService;
 
     @GetMapping("")
-    public String mainPage(Model model) {
+    public String ShowMainPage(Model model) {
         User user = session.getUser();
 
         List<Profile> confirmedCreators = contentService.getConfirmedCreators();

@@ -6,53 +6,54 @@
 </head>
 <body>
 
-<h1>Register</h1>
+<h1>Реєстрація</h1>
 <div th:if="${error}" style="color: red;">
     <p th:text="${error}"></p>
 </div>
 <form action="/auth/register" method="post" enctype="multipart/form-data">
-    <label for="login">Login:</label>
+    <label for="login">Логін:</label>
     <input type="text" id="login" name="login" required><br>
 
-    <label for="password">Password:</label>
+    <label for="password">Пароль:</label>
     <input type="password" id="password" name="password" required><br>
 
-    <label for="name">Name:</label>
+    <label for="name">Ім'я:</label>
     <input type="text" id="name" name="name" required><br>
 
-    <label for="email">Email:</label>
+    <label for="email">Пошта:</label>
     <input type="email" id="email" name="email" required><br>
 
-    <label for="role">Role:</label>
+    <label for="role">Роль:</label>
     <select id="role" name="role" onchange="toggleProfileFields()">
         <option value="USER">USER</option>
         <option value="CREATOR">CREATOR</option>
     </select><br>
 
     <div id="profileFields" style="display:none;">
-        <h2>Profile</h2>
+        <h2>Додаткові дані задля реєстрації ролі автора</h2>
 
-        <label for="description">Description:</label>
+        <label for="description">Опис:</label>
         <textarea id="description" name="description"></textarea><br>
 
-        <label for="tiktok">TikTok:</label>
+        <label for="tiktok">Tiktok посилання:</label>
         <input type="text" id="tiktok" name="tiktok"><br>
 
-        <label for="instagram">Instagram:</label>
+        <label for="instagram">Instagram посилання:</label>
         <input type="text" id="instagram" name="instagram"><br>
 
-        <label for="twitch">Twitch:</label>
+        <label for="twitch">Twitch посилання:</label>
         <input type="text" id="twitch" name="twitch"><br>
 
-        <label for="youtube">YouTube:</label>
+        <label for="youtube">Youtube посилання:</label>
         <input type="text" id="youtube" name="youtube"><br>
-        <label for="avatar">Avatar:</label>
+        <label for="avatar">Завантажте аватар:</label>
         <input type="file" id="avatar" name="avatar" accept="image/*"><br>
     </div>
 
-    <button type="submit">Register</button>
+    <button type="submit">Зареєструватися</button>
 </form>
 <p>Вже є обліковий запис? <a href="/auth/login">Увійти в аккаунт</a></p>
+<a href="/">Головна сторінка</a>
 <script>
     function toggleProfileFields() {
         const role = document.getElementById("role").value;

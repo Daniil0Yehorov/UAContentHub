@@ -31,7 +31,7 @@ public class CreatorProfileController {
     private final ReviewService reviewService;
 
     @GetMapping("/{id}")
-    public String creatorProfile(@PathVariable int id, Model model) {
+    public String ShowCreatorProfile(@PathVariable int id, Model model) {
 
         Profile creatorProfile = contentService.getProfileById(id);
         if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
@@ -51,7 +51,7 @@ public class CreatorProfileController {
         return "creatorProfile";
     }
     @GetMapping("/{id}/subscribe")
-    public String subscribe(@PathVariable int id) {
+    public String subscribeToTheCreator(@PathVariable int id) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
@@ -72,7 +72,7 @@ public class CreatorProfileController {
     }
 
     @GetMapping("/{id}/unsubscribe")
-    public String unsubscribe(@PathVariable int id) {
+    public String unsubscribeFromTheCreator(@PathVariable int id) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
@@ -92,7 +92,7 @@ public class CreatorProfileController {
         return "redirect:/creator/" + id;
     }
     @PostMapping("/{userId}/report")
-    public String reportProfile(@PathVariable int userId, @RequestParam String reason,
+    public String reportCreatorsProfile(@PathVariable int userId, @RequestParam String reason,
                                 RedirectAttributes redirectAttributes) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
@@ -160,7 +160,7 @@ public class CreatorProfileController {
         return "redirect:/creator/" + creatorId;
     }
     @GetMapping("/{id}/reviews")
-    public String viewReviews(@PathVariable int id, Model model) {
+    public String viewAllReviewsOfTheCreator(@PathVariable int id, Model model) {
         Profile creatorProfile = contentService.getProfileById(id);
         if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
             return "redirect:/";

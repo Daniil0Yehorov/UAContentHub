@@ -27,8 +27,12 @@ public class PostController {
     private final HttpSession session;
     private  final PostService postService;
 
+    private boolean isAuthorConfirmed(User user) {
+        return user.getProfile().getStatus() == CreatorProfileStatus.CONFIRMED;
+    }
+
     @GetMapping
-    public String postsPage(@RequestParam(required = false) String filter, Model model) {
+    public String ShowPostsPage(@RequestParam(required = false) String filter, Model model) {
         User currentUser = session.getUser();
 
         if (!session.isPresent()) {
@@ -53,7 +57,7 @@ public class PostController {
     }
 
     @PostMapping("/like/{postId}")
-    public String likePost(@PathVariable int postId) {
+    public String likeThePost(@PathVariable int postId) {
         User currentUser = session.getUser();
 
         if (session.isPresent()) {
@@ -63,7 +67,7 @@ public class PostController {
     }
 
     @PostMapping("/unlike/{postId}")
-    public String unlikePost(@PathVariable int postId) {
+    public String unlikeThePost(@PathVariable int postId) {
         User currentUser = session.getUser();
 
         if (session.isPresent()) {
@@ -73,7 +77,7 @@ public class PostController {
     }
 
     @PostMapping("/report/{postId}")
-    public String reportPost(@PathVariable int postId, @RequestParam String reason,
+    public String reportThePost(@PathVariable int postId, @RequestParam String reason,
                              RedirectAttributes redirectAttributes) {
         User currentUser = session.getUser();
 
@@ -90,7 +94,7 @@ public class PostController {
     }
 
     @GetMapping("/add")
-    public String addPostPage() {
+    public String ShowAddPostPage() {
         User currentUser = session.getUser();
 
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
@@ -99,9 +103,8 @@ public class PostController {
         return "addPost";
     }
 
-    //оновлення фотографій не буде розроблено
     @GetMapping("/edit/{postId}")
-    public String editPostPage(@PathVariable int postId, Model model) {
+    public String ShowEditPostPage(@PathVariable int postId, Model model) {
        User currentUser = session.getUser();
 
        if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
@@ -124,19 +127,11 @@ public class PostController {
         if (!session.isPresent() || currentUser.getRole() != Role.CREATOR) {
             return "redirect:/auth/login";}
 
-        if (currentUser.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED ||
-                currentUser.getProfile().getStatus() == CreatorProfileStatus.PENDING) {
+        if (!isAuthorConfirmed(currentUser)) {
             redirectAttributes.addFlashAttribute("error",
-                    "Ваші дані не підтверджено. Будь-ласка оновіть правильні дані про себе." +
-                            "Ви не можете створювати пости.");
-            return "redirect:/posts/add";}
-        else if( currentUser.getProfile().getStatus() == CreatorProfileStatus.PENDING){
-            redirectAttributes.addFlashAttribute("error",
-                    "Ваші дані на розгляді. Зайдіть пізніше" +
-                            "Ви не можете створювати пости.");
+                    "Ваші дані не підтверджено. Будь ласка, оновіть правильні дані про себе. Ви не можете створювати пости.");
             return "redirect:/posts/add";
         }
-
 
         Post post = new Post();
         post.setContent(content);
@@ -173,7 +168,7 @@ public class PostController {
 
         Post post = postService.getPostById(postId);
 
-        if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+        if (!isAuthorConfirmed(currentUser)) {
             redirectAttributes.addFlashAttribute("user",currentUser);
             redirectAttributes.addFlashAttribute("post", post);
             redirectAttributes.addFlashAttribute("error",
@@ -196,7 +191,7 @@ public class PostController {
 
         Post post = postService.getPostById(postId);
 
-        if (post.getProfile().getStatus() == CreatorProfileStatus.UNCONFIRMED) {
+        if (!isAuthorConfirmed(currentUser)) {
             redirectAttributes.addFlashAttribute("error",
                     "Ваш профіль не підтверджено. " +
                             "Ви не можете видаляти раніше створені пости.");

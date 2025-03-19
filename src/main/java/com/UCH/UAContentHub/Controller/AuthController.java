@@ -133,13 +133,13 @@ public class AuthController {
         //зміна статусу ревью у бд скриптах
     }
     @GetMapping("/register")
-    public String registerPage(Model model) {
+    public String showRegistrationPage() {
         //initData();
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam("login") String login,
+    public String registerUser(@RequestParam("login") String login,
                            @RequestParam("password") String password,
                            @RequestParam("name") String name,
                            @RequestParam("email") String email,
@@ -207,7 +207,7 @@ public class AuthController {
         }
     }
     @GetMapping("/login")
-    public String loginPage(Model model) {
+    public String ShowloginPage() {
         return "login";
     }
 

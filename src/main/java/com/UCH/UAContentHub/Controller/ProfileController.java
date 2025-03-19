@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/profile")
@@ -25,7 +27,7 @@ public class ProfileController {
     private ProfileService profileService;
 
     @GetMapping("")
-    public String profilePage(Model model) {
+    public String ShowProfilePage(Model model) {
 
         User currentUser = session.getUser();
         if (!session.isPresent()) {
@@ -39,7 +41,7 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    public String Update(@RequestParam(required = false) String email,
+    public String UpdateUser(@RequestParam(required = false) String email,
                          @RequestParam(required = false) String login,
                          @RequestParam(required = false) String password,
                          @RequestParam(required = false) String name,
@@ -79,6 +81,7 @@ public class ProfileController {
                 }
             }
         }
+        currentUser.setRegistrationDate(LocalDateTime.now());//оновлення дати реєстрації
 
         try {
             profileService.updateU(currentUser);

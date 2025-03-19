@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<h1>Рецензії на креатора</h1>
+<h1>Рецензії на автора</h1>
 
 <a th:href="@{/creator/{id}(id=${creatorId})}">Повернутися до профілю автора</a>
 
@@ -17,7 +17,7 @@
 <ul>
     <li th:each="review : ${reviews}">
         <p><strong>Автор:</strong> <span th:text="${review.user.name}"></span></p>
-        <p><strong>Оцінка:</strong> <span th:text="${review.rating}"></span></p>
+        <p><strong>Рейтинг:</strong> <span th:text="${review.rating}"></span></p>
         <p><strong>Текст:</strong> <span th:text="${review.text}"></span></p>
         <p><strong>Дата:</strong> <span th:text="${#temporals.format(review.reviewDate, 'dd-MM-yyyy HH:mm')}"></span></p>
         <hr>

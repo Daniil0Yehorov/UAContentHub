@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Профіль креатора</title>
+    <title>Профіль автора</title>
 </head>
 <body>
-<h1>Профіль креатора</h1>
+<h1>Профіль Автора</h1>
 
 <div th:if="${param.error}" style="color: red;">
     <p th:text="${param.error}"></p>
@@ -19,10 +19,26 @@
 <p>Опис: <span th:text="${profile.description}"/></p>
 <p>Рейтинг: <span th:text="${profile.rating}"/></p>
 <p>Підписників: <span th:text="${profile.subscribersCount}"></span></p>
+<h3>Соціальні мережі:</h3>
+<ul>
+    <li th:if="${profile.tiktok != null and !profile.tiktok.isEmpty()}">
+        <a th:href="${profile.tiktok}" target="_blank">TikTok</a>
+    </li>
+    <li th:if="${profile.instagram != null and !profile.instagram.isEmpty()}">
+        <a th:href="${profile.instagram}" target="_blank">Instagram</a>
+    </li>
+    <li th:if="${profile.twitch != null and !profile.twitch.isEmpty()}">
+        <a th:href="${profile.twitch}" target="_blank">Twitch</a>
+    </li>
+    <li th:if="${profile.youtube != null and !profile.youtube.isEmpty()}">
+        <a th:href="${profile.youtube}" target="_blank">YouTube</a>
+    </li>
+</ul>
+
 <a th:href="@{/creator/{id}/reviews(id=${profile.id})}">Переглянути всі рецензії на автора</a>
 
 <div th:if="${user != null}">
-<div th:if="${user.role.name() != 'CREATOR'}">
+<div th:if="${user.role.name() == 'USER'}">
     <div th:if="${isSubscribed}">
         <a th:href="@{/creator/{id}/unsubscribe(id=${profile.id})}">Відписатися</a>
     </div>
@@ -30,7 +46,7 @@
         <a th:href="@{/creator/{id}/subscribe(id=${profile.id})}">Підписатися</a>
     </div>
 </div>
-<div th:if="${user.role.name() != 'CREATOR'}">
+<div th:if="${user.role.name() == 'USER'}">
     <div th:if="${!hasReported}">
         <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
             <textarea name="reason" placeholder="Причина скарги" required></textarea>
@@ -41,7 +57,7 @@
         <p>Ви вже подали скаргу на цього креатора.</p>
     </div>
 </div>
-<div th:if="${userReview != null}">
+<div th:if="${userReview != null and user.role.name() == 'USER'}">
     <form th:action="@{/creator/{creatorId}/review/delete(creatorId=${profile.id})}" method="post">
         <input type="hidden" name="reviewId" th:value="${userReview.id}">
         <p> Видалити ви можете ваш відгук зі статусом "NOT APPROVED". Статус вашого:
@@ -49,9 +65,9 @@
         <button type="submit">Видалити</button>
     </form>
 </div>
-<div th:if="${userReview == null}">
+<div th:if="${userReview == null and user.role.name() == 'USER' }">
     <p>Відгук відсутній, створіть новий</p>
-    <div th:if="${user.role.name() != 'CREATOR'}">
+    <div th:if="${user.role.name() == 'USER'}">
         <form th:action="@{/creator/{creatorId}/review(creatorId=${profile.id})}" method="post">
             <textarea name="text" placeholder="Ваш відгук" required></textarea>
             <br>

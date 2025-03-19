@@ -20,15 +20,15 @@
 <p>Email: <span th:text="${user.email}"></span></p>
 <p>Роль у системі: <span th:text="${user.role}"></span></p>
 <div th:if="${user.role.name() == 'CREATOR'}">
-    <h2>Профіль контент-креатора</h2>
+    <h2>Додаткові дані для автора</h2>
     <img th:src="${user.profile.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}" alt="Avatar" style="max-width: 200px; max-height: 200px;">
     <p>Опис: <span th:text="${user.profile.description}"></span></p>
-    <p>TikTok: <span th:text="${user.profile.tiktok} ?: 'Не вказано'"></span></p>
-    <p>Instagram: <span th:text="${user.profile.instagram} ?: 'Не вказано'"></span></p>
-    <p>Twitch: <span th:text="${user.profile.twitch} ?: 'Не вказано'"></span></p>
-    <p>YouTube: <span th:text="${user.profile.youtube} ?: 'Не вказано'"></span></p>
-    <p>Subscribers: <span th:text="${user.profile.subscribersCount} ?: 'Не вказано'"></span></p>
-    <p>Rating: <span th:text="${user.profile.rating} ?: 'Не вказано'"></span></p>
+    <p>TikTok посилання: <span th:text="${user.profile.tiktok} ?: 'Не вказано'"></span></p>
+    <p>Instagram посилання: <span th:text="${user.profile.instagram} ?: 'Не вказано'"></span></p>
+    <p>Twitch посилання: <span th:text="${user.profile.twitch} ?: 'Не вказано'"></span></p>
+    <p>YouTube посилання: <span th:text="${user.profile.youtube} ?: 'Не вказано'"></span></p>
+    <p>Кількість підписників: <span th:text="${user.profile.subscribersCount} ?: 'Не вказано'"></span></p>
+    <p>Рейтинг: <span th:text="${user.profile.rating} ?: 'Не вказано'"></span></p>
 </div>
 <form action="/profile/update" method="post" enctype="multipart/form-data">
     <input type="text" name="email" placeholder="Новий Email">
