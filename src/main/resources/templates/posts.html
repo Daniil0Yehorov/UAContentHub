@@ -44,9 +44,8 @@
 
 <div th:each="post : ${posts}">
     <div>
-        <!-- <h3 th:text="${post.title}"></h3> додати ще атрибутів у пост, наприклад тема фотки-->
-        <p th:text="${post.content}"></p>
-        <p th:text="'Лайків: ' + ${post.likeCount}"></p>
+        <!-- <h3 th:text="${post.title}"></h3> додати ще атрибут назви поста-->
+        <p th:text="${post.content}"/>
         <div th:if="${post.phi != null}">
             <h4>Фотографії:</h4>
             <div class="images-grid">
@@ -54,7 +53,9 @@
             </div>
         </div>
         <div>
-            <p>Автор: <a th:href="@{/creator/{id}(id=${post.profile.user.id})}" th:text="${post.profile.user.name}"></a></p>
+            <p th:text="'Лайків: ' + ${post.likeCount}"/>
+            <p th:text="'Дата створення посту: ' + ${post.publishDate}"/>
+            <p>Автор: <a th:href="@{/creator/{id}(id=${post.profile.user.id})}" th:text="${post.profile.user.name}"/></p>
             <div th:if="${user.role.name() != 'CREATOR'}">
                 <form th:action="@{/posts/like/{postId}(postId=${post.id})}" method="post"
                     th:if="${user != null and postService != null and !(postService.isPostLikedByUser(post.id, user.id))}">

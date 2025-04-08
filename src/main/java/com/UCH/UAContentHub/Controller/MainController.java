@@ -44,9 +44,7 @@ public class MainController {
         model.addAttribute("creators", confirmedCreators);
         return "main";
     }
-
-    //ТРАБЛ якщо креатора тільки верифікували, то в неї не буде рейтинга. тобто відображатися буде тільки в загальному.
-    //тому треба зробити більш детальну фільтрацію
+    /*
     @GetMapping("/filter")
     public String filterCreators(
             @RequestParam(required = false) Set<String> tags,
@@ -67,6 +65,37 @@ public class MainController {
 
             model.addAttribute("recommendedCreators", recommendedCreators);
         }
+        return "main";
+    }*/
+    @GetMapping("/filter")
+    public String filterCreators(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Set<String> tags,
+            @RequestParam(defaultValue = "1") int minRating,
+            @RequestParam(defaultValue = "5") int maxRating,
+            @RequestParam(defaultValue = "0") int minSubscribers,
+            @RequestParam(defaultValue = "2147483646") int maxSubscribers,
+            Model model) {
+
+        User user = session.getUser();
+        if (tags == null) tags = Set.of();
+
+        List<Profile> filtered = contentService.filterCreators(name, tags, minRating, maxRating, minSubscribers, maxSubscribers);
+
+        model.addAttribute("creators", filtered);
+        model.addAttribute("tags", contentService.getAllTags());
+        model.addAttribute("selectedTags", tags);
+        model.addAttribute("user", user);
+        model.addAttribute("name", name);
+        model.addAttribute("minRating", minRating);
+        model.addAttribute("maxRating", maxRating);
+        model.addAttribute("minSubscribers", minSubscribers);
+        model.addAttribute("maxSubscribers", maxSubscribers);
+
+        if (user != null) {
+            model.addAttribute("recommendedCreators", contentService.getRecommendedCreators(user.getId()));
+        }
+
         return "main";
     }
 

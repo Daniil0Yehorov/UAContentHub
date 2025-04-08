@@ -30,13 +30,29 @@ public class ContentServiceImpl implements ContentService {
     public List<Profile> getConfirmedCreators() {
         return profileRepository.findByStatus(CreatorProfileStatus.CONFIRMED);
     }
-    @Override
+    /*@Override
     public List<Profile> filterByTagsAndRating(Set<String> tagNames, int minRating, int maxRating) {
         List<Tags> tags = tagsRepository.findByNameIn(tagNames);
 
         return profileRepository.findByStatusAndRatingBetween(CreatorProfileStatus.CONFIRMED, minRating, maxRating).stream()
                 .filter(profile -> {
                     Set<String> profileTags = profile.getPhs().stream()
+                            .map(phs -> phs.getTags().getName())
+                            .collect(Collectors.toSet());
+                    return profileTags.containsAll(tagNames);
+                })
+                .collect(Collectors.toList());
+    }*/
+    @Override
+    public List<Profile> filterCreators(String name, Set<String> tagNames, int minRating, int maxRating, int minSubscribers, int maxSubscribers) {
+        List<Tags> selectedTags = tagsRepository.findByNameIn(tagNames);
+
+        return profileRepository.findByStatus(CreatorProfileStatus.CONFIRMED).stream()
+                .filter(p -> name == null || p.getUser().getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(p -> p.getRating() >= minRating && p.getRating() <= maxRating)
+                .filter(p -> p.getSubscribersCount() >= minSubscribers && p.getSubscribersCount() <= maxSubscribers)
+                .filter(p -> {
+                    Set<String> profileTags = p.getPhs().stream()
                             .map(phs -> phs.getTags().getName())
                             .collect(Collectors.toSet());
                     return profileTags.containsAll(tagNames);

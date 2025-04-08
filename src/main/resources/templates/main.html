@@ -29,7 +29,7 @@
     <a href="/auth/login">Увійти</a>
     <a href="/auth/register">Зареєструватися</a>
 </div>
-
+<!--
 <form action="/filter" method="get">
     <label>Теги:</label>
     <div th:each="tag : ${tags}">
@@ -43,6 +43,31 @@
 
     <label for="maxRating">Максимальний рейтинг:</label>
     <input type="number" id="maxRating" name="maxRating" value="5" min="1" max="5">
+
+    <button type="submit">Фільтрувати</button>
+</form>-->
+<form action="/filter" method="get">
+    <label for="name">Ім'я автора:</label>
+    <input type="text" id="name" name="name" th:value="${name}">
+
+    <label>Теги:</label>
+    <div th:each="tag : ${tags}">
+        <input type="checkbox" th:id="'tag-' + ${tag.name}" th:name="tags" th:value="${tag.name}"
+               th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">
+        <label th:for="'tag-' + ${tag.name}" th:text="${tag.name}"></label>
+    </div>
+
+    <label for="minRating">Мін. рейтинг:</label>
+    <input type="number" id="minRating" name="minRating" min="1" max="5" th:value="${minRating}">
+
+    <label for="maxRating">Макс. рейтинг:</label>
+    <input type="number" id="maxRating" name="maxRating" min="1" max="5" th:value="${maxRating}">
+
+    <label for="minSubs">Мін. підписників:</label>
+    <input type="number" id="minSubs" name="minSubscribers" th:value="${minSubscribers}">
+
+    <label for="maxSubs">Макс. підписників:</label>
+    <input type="number" id="maxSubs" name="maxSubscribers" th:value="${maxSubscribers}">
 
     <button type="submit">Фільтрувати</button>
 </form>
