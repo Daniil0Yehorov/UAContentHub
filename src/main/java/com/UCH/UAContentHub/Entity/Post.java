@@ -26,6 +26,9 @@ public class Post {
     @Column(nullable = false, length =65535)
     private String content;
 
+    @Column(nullable = false, length = 120)
+    private String title;
+
     @Column(nullable = false,name = "Publish_Date")
     private LocalDateTime publishDate;
 

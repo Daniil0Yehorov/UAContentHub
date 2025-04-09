@@ -66,6 +66,7 @@ public class AuthController {
             profile.setDescription("Description for User" + i);
 
             Post newPost=new Post();
+            newPost.setTitle("назвачизаголовокпосту"+i);
             newPost.setPublishDate(LocalDateTime.now());
             newPost.setContent("KFKFKFKFKKFKFKFKFKFKFKK"+i);
             newPost.setProfile(profile);
@@ -222,12 +223,14 @@ public class AuthController {
                 return "redirect:/auth/login";
             }
             session.setUser(user);
+            if(user.getRole()==Role.ADMIN){return "redirect:/adminpanel";}
             return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Помилка під час входу: " + e.getMessage());
             return "redirect:/auth/login";
         }
     }
+
     @GetMapping("/logout")
     public String logout() {
         session.clear();

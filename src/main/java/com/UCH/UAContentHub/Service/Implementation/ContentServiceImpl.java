@@ -30,19 +30,7 @@ public class ContentServiceImpl implements ContentService {
     public List<Profile> getConfirmedCreators() {
         return profileRepository.findByStatus(CreatorProfileStatus.CONFIRMED);
     }
-    /*@Override
-    public List<Profile> filterByTagsAndRating(Set<String> tagNames, int minRating, int maxRating) {
-        List<Tags> tags = tagsRepository.findByNameIn(tagNames);
 
-        return profileRepository.findByStatusAndRatingBetween(CreatorProfileStatus.CONFIRMED, minRating, maxRating).stream()
-                .filter(profile -> {
-                    Set<String> profileTags = profile.getPhs().stream()
-                            .map(phs -> phs.getTags().getName())
-                            .collect(Collectors.toSet());
-                    return profileTags.containsAll(tagNames);
-                })
-                .collect(Collectors.toList());
-    }*/
     @Override
     public List<Profile> filterCreators(String name, Set<String> tagNames, int minRating, int maxRating, int minSubscribers, int maxSubscribers) {
         List<Tags> selectedTags = tagsRepository.findByNameIn(tagNames);

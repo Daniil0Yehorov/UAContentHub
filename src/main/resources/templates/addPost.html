@@ -10,6 +10,8 @@
 
 <h2>Створення нового посту</h2>
 <form th:action="@{/posts/add}" method="post" enctype="multipart/form-data">
+    <label for="title">Заголовок посту:</label>
+    <input type="text" id="title" name="title" required th:value="${title}">
     <label for="content">Опис посту:</label>
     <textarea id="content" name="content" required></textarea>
     <input type="file" name="images" multiple>

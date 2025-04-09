@@ -36,6 +36,7 @@
     <select id="filter" name="filter">
         <option value="" th:selected="${filter == null}">Усі пости різних авторів</option>
         <option value="subscribed" th:selected="${filter == 'subscribed'}">Пости авторів на яких ви підписані</option>
+        <!--додати рекомендаційні пости на основі залайканих постів користувача за заголовком постів-->
     </select>
     <button type="submit">Фільтрувати</button>
 </form>
@@ -44,7 +45,7 @@
 
 <div th:each="post : ${posts}">
     <div>
-        <!-- <h3 th:text="${post.title}"></h3> додати ще атрибут назви поста-->
+        <h3 th:text="${post.title}"/>
         <p th:text="${post.content}"/>
         <div th:if="${post.phi != null}">
             <h4>Фотографії:</h4>

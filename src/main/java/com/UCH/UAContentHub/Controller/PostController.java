@@ -121,6 +121,7 @@ public class PostController {
 
     @PostMapping("/add")
     public String addPost(@RequestParam String content,
+                          @RequestParam String title,
                           @RequestParam(required = false) MultipartFile[] images,
                           RedirectAttributes redirectAttributes) {
         User currentUser = session.getUser();
@@ -134,6 +135,7 @@ public class PostController {
         }
 
         Post post = new Post();
+        post.setTitle(title);
         post.setContent(content);
         post.setProfile(currentUser.getProfile());
         post.setPublishDate(LocalDateTime.now());
@@ -160,6 +162,7 @@ public class PostController {
 
     @PostMapping("/update/{postId}")
     public String updatePost(@PathVariable int postId, @RequestParam String content,
+                             @RequestParam String title,
                              RedirectAttributes redirectAttributes) {
 
         User currentUser = session.getUser();
@@ -177,6 +180,7 @@ public class PostController {
 
         if (post.getProfile().getUser().getId() == currentUser.getId()) {
             post.setContent(content);
+            post.setTitle(title);
             postService.updatePost(post);}
 
         return "redirect:/posts";

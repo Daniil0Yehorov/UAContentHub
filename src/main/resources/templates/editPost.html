@@ -14,7 +14,11 @@
     <form th:action="@{/posts/update/{postId}(postId=${post.id})}" method="post">
         <div>
             <label for="content">Контент:</label>
-            <textarea id="content" name="content" th:value="${post.content}" rows="5" cols="50" required></textarea>
+            <textarea id="content" name="content" th:text="${post.content}" rows="5" cols="50" required/>
+        </div>
+        <div>
+            <label for="title">Заголовок:</label>
+            <input type="text" id="title" name="title" th:value="${post.title}" required/>
         </div>
 
         <div>
