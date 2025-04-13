@@ -29,4 +29,6 @@ public interface PostService {
     void CreatePostwithImages(Post post, MultipartFile[] images);
     //переверіка наявності репорту на пост від користувача
     boolean hasUserReportedPost(int userId, int postId);
+    //отримання 5 рекомендаційних постів згідно схожих вподобайок певного користувача
+    List<Post> getRecommendedPosts(int userId);
 }

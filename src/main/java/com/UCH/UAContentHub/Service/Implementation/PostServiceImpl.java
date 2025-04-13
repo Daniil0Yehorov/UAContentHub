@@ -4,8 +4,13 @@ import com.UCH.UAContentHub.Entity.*;
 import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.PostService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +24,8 @@ import java.util.List;
 @Service("postService")
 @AllArgsConstructor
 public class PostServiceImpl implements PostService {
+    @Autowired
+    private EntityManager entityManager;
 
     private PostRepository postRepository;
     private LikesRepository likesRepository;
@@ -214,5 +221,54 @@ public class PostServiceImpl implements PostService {
     public boolean hasUserReportedPost(int userId, int postId) {
         return complaintRepository.existsByUserIdAndPostId(userId, postId);
     }
+    @Override
+    public List<Post> getRecommendedPosts(int userId) {
+        Query query = entityManager.createNativeQuery("SELECT GetRecommendedPosts(:userId)");
+        query.setParameter("userId", userId);
+        String resultJson = (String) query.getSingleResult();
 
+        if (resultJson == null || resultJson.equals("[]")) {
+            return List.of();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Integer> recommendedIds;
+        try {
+            recommendedIds = objectMapper.readValue(resultJson, new TypeReference<List<Integer>>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Помилка парсингу JSON", e);
+        }
+
+        return postRepository.findAllById(recommendedIds);
+    }
+    //функція з бд
+    /*CREATE FUNCTION GetRecommendedPosts(UID INT)
+RETURNS JSON DETERMINISTIC
+BEGIN
+    DECLARE liked_titles TEXT;
+    DECLARE recommended JSON DEFAULT NULL;
+
+    -- Отримуємо всі назви вподобаних постів, розділені пробілами
+    SELECT GROUP_CONCAT(title SEPARATOR ' ') INTO liked_titles
+    FROM Post
+    WHERE id IN (SELECT PostID FROM Likes WHERE UserID = UID);
+
+    IF liked_titles IS NULL THEN
+        RETURN JSON_ARRAY(); -- Користувач ще нічого не вподобав
+    END IF;
+
+    -- Знаходимо інші пости, схожі за назвою
+    SET recommended = (
+        SELECT JSON_ARRAYAGG(p.id)
+        FROM Post p
+        WHERE p.id NOT IN (SELECT PostID FROM Likes WHERE UserID = UID)
+          AND (
+              MATCH(p.title) AGAINST (SUBSTRING_INDEX(liked_titles, ' ', 1) IN NATURAL LANGUAGE MODE) OR
+              MATCH(p.title) AGAINST (SUBSTRING_INDEX(SUBSTRING_INDEX(liked_titles, ' ', 2), ' ', -1) IN NATURAL LANGUAGE MODE)
+          )
+        LIMIT 5
+    );
+
+    RETURN COALESCE(recommended, JSON_ARRAY());
+END*/
 }

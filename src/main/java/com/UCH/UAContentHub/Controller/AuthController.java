@@ -66,7 +66,7 @@ public class AuthController {
             profile.setDescription("Description for User" + i);
 
             Post newPost=new Post();
-            newPost.setTitle("назвачизаголовокпосту"+i);
+            newPost.setTitle("назвачизаголовокпосту");
             newPost.setPublishDate(LocalDateTime.now());
             newPost.setContent("KFKFKFKFKKFKFKFKFKFKFKK"+i);
             newPost.setProfile(profile);
@@ -135,7 +135,7 @@ public class AuthController {
     }
     @GetMapping("/register")
     public String showRegistrationPage() {
-        //initData();
+        initData();
         return "register";
     }
 

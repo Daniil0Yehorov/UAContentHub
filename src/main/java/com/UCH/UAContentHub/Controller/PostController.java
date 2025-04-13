@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -33,25 +34,35 @@ public class PostController {
 
     @GetMapping
     public String ShowPostsPage(@RequestParam(required = false) String filter, Model model) {
-        User currentUser = session.getUser();
 
         if (!session.isPresent()) {
             return "redirect:/auth/login";
         }
 
+        User currentUser = session.getUser();
+
         List<Post> posts;
+        List<Post> recommendedPosts = new ArrayList<>();;
         if (currentUser.getRole() == Role.CREATOR) {
             posts = postService.getPostsByUserSortedByDate(currentUser.getId());
         } else {
-            if ("subscribed".equals(filter)) {
-                posts = postService.getPostsBySubscribedCreators(currentUser.getId());
-            } else {
-                posts = postService.getAllPostsByCreators();
-            }
-        }
+            recommendedPosts = postService.getRecommendedPosts(currentUser.getId());
 
+            switch (filter != null ? filter : "") {
+                case "subscribed":
+                    posts= postService.getPostsBySubscribedCreators(currentUser.getId());
+                    break;
+                default:
+                    posts = postService.getAllPostsByCreators();
+            }
+
+            posts.removeAll(recommendedPosts);
+
+        }
         model.addAttribute("posts", posts);
         model.addAttribute("user", currentUser);
+        model.addAttribute("recommendedPosts", recommendedPosts);
+        model.addAttribute("filter", filter);
         model.addAttribute("postService", postService);
         return "posts";
     }

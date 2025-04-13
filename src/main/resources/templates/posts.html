@@ -36,10 +36,51 @@
     <select id="filter" name="filter">
         <option value="" th:selected="${filter == null}">Усі пости різних авторів</option>
         <option value="subscribed" th:selected="${filter == 'subscribed'}">Пости авторів на яких ви підписані</option>
-        <!--додати рекомендаційні пости на основі залайканих постів користувача за заголовком постів-->
     </select>
     <button type="submit">Фільтрувати</button>
 </form>
+</div>
+<div th:if="${user != null and user.role.name() == 'USER' and recommendedPosts != null and not recommendedPosts.isEmpty()}">
+<h1>Рекомендовані пости</h1>
+    <div th:each="post : ${recommendedPosts}">
+        <div class="post-container">
+            <h3 th:text="${post.title}"/>
+            <p th:text="${post.content}"/>
+            <div th:if="${post.phi != null}">
+                <h4>Фотографії:</h4>
+                <div class="images-grid">
+                    <img th:each="phi : ${post.phi}" th:src="${phi.image.src}" alt="Image for post"/>
+                </div>
+            </div>
+            <div>
+                <p th:text="'Лайків: ' + ${post.likeCount}"/>
+                <p th:text="'Дата створення посту: ' + ${post.publishDate}"/>
+                <p>Автор: <a th:href="@{/creator/{id}(id=${post.profile.user.id})}" th:text="${post.profile.user.name}"/></p>
+                <div th:if="${user.role.name() != 'CREATOR'}">
+                    <form th:action="@{/posts/like/{postId}(postId=${post.id})}" method="post"
+                          th:if="${user != null and postService != null and !(postService.isPostLikedByUser(post.id, user.id))}">
+                        <button type="submit">Лайк</button>
+                    </form>
+
+                    <form th:action="@{/posts/unlike/{postId}(postId=${post.id})}" method="post"
+                          th:if="${user != null and postService != null and postService.isPostLikedByUser(post.id, user.id)}">
+                        <button type="submit">Прибрати лайк</button>
+                    </form>
+                    <details th:if="${user != null and postService != null and !postService.hasUserReportedPost(user.id, post.id)}">
+                        <summary>Поскаржитися</summary>
+                        <form th:action="@{/posts/report/{postId}(postId=${post.id})}" method="post">
+                            <label th:for="'reason_' + ${post.id}">Причина:</label>
+                            <textarea id="'reason_' + ${post.id}" name="reason" rows="3" required></textarea>
+                            <button type="submit">Відправити скаргу</button>
+                        </form>
+                    </details>
+                    <p th:if="${user != null and postService != null and postService.hasUserReportedPost(user.id, post.id)}">
+                        Ви вже поскаржилися на цей пост
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <h1>Пости</h1>
 
@@ -86,7 +127,7 @@
     </div>
 </div>
 <div th:if="${error}">
-    <p th:text="${error}"></p>
+    <p th:text="${error}"/>
 </div>
 </body>
 </html>
