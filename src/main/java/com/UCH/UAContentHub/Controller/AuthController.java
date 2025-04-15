@@ -8,7 +8,6 @@ import com.UCH.UAContentHub.Service.Interface.AuthService;
 import com.UCH.UAContentHub.bean.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,7 +46,7 @@ public class AuthController {
         List<Review> reviews = new ArrayList<>();
         List<Subscription> subscriptions = new ArrayList<>();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 8; i++) {
             User user = new User();
             user.setName("User" + i);
             user.setLogin("User" + i + "Login");
@@ -57,7 +56,7 @@ public class AuthController {
             user.setRegistrationDate(LocalDateTime.now());
 
             Profile profile = new Profile();
-            profile.setStatus(CreatorProfileStatus.CONFIRMED);
+            profile.setStatus(CreatorProfileStatus.PENDING);//or confirmed
             profile.setTiktok("https://tiktok.com/user" + i);
             profile.setInstagram("https://instagram.com/user" + i);
             profile.setTwitch("https://twitch.tv/user" + i);
@@ -131,14 +130,21 @@ public class AuthController {
         postRepository.saveAll(posts);
         reviewRepository.saveAll(reviews);
         subscriptionRepository.saveAll(subscriptions);
-        //зміна статусу ревью у бд скриптах
+        User ADminuser=new User();
+        ADminuser.setName("ADMIIIIINCHIK2332");
+        ADminuser.setLogin("Administrator1");
+        ADminuser.setPassword("AdminPassword");
+        ADminuser.setEmail("Admin1@gmail.com");
+        ADminuser.setRole(Role.ADMIN);
+        ADminuser.setRegistrationDate(LocalDateTime.now());
+        userRepository.save(ADminuser);
     }
     @GetMapping("/register")
     public String showRegistrationPage() {
         initData();
         return "register";
     }
-
+    //додати потім шифратор паролів
     @PostMapping("/register")
     public String registerUser(@RequestParam("login") String login,
                            @RequestParam("password") String password,
@@ -212,6 +218,7 @@ public class AuthController {
         return "login";
     }
 
+    //додати потім шифратор паролів
     @PostMapping("/login")
     public String login(@RequestParam("login") String login,
                         @RequestParam("password") String password,

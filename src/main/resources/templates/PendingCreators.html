@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Неперевірені автори</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #000;
+            text-align: left;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        a.button-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        a.button-link:hover {
+            background-color: #0056b3;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+<a class="button-link" href="/adminpanel">← Назад до адміністративної панелі</a>
+
+<form method="post" th:action="@{/adminpanel/deleteUnconfirmed}">
+    <button type="submit">Видалити всіх непідтверджених авторів</button>
+</form>
+<div th:if="${message}" style="color: green; font-weight: bold; margin-top: 15px;">
+    <p th:text="${message}"></p>
+</div>
+<h2>Список неперевірених авторів</h2>
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Ім’я</th>
+        <th>Логін</th>
+        <th>Email</th>
+        <th>Дата реєстрації</th>
+        <th>Дія</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="creator, iter : ${pendingCreators}">
+        <td th:text="${iter.index + 1}">1</td>
+        <td th:text="${creator.name}">Ім’я</td>
+        <td th:text="${creator.login}">Логін</td>
+        <td th:text="${creator.email}">Email</td>
+        <td th:text="${creator.RegistrationDate}">Дата реєстрації автора</td>
+        <td>
+            <a class="button-link" th:href="@{/adminpanel/creator/confirm/{id}(id=${creator.id})}">Підтвердити автора</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

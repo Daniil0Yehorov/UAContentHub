@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Адміністраційна панель</title>
+</head>
+<body>
+<!--навігація-->
+<a href="/auth/logout">Вихід з облікового запису</a>
+<a href="/adminpanel/Allcreators">Перейти на сторінку неперевірених авторів</a>
+<!--
+<a href="/">Перейти на сторінку неперевірених рецензій</a>
+<a href="/">Перейти на сторінку неперевірених скарг</a>
+-->
+
+<h1>Ласкаво просимо на адміністраційну панель! <span th:text="${user.name}"/></h1>
+
+
+</body>
+</html>

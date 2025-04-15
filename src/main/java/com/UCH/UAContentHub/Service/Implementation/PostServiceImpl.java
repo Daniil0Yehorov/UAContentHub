@@ -242,16 +242,19 @@ public class PostServiceImpl implements PostService {
         return postRepository.findAllById(recommendedIds);
     }
     //функція з бд
-    /*CREATE FUNCTION GetRecommendedPosts(UID INT)
+    /*DELIMITER //
+
+CREATE FUNCTION GetRecommendedPosts(UID INT)
 RETURNS JSON DETERMINISTIC
 BEGIN
     DECLARE liked_titles TEXT;
     DECLARE recommended JSON DEFAULT NULL;
 
-    -- Отримуємо всі назви вподобаних постів, розділені пробілами
+    -- Отримуємо назви тільки перших 10 вподобаних постів
     SELECT GROUP_CONCAT(title SEPARATOR ' ') INTO liked_titles
     FROM Post
-    WHERE id IN (SELECT PostID FROM Likes WHERE UserID = UID);
+    WHERE id IN (SELECT PostID FROM Likes WHERE UserID = UID)
+    LIMIT 10;
 
     IF liked_titles IS NULL THEN
         RETURN JSON_ARRAY(); -- Користувач ще нічого не вподобав
@@ -260,15 +263,20 @@ BEGIN
     -- Знаходимо інші пости, схожі за назвою
     SET recommended = (
         SELECT JSON_ARRAYAGG(p.id)
-        FROM Post p
-        WHERE p.id NOT IN (SELECT PostID FROM Likes WHERE UserID = UID)
-          AND (
-              MATCH(p.title) AGAINST (SUBSTRING_INDEX(liked_titles, ' ', 1) IN NATURAL LANGUAGE MODE) OR
-              MATCH(p.title) AGAINST (SUBSTRING_INDEX(SUBSTRING_INDEX(liked_titles, ' ', 2), ' ', -1) IN NATURAL LANGUAGE MODE)
-          )
-        LIMIT 5
+        FROM( SELECT p.id
+    FROM Post p
+    WHERE p.id NOT IN (SELECT PostID FROM Likes WHERE UserID = UID)
+      AND (
+          MATCH(p.title) AGAINST (SUBSTRING_INDEX(liked_titles, ' ', 1) IN NATURAL LANGUAGE MODE) OR
+          MATCH(p.title) AGAINST (SUBSTRING_INDEX(SUBSTRING_INDEX(liked_titles, ' ', 2), ' ', -1) IN NATURAL LANGUAGE MODE)
+      )
+    ORDER BY RAND()
+    LIMIT 5
+) AS p
     );
 
     RETURN COALESCE(recommended, JSON_ARRAY());
-END*/
+END //
+
+DELIMITER ;*/
 }

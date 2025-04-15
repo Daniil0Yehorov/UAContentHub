@@ -44,29 +44,7 @@ public class MainController {
         model.addAttribute("creators", confirmedCreators);
         return "main";
     }
-    /*
-    @GetMapping("/filter")
-    public String filterCreators(
-            @RequestParam(required = false) Set<String> tags,
-            @RequestParam(defaultValue = "1") int minRating,
-            @RequestParam(defaultValue = "5") int maxRating,
-            Model model) {
-        User user = session.getUser();
-        if (tags == null) {
-            tags = Set.of();
-        }
-        List<Profile> filteredCreators = contentService.filterByTagsAndRating(tags, minRating, maxRating);
-        model.addAttribute("creators", filteredCreators);
-        model.addAttribute("tags", contentService.getAllTags());
-        model.addAttribute("selectedTags", tags);
-        model.addAttribute("user", user);
-        if (user != null) {
-            List<Profile> recommendedCreators = contentService.getRecommendedCreators(user.getId());
 
-            model.addAttribute("recommendedCreators", recommendedCreators);
-        }
-        return "main";
-    }*/
     @GetMapping("/filter")
     public String filterCreators(
             @RequestParam(required = false) String name,

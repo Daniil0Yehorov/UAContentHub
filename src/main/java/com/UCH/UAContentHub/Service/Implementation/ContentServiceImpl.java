@@ -85,18 +85,22 @@ BEGIN
     DECLARE recommended JSON DEFAULT NULL;
 
     SET recommended = (
-        SELECT JSON_ARRAYAGG(subq.CreatorID)
+        SELECT JSON_ARRAYAGG(id)
         FROM (
-            SELECT DISTINCT s_other.CreatorID
+            SELECT DISTINCT s_other.CreatorID AS id
             FROM Subscription s_self
             JOIN Subscription s_other ON s_self.UserID = s_other.UserID
             WHERE s_self.CreatorID IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
               AND s_other.CreatorID NOT IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
               AND s_other.CreatorID <> UID
-        ) AS subq
+            ORDER BY RAND()
+            LIMIT 5
+        ) AS recommended_random
     );
 
     RETURN COALESCE(recommended, JSON_ARRAY());
-END //*/
+END //
+
+DELIMITER // //*/
 
 }
