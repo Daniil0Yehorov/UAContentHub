@@ -1,6 +1,10 @@
 package com.UCH.UAContentHub.Service.Implementation;
 
+import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
+import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
+import com.UCH.UAContentHub.Entity.Review;
 import com.UCH.UAContentHub.Entity.User;
+import com.UCH.UAContentHub.Repository.ReviewRepository;
 import com.UCH.UAContentHub.Repository.UserRepository;
 import com.UCH.UAContentHub.Service.Interface.AdminService;
 import jakarta.persistence.EntityManager;
@@ -17,6 +21,9 @@ public class AdminServiceImpl implements AdminService {
     private EntityManager entityManager;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    ReviewRepository reviewRepository;
+
 
     @Override
     @Transactional
@@ -42,7 +49,7 @@ DELIMITER $$
 
     @Override
     @Transactional
-    public void deleteOldNotApproveReviews() {//процедура з бд
+    public void deleteOldNotApprovedReviews() {//процедура з бд
         Query query = entityManager.createNativeQuery("CALL DeleteOldNotApprovedReviews()");//название поменять функции
         query.executeUpdate();
     }
@@ -63,14 +70,13 @@ DELIMITER $$
 
     @Override//ручне видалення, а Є ще автоматичне при 5 скаргах
     @Transactional
-    public void deleteAuthor(int userID) {
+    public void deleteCreator(int userID) {
 
         User user = userRepository.findById(userID).orElse(null);
         if(user!=null){
             userRepository.delete(user);
         }
-        //мб краще через процедуру
-        Query query = entityManager.createNativeQuery("CALL DELETEAuthor(:userID)");
+        Query query = entityManager.createNativeQuery("CALL DELETECREATOR(:userID)");
         query.setParameter("userID", userID);
         query.executeUpdate();
     }
@@ -78,13 +84,19 @@ DELIMITER $$
     /*
     DELIMITER $$
 
-CREATE PROCEDURE DELETEAuthor(IN userID INT)
+CREATE PROCEDURE DELETECREATOR(IN userID INT)
 BEGIN
     DELETE FROM User WHERE id = userID;
 END$$
 
 DELIMITER ;
      */
+    @Override
+    public void changeCreatorStatus(int id, CreatorProfileStatus status) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Користувача не знайдено"));
+        user.getProfile().setStatus(status);
+        userRepository.save(user);
+    }
 
     @Override
     public List<User> getPendingCreators() {
@@ -94,6 +106,19 @@ DELIMITER ;
     public User getCreatorById(int id){
         return  userRepository.findById(id).orElse(null);
     }
-
+    @Override
+    public List<Review> getPendingReviews() {
+        return reviewRepository.findPendingReviews();
+    }
+    @Override
+    public Review getReviewById(int id){
+        return  reviewRepository.findById(id).orElse(null);
+    }
+    @Override
+    public void changeReviewStatus(int id, ReviewStatus status) {
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("рецензії не знайдено"));
+        review.setStatus(status);
+        reviewRepository.save(review);
+    }
 
 }

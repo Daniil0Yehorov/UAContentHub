@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Підтвердження рецензії</title>
+</head>
+<body>
+<h2>Перевірка даних рецензії</h2>
+
+<div th:if="${review != null}">
+    <p><strong>Логін автора рецензії:</strong>
+        <span th:text="${review.user.login}"></span></p>
+    <p><strong>Логін автора на якого написали рецензію:</strong>
+        <span th:text="${review.creator.login}"></span></p>
+    <p><strong>Текст рецензії:</strong>
+        <span th:text="${review.text}"></span></p>
+    <p><strong>Рейтинг за рецензією:</strong>
+        <span th:text="${review.rating}"></span></p>
+    <p><strong>Поточний рейтинг автора:</strong>
+        <span th:text="${review.creator.profile.rating}"></span></p>
+    <p><strong>Дата створення рецензії:</strong>
+        <span th:text="${review.ReviewDate}"></span></p>
+
+    <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post" style="display:inline;">
+        <input type="hidden" name="status" value="APPROVED"/>
+        <button type="submit">✅ Підтвердити</button>
+    </form>
+
+    <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post" style="display:inline;">
+        <input type="hidden" name="status" value="NOT_APPROVED"/>
+        <button type="submit">❌ Не підтверджувати</button>
+    </form>
+<!--можливо додати,бо при порушенні у рецензії треба буде видалити користувача який написав її
+    <form th:action="@{'/adminpanel/deleteReview/' + ${creator.id}}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Точно видалити?')">🗑 Видалити</button>
+    </form>-->
+</div>
+
+<a href="/adminpanel/AllReviews">⬅ Назад до списку</a>
+
+</body>
+</html>

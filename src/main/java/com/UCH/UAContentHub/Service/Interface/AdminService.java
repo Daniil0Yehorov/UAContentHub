@@ -1,13 +1,20 @@
 package com.UCH.UAContentHub.Service.Interface;
 
 
+import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
+import com.UCH.UAContentHub.Entity.Review;
 import com.UCH.UAContentHub.Entity.User;
+import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import java.util.List;
 
 public interface AdminService {
     void deleteUnconfirmedCreators();
-    void deleteOldNotApproveReviews();
-    void deleteAuthor(int userID);
+    void deleteOldNotApprovedReviews();
+    void deleteCreator(int userID);
     List<User> getPendingCreators();
     User getCreatorById(int id);
+    void changeCreatorStatus(int id, CreatorProfileStatus status);
+    List<Review> getPendingReviews();
+    Review getReviewById(int id);
+    void changeReviewStatus(int id, ReviewStatus status);
 }

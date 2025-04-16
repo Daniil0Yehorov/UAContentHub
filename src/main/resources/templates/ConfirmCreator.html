@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Підтвердження автора</title>
+</head>
+<body>
+<h2>Перевірка даних автора</h2>
+
+<div th:if="${creator != null}">
+    <p><strong>Логін:</strong> <span th:text="${creator.login}"></span></p>
+    <p><strong>Ім’я:</strong> <span th:text="${creator.name}"></span></p>
+    <p><strong>Пошта:</strong> <span th:text="${creator.email}"></span></p>
+
+    <p><strong>TikTok:</strong>
+        <a th:href="${creator.profile.tiktok}" th:text="${creator.profile.tiktok}"></a></p>
+    <p><strong>Instagram:</strong>
+        <a th:href="${creator.profile.instagram}" th:text="${creator.profile.instagram}"></a></p>
+    <p><strong>Twitch:</strong>
+        <a th:href="${creator.profile.twitch}" th:text="${creator.profile.twitch}"></a></p>
+    <p><strong>YouTube:</strong>
+        <a th:href="${creator.profile.youtube}" th:text="${creator.profile.youtube}"></a></p>
+
+    <div>
+        <strong>Аватар:</strong><br>
+        <img th:src="@{${creator.profile.avatarURL}}" alt="Avatar" width="200" height="200"/>
+    </div>
+
+    <p><strong>Опис:</strong> <span th:text="${creator.profile.description}"></span></p>
+    <p><strong>Рейтинг:</strong> <span th:text="${creator.profile.rating}"></span></p>
+    <p><strong>Підписників:</strong> <span th:text="${creator.profile.subscribersCount}"></span></p>
+
+    <form th:action="@{'/adminpanel/changeCreatorStatus/' + ${creator.id}}" method="post" style="display:inline;">
+        <input type="hidden" name="status" value="CONFIRMED"/>
+        <button type="submit">✅ Підтвердити</button>
+    </form>
+
+    <form th:action="@{'/adminpanel/changeCreatorStatus/' + ${creator.id}}" method="post" style="display:inline;">
+        <input type="hidden" name="status" value="UNCONFIRMED"/>
+        <button type="submit">❌ Відхилити</button>
+    </form>
+
+    <form th:action="@{'/adminpanel/deleteCreator/' + ${creator.id}}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Точно видалити?')">🗑 Видалити</button>
+    </form>
+</div>
+
+<a href="/adminpanel/Allcreators">⬅ Назад до списку</a>
+
+</body>
+</html>

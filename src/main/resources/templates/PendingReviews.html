@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Неперевірені автори</title>
+    <title>Неперевірені рецензії</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,33 +57,31 @@
 
 <a class="button-link" href="/adminpanel">← Назад до адміністративної панелі</a>
 
-<form method="post" th:action="@{/adminpanel/deleteUnconfirmedCreators}">
-    <button type="submit">Видалити всіх непідтверджених авторів</button>
+<form method="post" th:action="@{/adminpanel/deleteNotApprovedReviews}">
+    <button type="submit">Видалити усі непідтверджені рецензії</button>
 </form>
 <div th:if="${message}" style="color: green; font-weight: bold; margin-top: 15px;">
     <p th:text="${message}"></p>
 </div>
-<h2>Список неперевірених авторів</h2>
+<h2>Список неперевірених рецензій</h2>
 <table>
     <thead>
     <tr>
         <th>#</th>
-        <th>Ім’я</th>
-        <th>Логін</th>
-        <th>Email</th>
-        <th>Дата реєстрації</th>
+        <th>Логін автора рецензії</th>
+        <th>Логін автора на якого написана рецензія</th>
+        <th>Дата створення рецензії</th>
         <th>Дія</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="creator, iter : ${pendingCreators}">
+    <tr th:each="review, iter : ${pendingReviews}">
         <td th:text="${iter.index + 1}">1</td>
-        <td th:text="${creator.name}">Ім’я</td>
-        <td th:text="${creator.login}">Логін</td>
-        <td th:text="${creator.email}">Email</td>
-        <td th:text="${creator.RegistrationDate}">Дата реєстрації автора</td>
+        <td th:text="${review.user.login}">Логін</td>
+        <td th:text="${review.creator.login}">Логін</td>
+        <td th:text="${review.ReviewDate}">Дата створення рецензії</td>
         <td>
-            <a class="button-link" th:href="@{/adminpanel/Allcreators/creator/{id}(id=${creator.id})}">Підтвердити автора</a>
+            <a class="button-link" th:href="@{/adminpanel/AllReviews/review/{id}(id=${review.id})}">Підтвердити рецензію</a>
         </td>
     </tr>
     </tbody>
