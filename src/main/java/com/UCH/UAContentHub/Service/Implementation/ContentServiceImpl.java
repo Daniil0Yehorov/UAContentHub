@@ -90,9 +90,11 @@ BEGIN
             SELECT DISTINCT s_other.CreatorID AS id
             FROM Subscription s_self
             JOIN Subscription s_other ON s_self.UserID = s_other.UserID
+            JOIN Profile p ON s_other.CreatorID = p.UserID
             WHERE s_self.CreatorID IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
               AND s_other.CreatorID NOT IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
               AND s_other.CreatorID <> UID
+              AND p.Status = 'CONFIRMED'
             ORDER BY RAND()
             LIMIT 5
         ) AS recommended_random
@@ -101,6 +103,6 @@ BEGIN
     RETURN COALESCE(recommended, JSON_ARRAY());
 END //
 
-DELIMITER // //*/
+DELIMITER //*/
 
 }

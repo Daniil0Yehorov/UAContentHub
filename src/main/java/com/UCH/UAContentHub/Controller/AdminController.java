@@ -1,5 +1,7 @@
 package com.UCH.UAContentHub.Controller;
 
+import com.UCH.UAContentHub.Entity.Complaint;
+import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
 import com.UCH.UAContentHub.Entity.Review;
@@ -116,4 +118,36 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/adminpanel/AllReviews";
     }
+
+    @GetMapping("/AllComplaints")
+    public String  ShowPendingComplaintsPage(Model model)
+    {
+        if(!session.isPresent()){return "redirect:/auth/login";}
+        List<Complaint> complaints = adminService.getPendingComplaints();
+        model.addAttribute("pendingComplaints",complaints);
+        return "PendingComplaints";
+    }
+
+    @GetMapping("/AllComplaints/complaint/{id}")
+    public  String ShowConfirmComplaintPage(@PathVariable int id, Model model)
+    {
+        if(!session.isPresent()){return "redirect:/auth/login";}
+        Complaint complaint = adminService.getComplaintById(id);
+        model.addAttribute("complaint",complaint);
+        return "ConfirmComplaint";
+    }
+
+    @PostMapping("changeComplaintStatus/{id}")
+    public  String ChangeComplaintStatus(@PathVariable int id, @RequestParam("status")ComplaintStatus status,
+                                         RedirectAttributes redirectAttributes)
+    {
+        adminService.changeComplaintStatus(id, status);
+        String message = switch (status) {
+            case  RESOLVED-> "Скарга вирішена.";
+            case  DISMISSED-> "Скарга відхилена.";
+            default -> "Статус рецензії оновлено.";
+        };
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/adminpanel/AllComplaints";}
+
 }

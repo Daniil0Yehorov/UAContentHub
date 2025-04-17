@@ -1,11 +1,14 @@
 package com.UCH.UAContentHub.Service.Implementation;
 
+import com.UCH.UAContentHub.Entity.Complaint;
+import com.UCH.UAContentHub.Entity.Enum.ComplaintStatus;
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
 import com.UCH.UAContentHub.Entity.Review;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Repository.ReviewRepository;
 import com.UCH.UAContentHub.Repository.UserRepository;
+import com.UCH.UAContentHub.Repository.ComplaintRepository;
 import com.UCH.UAContentHub.Service.Interface.AdminService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -23,6 +26,8 @@ public class AdminServiceImpl implements AdminService {
     UserRepository userRepository;
     @Autowired
     ReviewRepository reviewRepository;
+    @Autowired
+    ComplaintRepository complaintRepository;
 
 
     @Override
@@ -120,5 +125,19 @@ DELIMITER ;
         review.setStatus(status);
         reviewRepository.save(review);
     }
+    @Override
+    public List<Complaint> getPendingComplaints() {
+        return complaintRepository.findPendingComplaints();
+    }
+    @Override
+    public Complaint getComplaintById(int id){
+        return  complaintRepository.findById(id).orElse(null);
+    }
 
+    @Override
+    public void changeComplaintStatus(int id, ComplaintStatus status) {
+        Complaint complaint = complaintRepository.findById(id).orElseThrow(() -> new RuntimeException("скарги не знайдено"));
+        complaint.setStatus(status);
+        complaintRepository.save(complaint);
+    }
 }

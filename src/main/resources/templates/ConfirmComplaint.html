@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Підтвердження скарги</title>
+    <style>
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+        .column {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 30%;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .button-group button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2>Підтвердження скарги</h2>
+<a href="/adminpanel/AllComplaints">← Перехід на сторінку неперевірених скарг</a>
+        <!-- Ліва колонка -->
+<div class="container">
+    <div class="column">
+        <p><strong>Автор скарги:</strong> <span th:text="${complaint.user.login}"></span></p>
+        <p><strong>Опис скарги:</strong> <span th:text="${complaint.reason}"></span></p>
+        <p><strong>Автор поста чи профілю на якого поскаржились:</strong>
+            <span th:text="${complaint.profile.user.login}"></span>
+        </p>
+        <form th:action="@{/adminpanel/changeComplaintStatus/{id}(id=${complaint.id})}" method="post" class="button-group">
+            <button type="submit" name="status" value="RESOLVED">Підтвердити</button>
+            <button type="submit" name="status" value="DISMISSED">Відхилити</button>
+        </form>
+    </div>
+
+    <!-- Центральна колонка: якщо скарга на пост -->
+    <div class="column" th:if="${complaint.post != null}">
+        <h4>Дані про оскаржений пост</h4>
+        <p><strong>Назва посту:</strong>
+            <span th:text="${complaint.post.title}"></span></p>
+        <p><strong>Текст в пості:</strong>
+            <span th:text="${complaint.post.content}"></span></p>
+        <img th:each="phi : ${complaint.post.phi}" th:src="${phi.image.src}"
+             alt="Image for post" style="max-width: 100%; margin-bottom: 10px;"/>
+    </div>
+
+    <!-- Права колонка: якщо скарга на профіль -->
+    <div class="column" th:if="${complaint.profile != null and complaint.post==null}">
+        <h4>Дані про оскаржений профіль</h4>
+        <p><strong>Логін:</strong> <span th:text="${complaint.profile.user.login}"></span></p>
+        <p><strong>Ім’я автора:</strong> <span th:text="${complaint.profile.user.name}"></span></p>
+        <p><strong>TikTok:</strong> <a th:href="${complaint.profile.tiktok}" target="_blank" th:text="${complaint.profile.tiktok}"></a></p>
+        <p><strong>Instagram:</strong> <a th:href="${complaint.profile.instagram}" target="_blank" th:text="${complaint.profile.instagram}"></a></p>
+        <p><strong>Twitch:</strong> <a th:href="${complaint.profile.twitch}" target="_blank" th:text="${complaint.profile.twitch}"></a></p>
+        <p><strong>Youtube:</strong> <a th:href="${complaint.profile.youtube}" target="_blank" th:text="${complaint.profile.youtube}"></a></p>
+        <div>
+            <img th:src="@{${complaint.profile.avatarURL}}" alt="Аватар" style="max-width: 100px; border-radius: 50%;">
+        </div>
+    </div>
+</div>
+</body>
+</html>

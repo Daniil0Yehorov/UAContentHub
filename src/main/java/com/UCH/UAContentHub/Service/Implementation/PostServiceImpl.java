@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikesRepository likesRepository;
     private UserRepository userRepository;
-    private СomplaintRepository complaintRepository;
+    private ComplaintRepository complaintRepository;
     private ImageRepository imageRepository;
     private Post_has_ImageRepository post_has_ImageRepository;
 

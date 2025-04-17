@@ -27,7 +27,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private TagsRepository tagsRepository;
 
-    private СomplaintRepository complaintRepository;
+    private ComplaintRepository complaintRepository;
 
     private SubscriptionRepository subcriptionRepository;
 
