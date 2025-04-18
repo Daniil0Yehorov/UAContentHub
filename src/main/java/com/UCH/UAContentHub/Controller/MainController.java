@@ -1,5 +1,6 @@
 package com.UCH.UAContentHub.Controller;
 
+import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Tags;
 import com.UCH.UAContentHub.Entity.User;
 import com.UCH.UAContentHub.Entity.Profile;
@@ -34,7 +35,7 @@ public class MainController {
         model.addAttribute("user", user);
 
         model.addAttribute("tags", tags);
-        if (user != null) {
+        if (user != null && user.getRole()== Role.USER) {
             List<Profile> recommendedCreators = contentService.getRecommendedCreators(user.getId());
             confirmedCreators = confirmedCreators.stream()
                     .filter(c -> !recommendedCreators.contains(c))

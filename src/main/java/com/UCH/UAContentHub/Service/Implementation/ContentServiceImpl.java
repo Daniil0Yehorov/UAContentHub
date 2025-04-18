@@ -93,7 +93,6 @@ BEGIN
             JOIN Profile p ON s_other.CreatorID = p.UserID
             WHERE s_self.CreatorID IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
               AND s_other.CreatorID NOT IN (SELECT CreatorID FROM Subscription WHERE UserID = UID)
-              AND s_other.CreatorID <> UID
               AND p.Status = 'CONFIRMED'
             ORDER BY RAND()
             LIMIT 5
