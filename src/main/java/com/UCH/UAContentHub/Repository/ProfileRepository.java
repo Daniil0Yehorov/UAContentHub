@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface ProfileRepository extends JpaRepository<Profile,Integer> {
     List<Profile> findByStatus(CreatorProfileStatus status);
-    List<Profile> findByStatusAndRatingBetween(CreatorProfileStatus  Status, int minRating, int maxRating);
-
+    
     @Query("SELECT COUNT(p) > 0 FROM Profile p WHERE p.Tiktok = :tiktok")
     boolean existsByTiktok(String tiktok);
 

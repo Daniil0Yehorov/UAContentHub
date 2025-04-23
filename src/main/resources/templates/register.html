@@ -3,9 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fdfdfd, #f0f8ff);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #0047ab;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="file"],
+        textarea,
+        select {
+            padding: 8px 12px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffd500;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffcc00;
+        }
+
+        a {
+            color: #0047ab;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #profileFields {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
+    </style>
 </head>
 <body>
-
+<div class="container">
 <h1>Реєстрація</h1>
 <div th:if="${error}" style="color: red;">
     <p th:text="${error}"></p>
@@ -54,6 +137,7 @@
 </form>
 <p>Вже є обліковий запис? <a href="/auth/login">Увійти в аккаунт</a></p>
 <a href="/">Головна сторінка</a>
+</div>
 <script>
     function toggleProfileFields() {
         const role = document.getElementById("role").value;
