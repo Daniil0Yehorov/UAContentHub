@@ -6,6 +6,7 @@ import com.UCH.UAContentHub.Repository.ProfileRepository;
 import com.UCH.UAContentHub.Repository.UserRepository;
 import com.UCH.UAContentHub.Service.Interface.AuthService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,8 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
 
     private ProfileRepository prRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     private static final String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
 
@@ -56,6 +59,10 @@ public class AuthServiceImpl implements AuthService {
         if (user.getPassword().length() < 8) {
             throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
 
+        if (user.getPassword().length() > 60) {
+            throw new IllegalArgumentException("Пароль не може бути довший за 60 символів");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRegistrationDate() == null) {
             user.setRegistrationDate(LocalDateTime.now());}
 
@@ -74,14 +81,15 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.findByLogin(user.getLogin())!=null) {
             throw new IllegalArgumentException("Користувач з даним логіном існує");}
 
-        if (user.getRegistrationDate() == null) {
-            user.setRegistrationDate(LocalDateTime.now());}
-
         if (user.getLogin().length() < 8) {
             throw new IllegalArgumentException("Логін має мати мінімум 8 символів");}
 
         if (user.getPassword().length() < 8) {
             throw new IllegalArgumentException("Пароль має мати мінімум 8 символів");}
+
+        if (user.getPassword().length() > 60) {
+            throw new IllegalArgumentException("Пароль не може бути довший за 60 символів");
+        }
 
         if (profile.getDescription() == null || profile.getDescription().isEmpty()) {
             throw new IllegalArgumentException("Опис профілю не має бути порожнім");}
@@ -91,40 +99,48 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Творець повинен мати принаймні одну пов’язану соціальну мережу.");}
 
         if (profile.getTiktok() != null && !profile.getTiktok().isEmpty()) {
-
-            if (prRepository.existsByTiktok(profile.getTiktok())) {
-                throw new IllegalArgumentException("Це посилання на TikTok вже використовується");}
-
+            Profile existing = prRepository.findByTiktok(profile.getTiktok());
+            if (existing != null) {
+                throw new IllegalArgumentException("Це посилання на TikTok вже використовується");
+            }
             if (!isValidUrl(profile.getTiktok())) {
-                throw new IllegalArgumentException("Некоректне посилання на TikTok");}
+                throw new IllegalArgumentException("Некоректне посилання на TikTok");
+            }
         }
 
         if (profile.getInstagram() != null && !profile.getInstagram().isEmpty()) {
-
-            if (prRepository.existsByInstagram(profile.getInstagram())) {
-                throw new IllegalArgumentException("Це посилання на Instagram вже використовується");}
-
+            Profile existing = prRepository.findByInstagram(profile.getInstagram());
+            if (existing != null) {
+                throw new IllegalArgumentException("Це посилання на Instagram вже використовується");
+            }
             if (!isValidUrl(profile.getInstagram())) {
-                throw new IllegalArgumentException("Некоректне посилання на Instagram");}
+                throw new IllegalArgumentException("Некоректне посилання на Instagram");
+            }
         }
 
         if (profile.getTwitch() != null && !profile.getTwitch().isEmpty()) {
-
-            if (prRepository.existsByTwitch(profile.getTwitch())) {
-                throw new IllegalArgumentException("Це посилання на Twitch вже використовується");}
-
+            Profile existing = prRepository.findByTwitch(profile.getTwitch());
+            if (existing != null) {
+                throw new IllegalArgumentException("Це посилання на Twitch вже використовується");
+            }
             if (!isValidUrl(profile.getTwitch())) {
-                throw new IllegalArgumentException("Некоректне посилання на Twitch");}
+                throw new IllegalArgumentException("Некоректне посилання на Twitch");
+            }
         }
 
         if (profile.getYoutube() != null && !profile.getYoutube().isEmpty()) {
-
-            if (prRepository.existsByYoutube(profile.getYoutube())) {
-                throw new IllegalArgumentException("Це посилання на YouTube вже використовується");}
-
+            Profile existing = prRepository.findByYoutube(profile.getYoutube());
+            if (existing != null) {
+                throw new IllegalArgumentException("Це посилання на YouTube вже використовується");
+            }
             if (!isValidUrl(profile.getYoutube())) {
-                throw new IllegalArgumentException("Некоректне посилання на YouTube");}
+                throw new IllegalArgumentException("Некоректне посилання на YouTube");
+            }
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (user.getRegistrationDate() == null) {
+            user.setRegistrationDate(LocalDateTime.now());}
 
         profile.setUser(user);
         user.setProfile(profile);
@@ -136,10 +152,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(String login, String password) {
-        User user = userRepository.findByLoginAndPassword(login, password);
+        User user = userRepository.findByLogin(login);
 
         if (user == null) {
             throw new IllegalArgumentException("Невірний логін або пароль");
+        }
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return null;
         }
 
         return user;

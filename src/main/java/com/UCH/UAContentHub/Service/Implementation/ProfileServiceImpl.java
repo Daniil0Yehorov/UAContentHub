@@ -6,6 +6,7 @@ import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Repository.*;
 import com.UCH.UAContentHub.Service.Interface.ProfileService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,8 @@ public class ProfileServiceImpl implements ProfileService {
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
     private static String UPLOADED_FOLDER = "src/main/resources/static/avatars/";
+
+    private final PasswordEncoder passwordEncoder;
 
     //в теорії спрацює, але перевірити треба коли буде розроблен функціонал адміна
     @Override
@@ -66,9 +69,10 @@ public class ProfileServiceImpl implements ProfileService {
         if (updatedProfile.getDescription() == null || updatedProfile.getDescription().trim().isEmpty()) {
             throw new IllegalArgumentException("Опис не може бути порожнім");
         }
-        
+
         if (updatedProfile.getTiktok() != null && !updatedProfile.getTiktok().isEmpty()) {
-            if (profileRepository.existsByTiktok(updatedProfile.getTiktok())) {
+            Profile existingByTiktok = profileRepository.findByTiktok(updatedProfile.getTiktok());
+            if (existingByTiktok != null && existingByTiktok.getId() != updatedProfile.getId()) {
                 throw new IllegalArgumentException("Це посилання на TikTok вже використовується");
             }
             if (!isValidUrl(updatedProfile.getTiktok())) {
@@ -77,7 +81,8 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (updatedProfile.getInstagram() != null && !updatedProfile.getInstagram().isEmpty()) {
-            if (profileRepository.existsByInstagram(updatedProfile.getInstagram())) {
+            Profile existingByInstagram = profileRepository.findByInstagram(updatedProfile.getInstagram());
+            if (existingByInstagram != null && existingByInstagram.getId() != updatedProfile.getId()) {
                 throw new IllegalArgumentException("Це посилання на Instagram вже використовується");
             }
             if (!isValidUrl(updatedProfile.getInstagram())) {
@@ -86,7 +91,8 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (updatedProfile.getTwitch() != null && !updatedProfile.getTwitch().isEmpty()) {
-            if (profileRepository.existsByTwitch(updatedProfile.getTwitch())) {
+            Profile existingByTwitch = profileRepository.findByTwitch(updatedProfile.getTwitch());
+            if (existingByTwitch != null && existingByTwitch.getId() != updatedProfile.getId()) {
                 throw new IllegalArgumentException("Це посилання на Twitch вже використовується");
             }
             if (!isValidUrl(updatedProfile.getTwitch())) {
@@ -95,13 +101,15 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (updatedProfile.getYoutube() != null && !updatedProfile.getYoutube().isEmpty()) {
-            if (profileRepository.existsByYoutube(updatedProfile.getYoutube())) {
+            Profile existingByYoutube = profileRepository.findByYoutube(updatedProfile.getYoutube());
+            if (existingByYoutube != null && existingByYoutube.getId() != updatedProfile.getId()) {
                 throw new IllegalArgumentException("Це посилання на YouTube вже використовується");
             }
             if (!isValidUrl(updatedProfile.getYoutube())) {
                 throw new IllegalArgumentException("Некоректне посилання на YouTube");
             }
         }
+
         if (updatedProfile.getDescription() != null) {
             existingProfile.setDescription(updatedProfile.getDescription());
         }
@@ -202,6 +210,11 @@ public class ProfileServiceImpl implements ProfileService {
         if (user.getPassword() != null && user.getPassword().length() < 8) {
             throw new IllegalArgumentException("Пароль має бути не менше 8 символів");
         }
+
+        if (user.getPassword().length() > 60) {
+            throw new IllegalArgumentException("Пароль не може бути довший за 60 символів");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
     }

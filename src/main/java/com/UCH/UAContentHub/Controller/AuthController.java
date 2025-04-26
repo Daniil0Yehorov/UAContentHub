@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Controller
@@ -26,6 +27,8 @@ public class AuthController {
     private final AuthService authService;
 
     private final HttpSession session;
+
+    private final PasswordEncoder passwordEncoder;
 
     UserRepository userRepository;
     ProfileRepository profileRepository;
@@ -50,7 +53,7 @@ public class AuthController {
             User user = new User();
             user.setName("User" + i);
             user.setLogin("User" + i + "Login");
-            user.setPassword("Password" + i);
+            user.setPassword(passwordEncoder.encode("Password" + i));
             user.setEmail("User" + i + "@example.com");
             user.setRole(Role.CREATOR);
             user.setRegistrationDate(LocalDateTime.now());
@@ -81,7 +84,7 @@ public class AuthController {
             User user = new User();
             user.setName("User" + i +"USER"+ i);
             user.setLogin("User"  + "Login"+ i);
-            user.setPassword("UserPassword" + i);
+            user.setPassword(passwordEncoder.encode("UserPassword" + i));
             user.setEmail(i+"User" + i + "@gmail.com");
             user.setRole(Role.USER);
             user.setRegistrationDate(LocalDateTime.now());
@@ -133,7 +136,7 @@ public class AuthController {
         User ADminuser=new User();
         ADminuser.setName("ADMIIIIINCHIK2332");
         ADminuser.setLogin("Administrator1");
-        ADminuser.setPassword("AdminPassword");
+        ADminuser.setPassword(passwordEncoder.encode("AdminPassword"));
         ADminuser.setEmail("Admin1@gmail.com");
         ADminuser.setRole(Role.ADMIN);
         ADminuser.setRegistrationDate(LocalDateTime.now());
@@ -141,10 +144,10 @@ public class AuthController {
     }
     @GetMapping("/register")
     public String showRegistrationPage() {
-        initData();
+        //initData();
         return "register";
     }
-    //додати потім шифратор паролів
+
     @PostMapping("/register")
     public String registerUser(@RequestParam("login") String login,
                            @RequestParam("password") String password,
@@ -160,7 +163,7 @@ public class AuthController {
                            RedirectAttributes redirectAttributes) {
         try {
             Role role = Role.valueOf(roleStr);
-
+            //String encodedPassword = passwordEncoder.encode(password);
             User user = new User();
             user.setLogin(login);
             user.setPassword(password);
@@ -218,7 +221,6 @@ public class AuthController {
         return "login";
     }
 
-    //додати потім шифратор паролів
     @PostMapping("/login")
     public String login(@RequestParam("login") String login,
                         @RequestParam("password") String password,
