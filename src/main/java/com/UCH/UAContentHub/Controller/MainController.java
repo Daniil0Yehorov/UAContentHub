@@ -29,6 +29,7 @@ public class MainController {
     @GetMapping("")
     public String ShowMainPage(Model model) {
         User user = session.getUser();
+        if(user != null && user.getRole()==Role.ADMIN){return "redirect:/adminpanel";}
 
         List<Profile> confirmedCreators = contentService.getConfirmedCreators();
         List <Tags> tags = contentService.getAllTags();

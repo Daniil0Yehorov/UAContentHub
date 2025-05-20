@@ -5,112 +5,134 @@
     <title>Register</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #fdfdfd, #f0f8ff);
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(to right, #e0eafc, #cfdef3);
+        background-attachment: fixed;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .container {
-            max-width: 480px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
+    .container {
+        max-width: 500px;
+        background: #ffffffcc;
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+    }
 
-        h1, h2 {
-            text-align: center;
-            color: #0047ab;
-        }
+    h1, h2 {
+        text-align: center;
+        color: #003e8a;
+        margin-bottom: 20px;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
 
-        label {
-            margin-top: 10px;
-            font-weight: bold;
-        }
+    label {
+        margin-top: 15px;
+        font-weight: 600;
+        color: #222;
+    }
 
-        input[type="text"],
-        input[type="password"],
-        input[type="email"],
-        input[type="file"],
-        textarea,
-        select {
-            padding: 8px 12px;
-            margin-top: 4px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1em;
-        }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="file"],
+    textarea,
+    select {
+        padding: 10px 14px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1em;
+        background-color: #fafafa;
+        transition: border-color 0.3s;
+    }
 
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #ffd500;
-            border: none;
-            color: #000;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #0047ab;
+        outline: none;
+    }
 
-        button:hover {
-            background-color: #ffcc00;
-        }
+    button {
+        margin-top: 25px;
+        padding: 12px;
+        background-color: #ffd500;
+        border: none;
+        color: #000;
+        font-weight: bold;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+    }
 
-        a {
-            color: #0047ab;
-            text-decoration: none;
-        }
+    button:hover {
+        background-color: #ffcc00;
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    a {
+        color: #0047ab;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 500;
+    }
 
-        .error {
-            color: red;
-            text-align: center;
-            margin-top: 10px;
-        }
+    a:hover {
+        text-decoration: underline;
+    }
 
-        #profileFields {
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px dashed #ccc;
-        }
+    .error {
+        color: red;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    #profileFields {
+        margin-top: 25px;
+        padding-top: 15px;
+        border-top: 1px dashed #ccc;
+    }
     </style>
 </head>
 <body>
+
 <div class="container">
-<h1>Реєстрація</h1>
-<div th:if="${error}" style="color: red;">
-    <p th:text="${error}"></p>
-</div>
-<form action="/auth/register" method="post" enctype="multipart/form-data">
-    <label for="login">Логін:</label>
-    <input type="text" id="login" name="login" required><br>
+    <h1>Реєстрація</h1>
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
+    </div>
+    <form action="/auth/register" method="post" enctype="multipart/form-data">
+        <label for="login">Логін:</label>
+        <input type="text" id="login" name="login" required><br>
 
-    <label for="password">Пароль:</label>
-    <input type="password" id="password" name="password" required><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
 
-    <label for="name">Ім'я:</label>
-    <input type="text" id="name" name="name" required><br>
+        <label for="name">Ім'я:</label>
+        <input type="text" id="name" name="name" required><br>
 
-    <label for="email">Пошта:</label>
-    <input type="email" id="email" name="email" required><br>
+        <label for="email">Пошта:</label>
+        <input type="email" id="email" name="email" required><br>
 
-    <label for="role">Роль:</label>
-    <select id="role" name="role" onchange="toggleProfileFields()">
-        <option value="USER">USER</option>
-        <option value="CREATOR">CREATOR</option>
-    </select><br>
+        <label for="role">Роль:</label>
+        <select id="role" name="role" onchange="toggleProfileFields()">
+            <option value="USER">USER</option>
+            <option value="CREATOR">CREATOR</option>
+        </select><br>
 
     <div id="profileFields" style="display:none;">
         <h2>Додаткові дані задля реєстрації ролі автора</h2>
@@ -133,10 +155,10 @@
         <input type="file" id="avatar" name="avatar" accept="image/*"><br>
     </div>
 
-    <button type="submit">Зареєструватися</button>
-</form>
-<p>Вже є обліковий запис? <a href="/auth/login">Увійти в аккаунт</a></p>
-<a href="/">Головна сторінка</a>
+        <button type="submit">Зареєструватися</button>
+    </form>
+    <p>Вже є обліковий запис? <a href="/auth/login">Увійти в аккаунт</a></p>
+    <a href="/">Головна сторінка</a>
 </div>
 <script>
     function toggleProfileFields() {

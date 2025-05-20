@@ -3,99 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <title>Головна сторінка</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(to right, #e0eafc, #cfdef3);
+        background-attachment: fixed;
+    }
+
+    h1, h2 {
+        color: #2c3e50;
+    }
+
+    .top-bar {
+        background-color: #ffffffcc;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .top-bar a {
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+    }
+
+    .top-bar p {
+        margin: 0;
+        font-weight: bold;
+    }
+
+        .filter-form {
+            background-color: #ffffffcc;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-grid label {
+            font-weight: bold;
+            display: block;
+        }
+
+        .filter-grid input[type="text"],
+        .filter-grid input[type="number"] {
+            padding: 5px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .tag-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .tag-checkboxes label {
+            background-color: #f0f8ff;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+    button[type="submit"] {
+        margin-top: 15px;
+        padding: 8px 16px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #2980b9;
+    }
+
+    .creators-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .creator-card {
+        flex: 1 1 calc(25% - 20px);
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        min-width: 250px;
+        max-width: 300px;
+    }
+
+    .creator-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .creator-name {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 10px;
+    }
+
+    .creator-rating {
+        color: #f39c12;
+    }
+
+    .creator-tags {
+        font-size: 13px;
+        color: #555;
+        margin-top: 5px;
+    }
+
+    .creator-link {
+        margin-top: 10px;
+        display: inline-block;
+        color: #3498db;
+        text-decoration: none;
+    }
+    </style>
 </head>
 <body>
 
-<h1>Ласкаво просимо на головну сторінку!</h1>
+<h1>Ласкаво просимо на головну сторінку UaContentHub!</h1>
 
 
-<div th:if="${user != null}">
-    <p>Ви увійшли як: <span th:text="${user.name}"></span></p>
-    <a href="/profile">Перейти в профіль</a>
+<div class="top-bar" th:if="${user != null}">
+    <p>Ви увійшли як: <strong th:text="${user.name}"></strong></p>
+    <a href="/profile">Профіль</a>
     <a href="/auth/logout">Вийти</a>
     <div th:if="${user.role.name() == 'CREATOR'}">
-        <a href="/posts">Перейти до своїх постів</a>
+        <a href="/posts">Мої пости</a>
+        <a href="/posts/add">Створити пост</a>
     </div>
     <div th:if="${user.role.name() == 'USER'}">
-        <a href="/posts">Перейти до лєнти постів</a>
-    </div>
-    <div th:if="${user.role.name() == 'CREATOR'}">
-        <a href="/posts/add">Створити пост</a>
+        <a href="/posts">Лєнта постів</a>
     </div>
 </div>
 
-<div th:if="${user == null}">
+<div class="top-bar" th:if="${user == null}">
     <p>Ви не авторизовані.</p>
     <a href="/auth/login">Увійти</a>
     <a href="/auth/register">Зареєструватися</a>
 </div>
-<form action="/filter" method="get">
-    <label for="name">Ім'я автора:</label>
-    <input type="text" id="name" name="name" th:value="${name}">
 
-    <label>Теги:</label>
-    <div th:each="tag : ${tags}">
-        <input type="checkbox" th:id="'tag-' + ${tag.name}" th:name="tags" th:value="${tag.name}"
-               th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">
-        <label th:for="'tag-' + ${tag.name}" th:text="${tag.name}"></label>
+<form action="/filter" method="get" class="filter-form">
+    <div class="filter-grid">
+        <div>
+            <label for="name">Ім'я автора:</label>
+            <input type="text" id="name" name="name" th:value="${name}">
+        </div>
+
+        <div>
+            <label for="minRating">Мін. рейтинг:</label>
+            <input type="number" id="minRating" name="minRating" min="1" max="5" th:value="${minRating}">
+        </div>
+
+        <div>
+            <label for="maxRating">Макс. рейтинг:</label>
+            <input type="number" id="maxRating" name="maxRating" min="1" max="5" th:value="${maxRating}">
+        </div>
+
+        <div>
+            <label for="minSubs">Мін. підписників:</label>
+            <input type="number" id="minSubs" name="minSubscribers" th:value="${minSubscribers}">
+        </div>
+
+        <div>
+            <label for="maxSubs">Макс. підписників:</label>
+            <input type="number" id="maxSubs" name="maxSubscribers" th:value="${maxSubscribers}">
+        </div>
     </div>
 
-    <label for="minRating">Мін. рейтинг:</label>
-    <input type="number" id="minRating" name="minRating" min="1" max="5" th:value="${minRating}">
-
-    <label for="maxRating">Макс. рейтинг:</label>
-    <input type="number" id="maxRating" name="maxRating" min="1" max="5" th:value="${maxRating}">
-
-    <label for="minSubs">Мін. підписників:</label>
-    <input type="number" id="minSubs" name="minSubscribers" th:value="${minSubscribers}">
-
-    <label for="maxSubs">Макс. підписників:</label>
-    <input type="number" id="maxSubs" name="maxSubscribers" th:value="${maxSubscribers}">
+    <label>Теги:</label>
+    <div class="tag-checkboxes">
+        <div th:each="tag : ${tags}">
+            <label>
+                <input type="checkbox" th:id="'tag-' + ${tag.name}" th:name="tags" th:value="${tag.name}"
+                       th:checked="${selectedTags != null and selectedTags.contains(tag.name)}">
+                <span th:text="${tag.name}"></span>
+            </label>
+        </div>
+    </div>
 
     <button type="submit">Фільтрувати</button>
 </form>
 <div th:if="${user != null and user.role.name() == 'USER' and recommendedCreators != null and not recommendedCreators.isEmpty()}">
     <h2>Рекомендовані автори на основі ваших підписок:</h2>
-    <ul>
-        <li th:each="creator : ${recommendedCreators}">
-            <p>
-                <img th:src="${creator.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}"
-                     alt="Аватар креатора" style="width: 50px; height: 50px; border-radius: 50%;">
-                <strong th:text="${creator.user.name}"></strong><br/>
-                <span th:text="'Рейтинг: ' + ${creator.rating}"></span><br/>
-                <span th:text="${creator.description}"></span><br/>
-            <p>Підписників: <span th:text="${creator.subscribersCount}"></span></p>
-            <a th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль автора</a>
-            <br/>
-            <span>Теги:
-                    <span th:each="phs : ${creator.phs}">
-                        <span th:text="${phs.tags.name} + ' '"></span>
-                    </span>
-                </span><br/>
-            </p>
-        </li>
-    </ul>
+    <div class="creators-grid">
+        <div class="creator-card" th:each="creator : ${recommendedCreators}">
+            <img class="creator-avatar"
+                 th:src="${creator.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}"
+                 alt="Аватар автора">
+            <div class="creator-name" th:text="${creator.user.name}"></div>
+            <div class="creator-rating" th:text="'Рейтинг: ' + ${creator.rating}"></div>
+            <div th:text="${creator.description}"></div>
+            <div>Підписників: <span th:text="${creator.subscribersCount}"></span></div>
+            <a class="creator-link" th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль автора</a>
+            <div class="creator-tags">
+                Теги:
+                <span th:each="phs : ${creator.phs}">
+                    <span th:text="${phs.tags.name} + ' '"></span>
+                </span>
+            </div>
+        </div>
+    </div>
 </div>
 <h2>Список підтверджених авторів:</h2>
 <div th:if="${creators != null}">
-    <ul>
-        <li th:each="creator : ${creators}">
-            <p>
-                <img th:src="${creator.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}" alt="Аватар креатора" style="width: 50px; height: 50px; border-radius: 50%;">
-                <strong th:text="${creator.user.name}"></strong><br/>
-                <span th:text="'Рейтинг: ' + ${creator.rating}"></span><br/>
-                <span th:text="${creator.description}"></span><br/>
-               <p>Підписників: <span th:text="${creator.subscribersCount}"></span></p>
-                <a th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль автора</a>
-                <br/>
-                <span>Теги:
-                    <span th:each="phs : ${creator.phs}">
-                        <span th:text="${phs.tags.name} + ' '"></span>
-                         </span>
-                </span><br/>
-            </p>
-        </li>
-    </ul>
+    <div class="creators-grid">
+        <div class="creator-card" th:each="creator : ${creators}">
+            <img class="creator-avatar"
+                 th:src="${creator.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}"
+                 alt="Аватар автора">
+            <div class="creator-name" th:text="${creator.user.name}"></div>
+            <div class="creator-rating" th:text="'Рейтинг: ' + ${creator.rating}"> </div>
+            <div th:text="${creator.description}"></div>
+            <div>Підписників: <span th:text="${creator.subscribersCount}"></span></div>
+            <a class="creator-link" th:href="@{/creator/{id}(id=${creator.id})}">Перейти у профіль автора</a>
+            <div class="creator-tags">
+                Теги:
+                <span th:each="phs : ${creator.phs}">
+                    <span th:text="${phs.tags.name} + ' '"></span>
+                </span>
+            </div>
+        </div>
+    </div>
 </div>
 <div th:if="${creators == null || creators.isEmpty()}">
     <p>Немає доступних авторів.</p>

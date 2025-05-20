@@ -2,27 +2,107 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Рецензії на автора</title>
+    <title>Усі рецензії на автора</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .top-bar {
+            background-color: #ffffffcc;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .hub-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            background-color: #ffffffcc;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .review-card p {
+            margin: 6px 0;
+        }
+
+        .review-author {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-rating {
+            color: #f39c12;
+        }
+
+        .no-reviews {
+            font-style: italic;
+            color: #777;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Рецензії на автора</h1>
+<div class="top-bar">
+    <div class="top-bar-left">
+        <div class="hub-title">UaContentHub</div>
+        <h1>Рецензії на автора <strong th:text="${creator.user.name}"></strong></h1>
+    </div>
+    <a th:href="@{/creator/{id}(id=${creator.user.id})}">← Повернутися до профілю автора</a>
+</div>
 
-<a th:href="@{/creator/{id}(id=${creatorId})}">Повернутися до профілю автора</a>
-
-<div th:if="${reviews.isEmpty()}">
+<div th:if="${reviews.isEmpty()}" class="no-reviews">
     <p>Рецензії відсутні.</p>
 </div>
 
-<ul>
-    <li th:each="review : ${reviews}">
-        <p><strong>Автор:</strong> <span th:text="${review.user.name}"></span></p>
-        <p><strong>Рейтинг:</strong> <span th:text="${review.rating}"></span></p>
-        <p><strong>Текст:</strong> <span th:text="${review.text}"></span></p>
-        <p><strong>Дата:</strong> <span th:text="${#temporals.format(review.reviewDate, 'dd-MM-yyyy HH:mm')}"></span></p>
-        <hr>
-    </li>
-</ul>
+<div class="reviews-grid" th:if="${!reviews.isEmpty()}">
+    <div class="review-card" th:each="review : ${reviews}">
+        <p class="review-author">Автор рецензії: <span th:text="${review.user.name}"></span></p>
+        <p class="review-rating">Рейтинг: <span th:text="${review.rating}"></span></p>
+        <p>Текст: <span th:text="${review.text}"></span></p>
+        <p>Дата: <span th:text="${#temporals.format(review.reviewDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+    </div>
+</div>
 
 </body>
 </html>

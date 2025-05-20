@@ -40,7 +40,7 @@ public class PostController {
         }
 
         User currentUser = session.getUser();
-
+        if(currentUser!=null && currentUser.getRole()== Role.ADMIN){return "redirect:/adminpanel";}
         List<Post> posts;
         List<Post> recommendedPosts = new ArrayList<>();;
         if (currentUser.getRole() == Role.CREATOR) {

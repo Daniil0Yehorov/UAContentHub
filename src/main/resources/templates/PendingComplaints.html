@@ -6,81 +6,128 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #ffffffcc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffffcc;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         th, td {
-            padding: 10px;
-            border: 1px solid #000;
+            padding: 12px;
+            border: 1px solid #ccc;
             text-align: left;
         }
 
-        h2 {
-            margin-top: 30px;
+        th {
+            background-color: #f0f8ff;
+            color: #2c3e50;
         }
 
-        a.button-link {
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .button-link {
             display: inline-block;
-            padding: 8px 12px;
-            background-color: #007BFF;
+            padding: 6px 12px;
+            background-color: #3498db;
             color: #fff;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out;
         }
 
-        a.button-link:hover {
-            background-color: #0056b3;
-        }
-
-        button {
-            margin-top: 10px;
-            padding: 8px 12px;
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #c82333;
+        .button-link:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
 
-<a class="button-link" href="/adminpanel">← Назад до адміністративної панелі</a>
-
-<div th:if="${message}" style="color: green; font-weight: bold; margin-top: 15px;">
-    <p th:text="${message}"></p>
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/adminpanel">← Назад до адміністративної панелі</a>
+    </div>
 </div>
-<h2>Список неперевірених скарг</h2>
-<table>
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>На що скарга(пост або профіль автора)</th>
-        <th>Дата створення скарги</th>
-        <th>Дія</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="complaint, iter : ${pendingComplaints}">
-        <td th:text="${iter.index + 1}">1</td>
-        <td th:text="${complaint.post == null ? 'Скарга на профіль' : 'Скарга на пост'}"/>
-        <td th:text="${complaint.ComplaintDate}">Дата створення скарги</td>
-        <td>
-            <a class="button-link" th:href="@{/adminpanel/AllComplaints/complaint/{id}(id=${complaint.id})}">Підтвердити скаргу</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+<div class="container">
+    <h2>Список неперевірених скарг</h2>
+
+    <div th:if="${message}" style="color: green; font-weight: bold; margin-top: 15px;">
+        <p th:text="${message}"></p>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>На що скарга(пост або профіль автора)</th>
+            <th>Дата створення скарги</th>
+            <th>Дія</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="complaint, iter : ${pendingComplaints}">
+            <td th:text="${iter.index + 1}">1</td>
+            <td th:text="${complaint.post == null ? 'Скарга на профіль' : 'Скарга на пост'}"></td>
+            <td th:text="${complaint.ComplaintDate}">Дата створення скарги</td>
+            <td><a class="button-link" th:href="@{/adminpanel/AllComplaints/complaint/{id}(id=${complaint.id})}">
+                Переглянути</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>

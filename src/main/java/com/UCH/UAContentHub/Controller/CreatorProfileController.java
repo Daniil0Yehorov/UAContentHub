@@ -2,6 +2,7 @@ package com.UCH.UAContentHub.Controller;
 
 import com.UCH.UAContentHub.Entity.Enum.CreatorProfileStatus;
 import com.UCH.UAContentHub.Entity.Enum.ReviewStatus;
+import com.UCH.UAContentHub.Entity.Enum.Role;
 import com.UCH.UAContentHub.Entity.Profile;
 import com.UCH.UAContentHub.Entity.Review;
 import com.UCH.UAContentHub.Entity.User;
@@ -32,13 +33,13 @@ public class CreatorProfileController {
 
     @GetMapping("/{id}")
     public String ShowCreatorProfile(@PathVariable int id, Model model) {
-
         Profile creatorProfile = contentService.getProfileById(id);
         if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
             return "redirect:/";
         }
 
         User currentUser = session.isPresent() ? session.getUser() : null;
+        if(currentUser!=null && currentUser.getRole()== Role.ADMIN){return "redirect:/adminpanel";}
         boolean isSubscribed = currentUser != null && profileService.isSubscribed(creatorProfile, currentUser);
         Review userReview = (currentUser != null) ? reviewService.getReviewByUserAndCreator(currentUser.getId(), creatorProfile.getUser().getId()) : null;
         boolean hasReported = currentUser != null && profileService.hasUserReportedProfile(currentUser.getId(), creatorProfile.getUser().getId());
@@ -50,7 +51,7 @@ public class CreatorProfileController {
         model.addAttribute("hasReported", hasReported);
         return "creatorProfile";
     }
-    @GetMapping("/{id}/subscribe")
+    @PostMapping("/{id}/subscribe")
     public String subscribeToTheCreator(@PathVariable int id) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
@@ -71,7 +72,7 @@ public class CreatorProfileController {
         return "redirect:/creator/" + id;
     }
 
-    @GetMapping("/{id}/unsubscribe")
+    @PostMapping("/{id}/unsubscribe")
     public String unsubscribeFromTheCreator(@PathVariable int id) {
         if (!session.isPresent()) {
             return "redirect:/auth/login";
@@ -162,12 +163,15 @@ public class CreatorProfileController {
     @GetMapping("/{id}/reviews")
     public String viewAllReviewsOfTheCreator(@PathVariable int id, Model model) {
         Profile creatorProfile = contentService.getProfileById(id);
+        User user = session.isPresent() ? session.getUser() : null;
         if (creatorProfile == null || creatorProfile.getStatus() != CreatorProfileStatus.CONFIRMED) {
             return "redirect:/";
         }
+        if(user!=null && user.getRole()== Role.ADMIN){return "redirect:/adminpanel";}
+
 
         model.addAttribute("reviews", reviewService.getReviewsByCreator(creatorProfile.getUser().getId()));
-        model.addAttribute("creatorId", id);
+        model.addAttribute("creator",creatorProfile);
         return "creatorReviews";
     }
 }

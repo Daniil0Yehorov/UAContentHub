@@ -3,40 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <title>Підтвердження рецензії</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #ffffffcc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffffcc;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        .button-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .button-bar button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .button-bar button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-<h2>Перевірка даних рецензії</h2>
-
-<div th:if="${review != null}">
-    <p><strong>Логін автора рецензії:</strong>
-        <span th:text="${review.user.login}"></span></p>
-    <p><strong>Логін автора на якого написали рецензію:</strong>
-        <span th:text="${review.creator.login}"></span></p>
-    <p><strong>Текст рецензії:</strong>
-        <span th:text="${review.text}"></span></p>
-    <p><strong>Рейтинг за рецензією:</strong>
-        <span th:text="${review.rating}"></span></p>
-    <p><strong>Поточний рейтинг автора:</strong>
-        <span th:text="${review.creator.profile.rating}"></span></p>
-    <p><strong>Дата створення рецензії:</strong>
-        <span th:text="${review.ReviewDate}"></span></p>
-
-    <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post" style="display:inline;">
-        <input type="hidden" name="status" value="APPROVED"/>
-        <button type="submit">✅ Підтвердити</button>
-    </form>
-
-    <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post" style="display:inline;">
-        <input type="hidden" name="status" value="NOT_APPROVED"/>
-        <button type="submit">❌ Не підтверджувати</button>
-    </form>
-<!--можливо додати,бо при порушенні у рецензії треба буде видалити користувача який написав її
-    <form th:action="@{'/adminpanel/deleteReview/' + ${creator.id}}" method="post" style="display:inline;">
-        <button type="submit" onclick="return confirm('Точно видалити?')">🗑 Видалити</button>
-    </form>-->
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/adminpanel/AllReviews">⬅ Назад до списку</a>
+        <a href="/auth/logout">Вийти</a>
+    </div>
 </div>
 
-<a href="/adminpanel/AllReviews">⬅ Назад до списку</a>
+<div class="container">
+    <h2>Підтвердження рецензії</h2>
 
+    <div th:if="${review != null}">
+        <p><strong>Автор рецензії:</strong> <span th:text="${review.user.login}"></span></p>
+        <p><strong>Автор на котрого написана рецензія:</strong> <span th:text="${review.creator.login}"></span></p>
+        <p><strong>Текст рецензії:</strong> <span th:text="${review.text}"></span></p>
+        <p><strong>Рейтинг за рецензією:</strong> <span th:text="${review.rating}"></span></p>
+        <p><strong>Поточний рейтинг автора:</strong> <span th:text="${review.creator.profile.rating}"></span></p>
+        <p><strong>Дата створення:</strong> <span th:text="${review.ReviewDate}"></span></p>
+
+        <div class="button-bar">
+            <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post">
+                <input type="hidden" name="status" value="APPROVED"/>
+                <button type="submit">✅ Підтвердити</button>
+            </form>
+
+            <form th:action="@{'/adminpanel/changeReviewStatus/' + ${review.id}}" method="post">
+                <input type="hidden" name="status" value="NOT_APPROVED"/>
+                <button type="submit">❌ Відхилити</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

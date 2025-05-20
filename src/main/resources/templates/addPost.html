@@ -2,23 +2,137 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Додати пост</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #ffffffcc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000; /* чорний */
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-container {
+            background-color: #ffffffcc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 5px;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 18px;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<h1>Додати новий пост</h1>
-<a href="/">Перейти на головну сторінку</a>
-<a href="/posts">Перейти до своїх постів</a>
-
-<h2>Створення нового посту</h2>
-<form th:action="@{/posts/add}" method="post" enctype="multipart/form-data">
-    <label for="title">Заголовок посту:</label>
-    <input type="text" id="title" name="title" required th:value="${title}">
-    <label for="content">Опис посту:</label>
-    <textarea id="content" name="content" required></textarea>
-    <input type="file" name="images" multiple>
-    <div th:if="${error}" style="color: red;">
-        <p th:text="${error}"></p>
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/">Головна сторінка</a>
+        <a href="/posts">Мої пости</a>
     </div>
-    <button type="submit">Додати</button>
-</form>
+</div>
+
+<div class="form-container">
+    <h1>Додати новий пост</h1>
+
+    <form th:action="@{/posts/add}" method="post" enctype="multipart/form-data">
+        <label for="title">Заголовок посту:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="content">Опис посту:</label>
+        <textarea id="content" name="content" required></textarea>
+
+        <label for="images">Додайте до 3 зображень (необов'язково):</label>
+        <!--<input type="file" id="images" name="images" accept="image/*" multiple>
+-->     <input type="file" id="images" name="images" accept="image/*" multiple
+          onchange="if(this.files.length > 3){ alert('Можна додати не більше 3 зображень.'); this.value=''; }">
+        <div class="error" th:if="${error}">
+            <p th:text="${error}"></p>
+        </div>
+
+        <button type="submit">Додати</button>
+    </form>
+</div>
 </body>
 </html>

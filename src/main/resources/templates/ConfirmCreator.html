@@ -3,27 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <title>Підтвердження автора</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #ffffffcc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffffcc;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        img {
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            display: inline-block;
+            padding: 8px 14px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+        .social-link {
+            color: #3498db;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            text-decoration: underline;
+            color: #216a94;
+        }
+    </style>
 </head>
 <body>
-<h2>Перевірка даних автора</h2>
 
-<div th:if="${creator != null}">
-    <p><strong>Логін:</strong> <span th:text="${creator.login}"></span></p>
-    <p><strong>Ім’я:</strong> <span th:text="${creator.name}"></span></p>
-    <p><strong>Пошта:</strong> <span th:text="${creator.email}"></span></p>
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/adminpanel/Allcreators">⬅ Назад до списку авторів</a>
+    </div>
+</div>
 
-    <p><strong>TikTok:</strong>
-        <a th:href="${creator.profile.tiktok}" th:text="${creator.profile.tiktok}"></a></p>
-    <p><strong>Instagram:</strong>
-        <a th:href="${creator.profile.instagram}" th:text="${creator.profile.instagram}"></a></p>
-    <p><strong>Twitch:</strong>
-        <a th:href="${creator.profile.twitch}" th:text="${creator.profile.twitch}"></a></p>
-    <p><strong>YouTube:</strong>
-        <a th:href="${creator.profile.youtube}" th:text="${creator.profile.youtube}"></a></p>
+<div class="container">
+    <h2>Підтвердження даних автора</h2>
+
+    <div th:if="${creator != null}">
+        <p><strong>Логін:</strong> <span th:text="${creator.login}"></span></p>
+        <p><strong>Ім’я:</strong> <span th:text="${creator.name}"></span></p>
+        <p><strong>Пошта:</strong> <span th:text="${creator.email}"></span></p>
+
+        <p><strong>TikTok:</strong>
+            <a th:href="${creator.profile.tiktok}" th:text="${creator.profile.tiktok}" target="_blank" rel="noopener noreferrer" class="social-link"></a></p>
+        <p><strong>Instagram:</strong>
+            <a th:href="${creator.profile.instagram}" th:text="${creator.profile.instagram}" target="_blank" rel="noopener noreferrer" class="social-link"></a></p>
+        <p><strong>Twitch:</strong>
+            <a th:href="${creator.profile.twitch}" th:text="${creator.profile.twitch}" target="_blank" rel="noopener noreferrer" class="social-link"></a></p>
+        <p><strong>YouTube:</strong>
+            <a th:href="${creator.profile.youtube}" th:text="${creator.profile.youtube}" target="_blank" rel="noopener noreferrer" class="social-link"></a></p>
 
     <div>
         <strong>Аватар:</strong><br>
-        <img th:src="@{${creator.profile.avatarURL}}" alt="Avatar" width="200" height="200"/>
+        <img th:src="@{${creator.profile.avatarURL}}" alt="Аватар автора" width="200" height="200"/>
     </div>
 
     <p><strong>Опис:</strong> <span th:text="${creator.profile.description}"></span></p>
@@ -43,9 +145,8 @@
     <form th:action="@{'/adminpanel/deleteCreator/' + ${creator.id}}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('Точно видалити?')">🗑 Видалити</button>
     </form>
+    </div>
 </div>
-
-<a href="/adminpanel/Allcreators">⬅ Назад до списку</a>
 
 </body>
 </html>

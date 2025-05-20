@@ -10,6 +10,7 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review,Integer> {
     boolean existsByUserIdAndCreatorId(int userId, int creatorId);
     Review findByUserIdAndCreatorId(int userId, int creatorId);
+    @Query("SELECT r FROM Review r WHERE r.creator.id = :creatorId AND r.Status = 'APPROVED'")
     List<Review> findAllByCreatorId(int creatorId);
     @Query("SELECT r FROM Review r WHERE r.Status = 'PENDING'")
     List<Review> findPendingReviews();

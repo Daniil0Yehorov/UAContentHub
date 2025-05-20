@@ -4,64 +4,168 @@
     <meta charset="UTF-8">
     <title>Підтвердження скарги</title>
     <style>
-        .container {
-            display: flex;
-            gap: 20px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
         }
-        .column {
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #ffffffcc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .top-bar a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffffcc;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        .images-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .images-block img {
+            width: 100%;
+            max-width: 700px;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            padding: 15px;
-            width: 30%;
         }
-        .button-group {
-            margin-top: 20px;
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ccc;
         }
-        .button-group button {
-            margin-right: 10px;
+
+        .platform-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .platform-link:hover {
+            text-decoration: underline;
+            color: #216a94;
+        }
+
+        .button-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .button-bar button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .button-bar button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-<h2>Підтвердження скарги</h2>
-<a href="/adminpanel/AllComplaints">← Перехід на сторінку неперевірених скарг</a>
-        <!-- Ліва колонка -->
+
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/adminpanel/AllComplaints">⬅ Назад до списку скарг</a>
+        <a href="/auth/logout">Вийти</a>
+    </div>
+</div>
+
 <div class="container">
-    <div class="column">
-        <p><strong>Автор скарги:</strong> <span th:text="${complaint.user.login}"></span></p>
-        <p><strong>Опис скарги:</strong> <span th:text="${complaint.reason}"></span></p>
-        <p><strong>Автор поста чи профілю на якого поскаржились:</strong>
-            <span th:text="${complaint.profile.user.login}"></span>
-        </p>
-        <form th:action="@{/adminpanel/changeComplaintStatus/{id}(id=${complaint.id})}" method="post" class="button-group">
-            <button type="submit" name="status" value="RESOLVED">Підтвердити</button>
-            <button type="submit" name="status" value="DISMISSED">Відхилити</button>
-        </form>
-    </div>
+    <h2>Підтвердження скарги</h2>
 
-    <!-- Центральна колонка: якщо скарга на пост -->
-    <div class="column" th:if="${complaint.post != null}">
-        <h4>Дані про оскаржений пост</h4>
-        <p><strong>Назва посту:</strong>
-            <span th:text="${complaint.post.title}"></span></p>
-        <p><strong>Текст в пості:</strong>
-            <span th:text="${complaint.post.content}"></span></p>
-        <img th:each="phi : ${complaint.post.phi}" th:src="${phi.image.src}"
-             alt="Image for post" style="max-width: 100%; margin-bottom: 10px;"/>
-    </div>
+    <p><strong>Автор скарги:</strong> <span th:text="${complaint.user.login}"></span></p>
+    <p><strong>Опис скарги:</strong> <span th:text="${complaint.reason}"></span></p>
+    <p><strong>На кого скарга:</strong> <span th:text="${complaint.profile.user.login}"></span></p>
 
-    <!-- Права колонка: якщо скарга на профіль -->
-    <div class="column" th:if="${complaint.profile != null and complaint.post==null}">
-        <h4>Дані про оскаржений профіль</h4>
-        <p><strong>Логін:</strong> <span th:text="${complaint.profile.user.login}"></span></p>
-        <p><strong>Ім’я автора:</strong> <span th:text="${complaint.profile.user.name}"></span></p>
-        <p><strong>TikTok:</strong> <a th:href="${complaint.profile.tiktok}" target="_blank" th:text="${complaint.profile.tiktok}"></a></p>
-        <p><strong>Instagram:</strong> <a th:href="${complaint.profile.instagram}" target="_blank" th:text="${complaint.profile.instagram}"></a></p>
-        <p><strong>Twitch:</strong> <a th:href="${complaint.profile.twitch}" target="_blank" th:text="${complaint.profile.twitch}"></a></p>
-        <p><strong>Youtube:</strong> <a th:href="${complaint.profile.youtube}" target="_blank" th:text="${complaint.profile.youtube}"></a></p>
-        <div>
-            <img th:src="@{${complaint.profile.avatarURL}}" alt="Аватар" style="max-width: 100px; border-radius: 50%;">
+    <div th:if="${complaint.post != null}">
+        <h4>📝 Оскаржений пост</h4>
+        <p><strong>Назва:</strong> <span th:text="${complaint.post.title}"></span></p>
+        <p><strong>Зміст:</strong></p>
+        <p th:text="${complaint.post.content}" style="text-align: justify;"></p>
+
+        <div class="images-block" th:if="${complaint.post.phi != null}">
+            <img th:each="phi : ${complaint.post.phi}" th:src="${phi.image.src}" alt="Фото поста"/>
         </div>
+    </div>
+
+    <div th:if="${complaint.profile != null and complaint.post == null}">
+        <h4>👤 Оскаржений профіль</h4>
+        <p><strong>Ім’я:</strong> <span th:text="${complaint.profile.user.name}"></span></p>
+        <p><strong>TikTok:</strong> <a class="platform-link" target="_blank" rel="noopener noreferrer" th:href="${complaint.profile.tiktok}" th:text="${complaint.profile.tiktok}"></a></p>
+        <p><strong>Instagram:</strong> <a class="platform-link" target="_blank" rel="noopener noreferrer" th:href="${complaint.profile.instagram}" th:text="${complaint.profile.instagram}"></a></p>
+        <p><strong>Twitch:</strong> <a class="platform-link" target="_blank" rel="noopener noreferrer" th:href="${complaint.profile.twitch}" th:text="${complaint.profile.twitch}"></a></p>
+        <p><strong>YouTube:</strong> <a class="platform-link" target="_blank" rel="noopener noreferrer" th:href="${complaint.profile.youtube}" th:text="${complaint.profile.youtube}"></a></p>
+
+        <img class="avatar" th:src="@{${complaint.profile.avatarURL}}" alt="Аватар"/>
+    </div>
+
+    <div class="button-bar">
+        <form th:action="@{/adminpanel/changeComplaintStatus/{id}(id=${complaint.id})}" method="post">
+            <button type="submit" name="status" value="RESOLVED">✅ Підтвердити</button>
+        </form>
+        <form th:action="@{/adminpanel/changeComplaintStatus/{id}(id=${complaint.id})}" method="post">
+            <button type="submit" name="status" value="DISMISSED">❌ Відхилити</button>
+        </form>
     </div>
 </div>
 </body>

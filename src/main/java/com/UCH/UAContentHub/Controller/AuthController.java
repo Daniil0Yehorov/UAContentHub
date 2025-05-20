@@ -14,7 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -142,9 +144,117 @@ public class AuthController {
         ADminuser.setRegistrationDate(LocalDateTime.now());
         userRepository.save(ADminuser);
     }
+    private void  initdataforjmete() {
+        List<User> creators = new ArrayList<>();
+        List<Profile> profiles = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
+        List<Tags> tags = new ArrayList<>();
+        List<Profile_has_tags> profileHasTagsList = new ArrayList<>();
+        List<User> users = new ArrayList<>();
+        List<Subscription> subscriptions = new ArrayList<>();
+
+        // Створення 500 авторів
+        for (int i = 1; i <= 500; i++) {
+            User creator = new User();
+            creator.setName("Creator" + i);
+            creator.setLogin("creator_login_" + i);
+            creator.setPassword(passwordEncoder.encode("Password" + i));
+            creator.setEmail("creator" + i + "@example.com");
+            creator.setRole(Role.CREATOR);
+            creator.setRegistrationDate(LocalDateTime.now());
+
+            Profile profile = new Profile();
+            profile.setStatus(CreatorProfileStatus.CONFIRMED);
+            profile.setTiktok("https://tiktok.com/creator" + i);
+            profile.setInstagram("https://instagram.com/creator" + i);
+            profile.setTwitch("https://twitch.tv/creator" + i);
+            profile.setYoutube("https://youtube.com/creator" + i);
+            profile.setAvatarURL("/avatars/User" + i + "Login.jpg");
+            profile.setDescription("Description for Creator " + i);
+
+            Post post = new Post();
+            post.setTitle("Пост " + i);
+            post.setPublishDate(LocalDateTime.now());
+            post.setContent("Content for post " + i);
+            post.setProfile(profile);
+
+            creator.setProfile(profile);
+            profile.setUser(creator);
+
+            creators.add(creator);
+            profiles.add(profile);
+            posts.add(post);
+        }
+
+        // Створення 500 звичайних користувачів
+        for (int i = 1; i <= 500; i++) {
+            User user = new User();
+            user.setName("User" + i);
+            user.setLogin("user_login_" + i);
+            user.setPassword(passwordEncoder.encode("UserPassword" + i));
+            user.setEmail("user" + i + "@gmail.com");
+            user.setRole(Role.USER);
+            user.setRegistrationDate(LocalDateTime.now());
+            users.add(user);
+        }
+
+        // Створення 10 тегів
+        for (int i = 1; i <= 100; i++) {
+            Tags tag = new Tags();
+            tag.setName("Tag" + i);
+            tags.add(tag);
+        }
+
+        // Прив'язка тегів до профілів
+        for (Profile profile : profiles) {
+            for (int j = 0; j < 2; j++) {
+                Profile_has_tags link = new Profile_has_tags();
+                link.setProfile(profile);
+                link.setTags(tags.get(ThreadLocalRandom.current().nextInt(tags.size())));
+                profileHasTagsList.add(link);
+            }
+        }
+
+        // Рандомні підписки
+        for (User user : users) {
+            Set<User> subscribed = new HashSet<>();
+            int subscriptionsCount = ThreadLocalRandom.current().nextInt(10, 21); // від 10 до 20 підписок
+
+            while (subscribed.size() < subscriptionsCount) {
+                User randomCreator = creators.get(ThreadLocalRandom.current().nextInt(creators.size()));
+                if (!subscribed.contains(randomCreator)) {
+                    subscribed.add(randomCreator);
+                    Subscription subscription = new Subscription();
+                    subscription.setUser(user);
+                    subscription.setCreator(randomCreator);
+                    subscription.setSubscriptionDate(LocalDateTime.now());
+                    subscriptions.add(subscription);
+                }
+            }
+        }
+
+        // Збереження
+        userRepository.saveAll(creators);
+        userRepository.saveAll(users);
+        tagsRepository.saveAll(tags);
+        profileHasTagsRepository.saveAll(profileHasTagsList);
+        postRepository.saveAll(posts);
+        subscriptionRepository.saveAll(subscriptions);
+
+        // Додати адміністратора
+        User admin = new User();
+        admin.setName("Administrator");
+        admin.setLogin("admin_login");
+        admin.setPassword(passwordEncoder.encode("AdminPassword"));
+        admin.setEmail("admin@example.com");
+        admin.setRole(Role.ADMIN);
+        admin.setRegistrationDate(LocalDateTime.now());
+        userRepository.save(admin);
+    }
     @GetMapping("/register")
     public String showRegistrationPage() {
         //initData();
+        // initdataforjmete();
         return "register";
     }
 
@@ -163,7 +273,6 @@ public class AuthController {
                            RedirectAttributes redirectAttributes) {
         try {
             Role role = Role.valueOf(roleStr);
-            //String encodedPassword = passwordEncoder.encode(password);
             User user = new User();
             user.setLogin(login);
             user.setPassword(password);

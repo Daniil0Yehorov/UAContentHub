@@ -32,7 +32,7 @@ public class ProfileController {
         User currentUser = session.getUser();
         if (!session.isPresent()) {
             return "redirect:/auth/login";}
-
+        if(currentUser!=null && currentUser.getRole()== Role.ADMIN){return "redirect:/adminpanel";}
         if (currentUser.getRole() == Role.CREATOR && currentUser.getProfile() == null) {
             currentUser.setProfile(session.getUser().getProfile());}
 

@@ -3,82 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <title>Профіль автора</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 80px 20px 20px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            background-attachment: fixed;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffffffcc;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        .top-bar a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .profile-container {
+            background-color: #ffffffcc;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        img {
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin: 8px 0;
+        }
+
+        textarea, input[type="number"], input[type="submit"], button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .section ul li {
+            margin-bottom: 5px;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            text-align: right;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .all-link {
+            display: block;
+            margin-top: 30px;
+            text-align: left;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .all-link:hover {
+            text-decoration: underline;
+        }
+        .creator-link {
+            margin-top: 10px;
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Профіль Автора</h1>
 
-<div th:if="${param.error}" style="color: red;">
-    <p th:text="${param.error}"></p>
+<div class="top-bar">
+    <div class="logo">UaContentHub</div>
+    <div>
+        <a href="/">Головна</a>
+    </div>
 </div>
 
-<div th:if="${param.message}" style="color: green;">
-    <p th:text="${param.message}"></p>
-</div>
-<img th:src="${profile.avatarURL} + '?t=' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')}" alt="Avatar" style="max-width: 200px; max-height: 200px;">
-<p>Ім'я: <span th:text="${profile.user.name}"/></p>
-<p>Опис: <span th:text="${profile.description}"/></p>
-<p>Рейтинг: <span th:text="${profile.rating}"/></p>
-<p>Підписників: <span th:text="${profile.subscribersCount}"></span></p>
-<h3>Соціальні мережі:</h3>
-<ul>
-    <li th:if="${profile.tiktok != null and !profile.tiktok.isEmpty()}">
-        <a th:href="${profile.tiktok}" target="_blank">TikTok</a>
-    </li>
-    <li th:if="${profile.instagram != null and !profile.instagram.isEmpty()}">
-        <a th:href="${profile.instagram}" target="_blank">Instagram</a>
-    </li>
-    <li th:if="${profile.twitch != null and !profile.twitch.isEmpty()}">
-        <a th:href="${profile.twitch}" target="_blank">Twitch</a>
-    </li>
-    <li th:if="${profile.youtube != null and !profile.youtube.isEmpty()}">
-        <a th:href="${profile.youtube}" target="_blank">YouTube</a>
-    </li>
-</ul>
+<div class="profile-container">
+    <h1>Профіль Автора</h1>
 
-<a th:href="@{/creator/{id}/reviews(id=${profile.id})}">Переглянути всі рецензії на автора</a>
+    <div th:if="${param.error}" style="color: red;">
+        <p th:text="${param.error}"></p>
+    </div>
 
-<div th:if="${user != null}">
-<div th:if="${user.role.name() == 'USER'}">
-    <div th:if="${isSubscribed}">
-        <a th:href="@{/creator/{id}/unsubscribe(id=${profile.id})}">Відписатися</a>
+    <div th:if="${param.message}" style="color: green;">
+        <p th:text="${param.message}"></p>
     </div>
-    <div th:if="${!isSubscribed}">
-        <a th:href="@{/creator/{id}/subscribe(id=${profile.id})}">Підписатися</a>
+
+    <img th:src="@{${profile.avatarURL}(t=${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')})}"
+         alt="Аватар автора" style="max-width: 200px; max-height: 200px;">
+        <p><strong>Ім'я:</strong> <span th:text="${profile.user.name}"></span></p>
+        <p><strong>Опис:</strong> <span th:text="${profile.description}"></span></p>
+        <p><strong>Рейтинг:</strong> <span th:text="${profile.rating}"></span></p>
+        <p><strong>Підписників:</strong> <span th:text="${profile.subscribersCount}"></span></p>
+
+    <div class="section">
+        <h2>Соціальні мережі:</h2>
+        <ul>
+            <li th:if="${profile.tiktok != null and !profile.tiktok.isEmpty()}">
+                <a th:href="${profile.tiktok}" target="_blank" rel="noopener noreferrer" class="creator-link">TikTok</a>
+            </li>
+            <li th:if="${profile.instagram != null and !profile.instagram.isEmpty()}">
+                <a th:href="${profile.instagram}" target="_blank" rel="noopener noreferrer" class="creator-link">Instagram</a>
+            </li>
+            <li th:if="${profile.twitch != null and !profile.twitch.isEmpty()}">
+                <a th:href="${profile.twitch}" target="_blank" rel="noopener noreferrer" class="creator-link">Twitch</a>
+            </li>
+            <li th:if="${profile.youtube != null and !profile.youtube.isEmpty()}">
+                <a th:href="${profile.youtube}" target="_blank" rel="noopener noreferrer" class="creator-link">YouTube</a>
+            </li>
+        </ul>
     </div>
-</div>
-<div th:if="${user.role.name() == 'USER'}">
-    <div th:if="${!hasReported}">
-        <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
-            <textarea name="reason" placeholder="Причина скарги" required></textarea>
-            <button type="submit">Поскаржитися</button>
-        </form>
+
+    <div class="section">
+        <a th:href="@{/creator/{id}/reviews(id=${profile.id})}" class="all-link">Переглянути всі рецензії на автора</a>
     </div>
-    <div th:if="${hasReported}">
-        <p>Ви вже подали скаргу на цього креатора.</p>
+
+    <div th:if="${user != null and user.role.name() == 'USER'}" class="section">
+
+        <div th:if="${isSubscribed}">
+            <form th:action="@{/creator/{id}/unsubscribe(id=${profile.id})}" method="post">
+                <button type="submit">Відписатися</button>
+            </form>
+        </div>
+        <div th:if="${!isSubscribed}">
+            <form th:action="@{/creator/{id}/subscribe(id=${profile.id})}" method="post">
+                <button type="submit">Підписатися</button>
+            </form>
+        </div>
+
+        <div class="section" th:if="${!hasReported}">
+            <form th:action="@{/creator/{userId}/report(userId=${profile.user.id})}" method="post">
+                <textarea name="reason" placeholder="Причина скарги" required></textarea>
+                <button type="submit">Поскаржитися</button>
+            </form>
+        </div>
+
+        <div th:if="${hasReported}">
+            <p>Ви вже подали скаргу на цього креатора.</p>
+        </div>
+
+        <div th:if="${userReview != null}">
+            <form th:action="@{/creator/{creatorId}/review/delete(creatorId=${profile.id})}" method="post">
+                <input type="hidden" name="reviewId" th:value="${userReview.id}">
+                <p>Ви можете видалити рецензію, якщо її статус "NOT APPROVED". Статус вашої рецензії:
+                    <span th:text="${userReview.status}"></span></p>
+                <button type="submit">Видалити</button>
+            </form>
+        </div>
+
+        <div th:if="${userReview == null}">
+            <p>Відгук відсутній, створіть новий</p>
+            <form th:action="@{/creator/{creatorId}/review(creatorId=${profile.id})}" method="post">
+                <textarea name="text" placeholder="Ваш відгук" required></textarea>
+                <label for="rating">Оцініть (1-5):</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required>
+                <button type="submit">Додати відгук</button>
+            </form>
+        </div>
+
     </div>
+    <a class="back-link" href="/">Повернутися на головну сторінку</a>
 </div>
-<div th:if="${userReview != null and user.role.name() == 'USER'}">
-    <form th:action="@{/creator/{creatorId}/review/delete(creatorId=${profile.id})}" method="post">
-        <input type="hidden" name="reviewId" th:value="${userReview.id}">
-        <p> Видалити ви можете ваш відгук зі статусом "NOT APPROVED". Статус вашого:
-            <span th:text="${userReview.status}"/></p>
-        <button type="submit">Видалити</button>
-    </form>
-</div>
-<div th:if="${userReview == null and user.role.name() == 'USER' }">
-    <p>Відгук відсутній, створіть новий</p>
-    <div th:if="${user.role.name() == 'USER'}">
-        <form th:action="@{/creator/{creatorId}/review(creatorId=${profile.id})}" method="post">
-            <textarea name="text" placeholder="Ваш відгук" required></textarea>
-            <br>
-            <label for="rating">Оцініть (1-5):</label>
-            <input type="number" id="rating" name="rating" min="1" max="5" required>
-            <br>
-            <button type="submit">Додати відгук</button>
-        </form>
-    </div>
-</div>
-</div>
-<a href="/">Повернутися на головну</a>
 </body>
 </html>
