@@ -144,7 +144,7 @@
             <label for="title">Заголовок посту:</label>
             <input type="text" id="title" name="title" th:value="${post.title}" required>
 
-            <label for="content">Контент:</label>
+            <label for="content">Опис поста:</label>
             <textarea id="content" name="content" required th:text="${post.content}"></textarea>
 
             <div class="image-preview" th:if="${post.phi != null}">

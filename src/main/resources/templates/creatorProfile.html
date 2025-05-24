@@ -172,7 +172,7 @@
     </div>
 
     <div class="section">
-        <a th:href="@{/creator/{id}/reviews(id=${profile.id})}" class="all-link">Переглянути всі рецензії на автора</a>
+        <a th:href="@{/creator/{id}/reviews(id=${profile.id})}" class="all-link">Переглянути усі рецензії на автора</a>
     </div>
 
     <div th:if="${user != null and user.role.name() == 'USER'}" class="section">
